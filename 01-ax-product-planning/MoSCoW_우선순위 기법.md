@@ -38,6 +38,31 @@ MoSCoW는 제한된 시간과 인력 안에서 어떤 기능을 먼저 개발할
 # 2. MoSCoW 전체 구조
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#e0e0e0',
+    'primaryTextColor': '#333333',
+    'primaryBorderColor': '#9e9e9e',
+    'lineColor': '#757575',
+    'secondaryColor': '#f5f5f5',
+    'tertiaryColor': '#fafafa',
+    'background': '#fafafa',
+    'mainBkg': '#e0e0e0',
+    'secondBkg': '#f5f5f5',
+    'nodeBorder': '#9e9e9e',
+    'clusterBkg': '#eeeeee',
+    'clusterBorder': '#bdbdbd',
+    'titleColor': '#424242',
+    'edgeLabelBackground': '#ffffff',
+    'nodeTextColor': '#333333'
+  },
+  'flowchart': {
+    'htmlLabels': true,
+    'curve': 'basis'
+  }
+} }%%
+
 flowchart TD
     A[사용자 문제 발견] --> B[서비스 목표 정의]
     B --> C[요구사항 수집]
