@@ -328,25 +328,27 @@ timeline
 gantt
     title 배달앱 개발 로드맵 (MoSCoW 기반)
     dateFormat YYYY-MM-DD
+    axisFormat %m-%d
+
     section Must Have
     회원가입/로그인 :m1, 2024-01-01, 14d
-    주문하기 :m2, after m1, 21d
-    결제시스템 :m3, after m2, 14d
-    주문추적 :m4, after m3, 14d
-    
+    주문하기        :m2, after m1, 21d
+    결제시스템      :m3, after m2, 14d
+    주문추적        :m4, after m3, 14d
+
     section Should Have
-    리뷰/평점 :s1, 2024-01-15, 21d
-    찜목록 :s2, after s1, 14d
-    푸시알림 :s3, after s2, 14d
-    
+    리뷰/평점       :s1, 2024-01-15, 21d
+    찜목록          :s2, after s1, 14d
+    푸시알림        :s3, after s2, 14d
+
     section Could Have
-    쿠폰시스템 :c1, 2024-02-01, 14d
-    AI추천 :c2, after c1, 21d
-    소셜공유 :c3, after c2, 14d
-    
-    section Won't Have
-    해외배송 :w1, milestone, 2024-03-31, 0d
-    실시간채팅 :w2, milestone, 2024-03-31, 0d
+    쿠폰시스템      :c1, 2024-02-01, 14d
+    AI 추천         :c2, after c1, 21d
+    소셜공유        :c3, after c2, 14d
+
+    section Wont Have
+    해외배송        :milestone, w1, 2024-03-31, 0d
+    실시간채팅      :milestone, w2, 2024-03-31, 0d
 ```
 
 ---
