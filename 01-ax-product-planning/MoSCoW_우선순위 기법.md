@@ -286,6 +286,31 @@ AI 일정관리 서비스의 경우:
 # 6. MoSCoW 분류 의사결정 구조
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#e0e0e0',
+    'primaryTextColor': '#333333',
+    'primaryBorderColor': '#9e9e9e',
+    'lineColor': '#757575',
+    'secondaryColor': '#f5f5f5',
+    'tertiaryColor': '#fafafa',
+    'background': '#fafafa',
+    'mainBkg': '#e0e0e0',
+    'secondBkg': '#f5f5f5',
+    'nodeBorder': '#9e9e9e',
+    'clusterBkg': '#eeeeee',
+    'clusterBorder': '#bdbdbd',
+    'titleColor': '#424242',
+    'edgeLabelBackground': '#ffffff',
+    'nodeTextColor': '#333333'
+  },
+  'flowchart': {
+    'htmlLabels': true,
+    'curve': 'basis'
+  }
+} }%%
+
 flowchart TD
     A[분류할 기능 선택] --> B{이 기능이 없으면<br/>핵심 서비스가 작동하지 않는가?}
 
