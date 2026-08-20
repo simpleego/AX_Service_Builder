@@ -172,36 +172,48 @@ flowchart TD
 
 AS-IS를 먼저 분석합니다.
 
-```text
-문서 수신
- ↓
-담당자 문서 열람
- ↓
-중요 내용 확인
- ↓
-요약
- ↓
-관련 부서 판단
- ↓
-메일 또는 메신저 전달
+```mermaid
+flowchart TD
+    N1["문서 수신"]
+    N2["담당자 문서 열람"]
+    N3["중요 내용 확인"]
+    N4["요약"]
+    N5["관련 부서 판단"]
+    N6["메일 또는 메신저 전달"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6 processNode;
 ```
 
 AI 적용 이후에는 다음처럼 바뀝니다.
 
-```text
-문서 수신
- ↓
-자동 문서 분석
- ↓
-RAG / LLM
- ↓
-핵심 내용 요약
- ↓
-관련 대상 판단
- ↓
-요약 결과 전달
- ↓
-사용자 확인
+```mermaid
+flowchart TD
+    N1["문서 수신"]
+    N2["자동 문서 분석"]
+    N3["RAG / LLM"]
+    N4["핵심 내용 요약"]
+    N5["관련 대상 판단"]
+    N6["요약 결과 전달"]
+    N7["사용자 확인"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6,N7 processNode;
 ```
 
 이 과정 자체가 AX 서비스 기획입니다.
@@ -230,24 +242,30 @@ RAG / LLM
 
 AI는 단순 LLM 호출을 하지 않습니다.
 
-```text
-사용자 질문
-     ↓
-Intent 분석
-     ↓
-사용자 Portfolio 조회
-     ↓
-시장 데이터 조회
-     ↓
-산업 데이터 조회
-     ↓
-관련 보고서 RAG 검색
-     ↓
-LLM 분석
-     ↓
-위험요인 정리
-     ↓
-근거 포함 답변
+```mermaid
+flowchart TD
+    N1["사용자 질문"]
+    N2["Intent 분석"]
+    N3["사용자 Portfolio 조회"]
+    N4["시장 데이터 조회"]
+    N5["산업 데이터 조회"]
+    N6["관련 보고서 RAG 검색"]
+    N7["LLM 분석"]
+    N8["위험요인 정리"]
+    N9["근거 포함 답변"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6,N7,N8,N9 processNode;
 ```
 
 ## 구현 기능
@@ -398,12 +416,20 @@ evaluation_time
 
 사람 평가만 받으면 일반 웹 프로젝트가 될 수 있으므로 LLM 평가를 함께 넣습니다.
 
-```text
-Human Evaluation
-        +
-LLM-as-a-Judge
-        ↓
-평가 결과 비교
+```mermaid
+flowchart TD
+    N1["Human Evaluation"]
+    N2["+"]
+    N3["LLM-as-a-Judge"]
+    N4["평가 결과 비교"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4 processNode;
 ```
 
 평가 기준:
@@ -461,24 +487,30 @@ PDF 보고서
 
 시스템은 다음처럼 처리합니다.
 
-```text
-Document
-   ↓
-Parsing
-   ↓
-Chunking
-   ↓
-Embedding
-   ↓
-Vector DB
-   ↓
-LLM
-   ↓
-Summary
-   ↓
-Classification
-   ↓
-Delivery
+```mermaid
+flowchart TD
+    N1["Document"]
+    N2["Parsing"]
+    N3["Chunking"]
+    N4["Embedding"]
+    N5["Vector DB"]
+    N6["LLM"]
+    N7["Summary"]
+    N8["Classification"]
+    N9["Delivery"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6,N7,N8,N9 processNode;
 ```
 
 ---
@@ -533,34 +565,46 @@ PDF → 요약
 
 다음으로 발전시켜야 합니다.
 
-```text
-PDF
- ↓
-요약
- ↓
-주제 분석
- ↓
-중요도 판단
- ↓
-수신 대상 판단
- ↓
-전달
+```mermaid
+flowchart TD
+    N1["PDF"]
+    N2["요약"]
+    N3["주제 분석"]
+    N4["중요도 판단"]
+    N5["수신 대상 판단"]
+    N6["전달"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6 processNode;
 ```
 
 예:
 
-```text
-AI 관련 기술 보고서
-      ↓
-R&D팀
+```mermaid
+flowchart TD
+    N1["AI 관련 기술 보고서"]
+    N2["R&D팀"]
+    N3["정부 정책 자료"]
+    N4["경영기획팀"]
+    N5["보안 관련 공지"]
+    N6["개발팀 + 보안팀"]
 
-정부 정책 자료
-      ↓
-경영기획팀
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 
-보안 관련 공지
-      ↓
-개발팀 + 보안팀
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6 processNode;
 ```
 
 이렇게 해야 기업 업무 자동화 프로젝트가 됩니다.
@@ -877,12 +921,18 @@ AI가 핵심 내용을 요약한다.
 
 이 단계 종료 시:
 
-```text
-React
-  ↓
-FastAPI
-  ↓
-PostgreSQL
+```mermaid
+flowchart TD
+    N1["React"]
+    N2["FastAPI"]
+    N3["PostgreSQL"]
+
+    N1 --> N2
+    N2 --> N3
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3 processNode;
 ```
 
 이 완전히 동작해야 합니다.
@@ -910,26 +960,32 @@ Error Handling
 
 기본 구조:
 
-```text
-User Input
-    ↓
-Validation
-    ↓
-Business Context
-    ↓
-Retriever
-    ↓
-Knowledge
-    ↓
-Prompt
-    ↓
-LLM
-    ↓
-Output Parser
-    ↓
-Validation
-    ↓
-Response
+```mermaid
+flowchart TD
+    N1["User Input"]
+    N2["Validation"]
+    N3["Business Context"]
+    N4["Retriever"]
+    N5["Knowledge"]
+    N6["Prompt"]
+    N7["LLM"]
+    N8["Output Parser"]
+    N9["Validation"]
+    N10["Response"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+    N9 --> N10
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6,N7,N8,N9,N10 processNode;
 ```
 
 주제에 따라 이 부분이 각각
@@ -952,24 +1008,30 @@ Response
 
 예를 들어 문서 프로젝트라면:
 
-```text
-사용자 Login
- ↓
-PDF 등록
- ↓
-문서 분석
- ↓
-AI Summary
- ↓
-중요도 표시
- ↓
-관련 문서 질의
- ↓
-근거 확인
- ↓
-담당자 전달
- ↓
-History 확인
+```mermaid
+flowchart TD
+    N1["사용자 Login"]
+    N2["PDF 등록"]
+    N3["문서 분석"]
+    N4["AI Summary"]
+    N5["중요도 표시"]
+    N6["관련 문서 질의"]
+    N7["근거 확인"]
+    N8["담당자 전달"]
+    N9["History 확인"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6,N7,N8,N9 processNode;
 ```
 
 이 시나리오 전체가 한 번도 끊기지 않고 실행되어야 합니다.
@@ -1106,20 +1168,26 @@ CLOSED
 
 따라서 AI Guardrail 구조를 둡니다.
 
-```text
-User Input
-   ↓
-Input Guard
-   ↓
-Permission
-   ↓
-RAG
-   ↓
-LLM
-   ↓
-Output Guard
-   ↓
-User
+```mermaid
+flowchart TD
+    N1["User Input"]
+    N2["Input Guard"]
+    N3["Permission"]
+    N4["RAG"]
+    N5["LLM"]
+    N6["Output Guard"]
+    N7["User"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6,N7 processNode;
 ```
 
 ---
@@ -1130,22 +1198,28 @@ User
 
 2차 프로젝트의 CI/CD를 이용합니다.
 
-```text
-Developer
- ↓
-git push
- ↓
-GitHub
- ↓
-CI
- ↓
-Test
- ↓
-Docker Build
- ↓
-Deploy
- ↓
-Production
+```mermaid
+flowchart TD
+    N1["Developer"]
+    N2["git push"]
+    N3["GitHub"]
+    N4["CI"]
+    N5["Test"]
+    N6["Docker Build"]
+    N7["Deploy"]
+    N8["Production"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6,N7,N8 processNode;
 ```
 
 최종적으로 기업 담당자가 브라우저 주소를 통해 테스트할 수 있어야 합니다.
@@ -1179,48 +1253,34 @@ Production
 
 발표 순서는 기술 순서보다 **기업 문제 해결 과정** 중심이 좋습니다.
 
-```text
-① 기업 문제
+```mermaid
+flowchart TD
+    N1["① 기업 문제"]
+    N2["② 기존 업무의 불편"]
+    N3["③ 해결 방법"]
+    N4["④ AI가 필요한 이유"]
+    N5["⑤ 실제 Demo"]
+    N6["⑥ Architecture"]
+    N7["⑦ LLM / RAG"]
+    N8["⑧ AI Evaluation"]
+    N9["⑨ Security"]
+    N10["⑩ Deployment"]
+    N11["⑪ 기업 기대효과"]
 
-        ↓
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+    N9 --> N10
+    N10 --> N11
 
-② 기존 업무의 불편
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
 
-        ↓
-
-③ 해결 방법
-
-        ↓
-
-④ AI가 필요한 이유
-
-        ↓
-
-⑤ 실제 Demo
-
-        ↓
-
-⑥ Architecture
-
-        ↓
-
-⑦ LLM / RAG
-
-        ↓
-
-⑧ AI Evaluation
-
-        ↓
-
-⑨ Security
-
-        ↓
-
-⑩ Deployment
-
-        ↓
-
-⑪ 기업 기대효과
+    class N1,N2,N3,N4,N5,N6,N7,N8,N9,N10,N11 processNode;
 ```
 
 Demo를 초반에 보여주는 것이 특히 좋습니다.
@@ -1270,48 +1330,34 @@ Gate를 통과하지 못한 팀은 새로운 기능 추가를 금지하고 이�
 
 3차에서는 GitHub를 단순 코드 저장소가 아니라 **프로젝트 관리 도구**로 사용하면 좋습니다.
 
-```text
-Requirement
+```mermaid
+flowchart TD
+    N1["Requirement"]
+    N2["GitHub Issue"]
+    N3["Assign"]
+    N4["Branch"]
+    N5["AI-assisted Development"]
+    N6["Test"]
+    N7["Pull Request"]
+    N8["Code Review"]
+    N9["CI"]
+    N10["Merge"]
+    N11["Deploy"]
 
-↓
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+    N9 --> N10
+    N10 --> N11
 
-GitHub Issue
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
 
-↓
-
-Assign
-
-↓
-
-Branch
-
-↓
-
-AI-assisted Development
-
-↓
-
-Test
-
-↓
-
-Pull Request
-
-↓
-
-Code Review
-
-↓
-
-CI
-
-↓
-
-Merge
-
-↓
-
-Deploy
+    class N1,N2,N3,N4,N5,N6,N7,N8,N9,N10,N11 processNode;
 ```
 
 기업·보안팀의 요청도 모두 Issue로 관리합니다.
@@ -1340,24 +1386,30 @@ OPS-003 Production 환경변수
 
 3차에서는 AI를 **개발 동료**처럼 활용하게 합니다.
 
-```text
-Requirement 분석
-        ↓
-AI에게 구현계획 요청
-        ↓
-코드 생성
-        ↓
-개발자 Review
-        ↓
-Test 생성
-        ↓
-보안 Review
-        ↓
-Refactoring
-        ↓
-PR 설명
-        ↓
-Documentation
+```mermaid
+flowchart TD
+    N1["Requirement 분석"]
+    N2["AI에게 구현계획 요청"]
+    N3["코드 생성"]
+    N4["개발자 Review"]
+    N5["Test 생성"]
+    N6["보안 Review"]
+    N7["Refactoring"]
+    N8["PR 설명"]
+    N9["Documentation"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6,N7,N8,N9 processNode;
 ```
 
 중요한 평가 질문은
@@ -1437,28 +1489,34 @@ LangChain 사용할 수 있음
 
 교육과정 종료 후에는 다음 사고방식이 형성되어야 합니다.
 
-```text
-Business Problem
-        ↓
-Requirement
-        ↓
-Service Design
-        ↓
-Architecture
-        ↓
-Data
-        ↓
-Full Stack
-        ↓
-AI
-        ↓
-Evaluation
-        ↓
-Security
-        ↓
-CI/CD
-        ↓
-Operation
+```mermaid
+flowchart TD
+    N1["Business Problem"]
+    N2["Requirement"]
+    N3["Service Design"]
+    N4["Architecture"]
+    N5["Data"]
+    N6["Full Stack"]
+    N7["AI"]
+    N8["Evaluation"]
+    N9["Security"]
+    N10["CI/CD"]
+    N11["Operation"]
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+    N9 --> N10
+    N10 --> N11
+
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+
+    class N1,N2,N3,N4,N5,N6,N7,N8,N9,N10,N11 processNode;
 ```
 
 즉, 특정 프레임워크 사용자가 아니라 **AI 서비스를 전체적으로 설계하고 구현하는 AX 풀스택 개발자의 사고방식**을 갖는 것이 최종 목표가 됩니다.
