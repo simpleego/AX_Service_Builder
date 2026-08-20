@@ -137,44 +137,31 @@ flowchart LR
 
 기업 요구사항을 먼저 다음 구조로 변환해야 합니다.
 
-```text
-기업 요구사항
+```mermaid
+flowchart TD
+    N1["기업 요구사항"]
+    N2["Business Problem"]
+    N3["Target User"]
+    N4["Current Process(AS-IS)"]
+    N5["Problem"]
+    N6["AI 적용 지점"]
+    N7["Future Process(TO-BE)"]
+    N8["Functional Requirement"]
+    N9["Architecture"]
+    N10["MVP"]
 
-     ↓
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+    N9 --> N10
 
-Business Problem
-
-     ↓
-
-Target User
-
-     ↓
-
-Current Process(AS-IS)
-
-     ↓
-
-Problem
-
-     ↓
-
-AI 적용 지점
-
-     ↓
-
-Future Process(TO-BE)
-
-     ↓
-
-Functional Requirement
-
-     ↓
-
-Architecture
-
-     ↓
-
-MVP
+    classDef processNode fill:#EEF5E9,stroke:#7BA36A,stroke-width:1.5px,color:#1F2937,font-size:16px;
+    class N1,N2,N3,N4,N5,N6,N7,N8,N9,N10 processNode;
 ```
 
 예를 들어 기업이
