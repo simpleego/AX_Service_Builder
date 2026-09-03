@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HTML, CSS, JavaScript로 만든 초보자용 미니 쇼핑몰 예제">
+  <meta property="og:title" content="소담상점 | 일상에 작은 기쁨을 더하는 물건들">
+  <meta property="og:description" content="처음 만드는 웹사이트를 위한 작고 따뜻한 미니 쇼핑몰 예제">
+  <meta property="og:image" content="https://sodam-mini-shop.simpleego.chatgpt.site/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="소담상점 | 미니 쇼핑몰">
+  <meta name="twitter:description" content="HTML, CSS, JavaScript로 만든 초보자용 쇼핑몰 예제">
+  <meta name="twitter:image" content="https://sodam-mini-shop.simpleego.chatgpt.site/og.png">
+  <title>소담상점 | 상품 목록</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html">소담<span>상점</span></a>
+    <nav aria-label="주요 메뉴"><a class="active" href="index.html">상품</a><a href="login.html">로그인</a><a class="cart-link" href="cart.html">장바구니 <b class="cart-count">0</b></a></nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">SMALL THINGS, BIG JOY</p>
+      <h1>일상에 작은 기쁨을<br>더하는 물건들</h1>
+      <p>오래 곁에 두고 싶은 생활 소품을 천천히 골랐어요.</p>
+      <a class="button dark" href="#products">상품 둘러보기</a>
+    </section>
+
+    <section class="shop-section" id="products">
+      <div class="section-head"><div><p class="eyebrow">OUR PICKS</p><h2>오늘의 추천 상품</h2></div><label class="search-box"><span>⌕</span><input id="product-search" type="search" placeholder="상품명을 검색하세요" aria-label="상품 검색"></label></div>
+      <div class="category-filter" aria-label="상품 분류"><button class="filter-button active" data-category="all">전체</button><button class="filter-button" data-category="living">리빙</button><button class="filter-button" data-category="fashion">패션</button><button class="filter-button" data-category="food">푸드</button></div>
+      <p class="no-results" id="no-results" hidden>검색 결과가 없습니다. 다른 단어로 찾아보세요.</p>
+      <div class="product-grid" id="product-grid">
+        <article class="product-card" data-name="구름 머그컵" data-category="living"><a class="product-image" href="product.html?id=1"><img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=700&q=85" alt="테이블 위의 흰색 머그컵"><span class="badge">BEST</span></a><div class="product-info"><small>리빙</small><h3><a href="product.html?id=1">구름 머그컵</a></h3><p>12,000원</p><button class="add-cart" data-id="1" data-name="구름 머그컵" data-price="12000" data-image="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=300&q=80">담기</button></div></article>
+        <article class="product-card" data-name="데일리 캔버스백" data-category="fashion"><a class="product-image" href="product.html?id=2"><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=700&q=85" alt="밝은색 데일리 가방"></a><div class="product-info"><small>패션</small><h3><a href="product.html?id=2">데일리 캔버스백</a></h3><p>29,000원</p><button class="add-cart" data-id="2" data-name="데일리 캔버스백" data-price="29000" data-image="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=300&q=80">담기</button></div></article>
+        <article class="product-card" data-name="숲 향초" data-category="living"><a class="product-image" href="product.html?id=3"><img src="https://images.unsplash.com/photo-1616172890963-a45e7da8de31?auto=format&fit=crop&w=700&q=85" alt="투명한 유리 용기에 담긴 흰색 향초"><span class="badge new">NEW</span></a><div class="product-info"><small>리빙</small><h3><a href="product.html?id=3">숲 향초</a></h3><p>18,500원</p><button class="add-cart" data-id="3" data-name="숲 향초" data-price="18500" data-image="https://images.unsplash.com/photo-1616172890963-a45e7da8de31?auto=format&fit=crop&w=300&q=80">담기</button></div></article>
+        <article class="product-card" data-name="수제 딸기잼" data-category="food"><a class="product-image" href="product.html?id=4"><img src="https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=700&q=85" alt="병에 담긴 수제 잼"></a><div class="product-info"><small>푸드</small><h3><a href="product.html?id=4">수제 딸기잼</a></h3><p>9,800원</p><button class="add-cart" data-id="4" data-name="수제 딸기잼" data-price="9800" data-image="https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=300&q=80">담기</button></div></article>
+        <article class="product-card" data-name="린넨 테이블 매트" data-category="living"><a class="product-image" href="product.html?id=5"><img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=700&q=85" alt="린넨 소재의 테이블 소품"></a><div class="product-info"><small>리빙</small><h3><a href="product.html?id=5">린넨 테이블 매트</a></h3><p>15,000원</p><button class="add-cart" data-id="5" data-name="린넨 테이블 매트" data-price="15000" data-image="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=300&q=80">담기</button></div></article>
+        <article class="product-card" data-name="드립백 커피 세트" data-category="food"><a class="product-image" href="product.html?id=6"><img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=700&q=85" alt="원두와 커피 도구"><span class="badge">BEST</span></a><div class="product-info"><small>푸드</small><h3><a href="product.html?id=6">드립백 커피 세트</a></h3><p>16,000원</p><button class="add-cart" data-id="6" data-name="드립백 커피 세트" data-price="16000" data-image="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=300&q=80">담기</button></div></article>
+      </div>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status">장바구니에 담았습니다.</div>
+  <footer><a class="logo" href="index.html">소담<span>상점</span></a><p>처음 만드는 웹사이트를 위한 미니 쇼핑몰 예제</p><small>© 2026 Sodam Shop. Study project.</small></footer>
+  <script src="script.js"></script>
+</body>
+</html>
