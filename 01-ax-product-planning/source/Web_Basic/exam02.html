@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="exam02.html" method="post">
+        <label for="username">이 름:</label>
+        <input type="text" id="username" size="10" name="username">
+        <!-- password: 사용자가 입력한 비밀번호를 숨김 텍스트로 표시합니다. -->
+        <br>
+        <label for="email">이메일:</label>
+        <input type="email" id="email" size="10" name="email"><br>
+
+        <label for="password">비밀번호:</label>
+        <input type="password" name="password">
+        <!-- checkbox: 사용자가 하나 이상의 옵션을 선택할 수 있습니다. -->
+        <br>
+        <label for="hobby">취미:</label>
+        <input type="checkbox" id="hobby" value="music">음악
+        <input type="checkbox" name="hobby" value="reading">독서
+        <!-- radio: 사용자가 라디오 버튼 중 하나를 선택할 수 있습니다. -->
+        <br>
+        <label for="gender">성별:</label>
+        <input type="radio" id="gender" name="gender" value="male">남성
+        <input type="radio" id="gender" name="gender" value="female">여성
+        <!-- file: 사용자가 파일을 선택할 수 있는 파일 업로드 요소입니다. -->
+
+        <!-- accept 속성을 사용하여 허용된 파일 유형을 지정할 수 있습니다.
+        multiple 속성을 사용하여 여러 파일을 선택할 수 있습니다.
+        선택된 파일은 서버로 전송하기 전에 JavaScript를 사용하여 프리뷰하거나 파일 유효성을 검사할 수 있습니다. -->
+        <br>
+        <label for="file">사진업로드:</label>
+        <input type="file" name="file" accept=".jpg, .jpeg, .png" multiple>
+        <!-- reset: 사용자가 입력 양식을 초기화하는 데 사용되는 재설정 버튼입니다. -->
+        <br>
+        <label for="message">메시지:</label><br>
+        <textarea id="message" cols="50" rows="5" name="message"></textarea><br>
+        
+        <label for="colors">Choose a color:</label>
+        <select id="colors" multiple name="colors">
+            <option value="red" selected>Red</option>
+            <option value="green">Green</option>
+            <option value="blue">Blue</option>
+        </select>
+
+        <br>
+        <input type="reset" value="재설정">
+        <input type="submit" value="제출">
+    </form>
+</body>
+</html>
