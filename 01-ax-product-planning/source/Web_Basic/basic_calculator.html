@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>기초 사칙연산 계산기</title>
+
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+    }
+
+    .calculator {
+      width: 320px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: white;
+      border: 1px solid #cccccc;
+      border-radius: 10px;
+    }
+
+    h1 {
+      font-size: 24px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 5px;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 18px;
+      color: white;
+      background-color: #4a67d6;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #354db0;
+    }
+
+    .reset-button {
+      margin-top: 8px;
+      background-color: #777777;
+    }
+
+    output {
+      display: block;
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #eeeeee;
+      border: 1px solid #cccccc;
+      text-align: center;
+      font-size: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="calculator">
+    <h1>사칙연산 계산기</h1>
+
+    <form id="calculatorForm">
+      <label for="number1">첫 번째 숫자</label>
+      <input type="number" id="number1" step="any" required>
+
+      <label for="operator">연산 선택</label>
+      <select id="operator">
+        <option value="+">더하기 (+)</option>
+        <option value="-">빼기 (-)</option>
+        <option value="*">곱하기 (×)</option>
+        <option value="/">나누기 (÷)</option>
+      </select>
+
+      <label for="number2">두 번째 숫자</label>
+      <input type="number" id="number2" step="any" required>
+
+      <button type="submit">계산하기</button>
+      <button type="reset" class="reset-button">초기화</button>
+
+      <output id="result">결과가 여기에 표시됩니다.</output>
+    </form>
+  </main>
+
+  <script>
+    // HTML 요소 가져오기
+    const form = document.getElementById("calculatorForm");
+    const number1Input = document.getElementById("number1");
+    const number2Input = document.getElementById("number2");
+    const operatorSelect = document.getElementById("operator");
+    const resultOutput = document.getElementById("result");
+
+    // 계산하기 버튼을 눌렀을 때 실행
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const number1 = Number(number1Input.value);
+      const number2 = Number(number2Input.value);
+      const operator = operatorSelect.value;
+      let result;
+
+      if (operator === "+") {
+        result = number1 + number2;
+      } else if (operator === "-") {
+        result = number1 - number2;
+      } else if (operator === "*") {
+        result = number1 * number2;
+      } else if (operator === "/") {
+        if (number2 === 0) {
+          resultOutput.textContent = "0으로 나눌 수 없습니다.";
+          return;
+        }
+        result = number1 / number2;
+      }
+
+      resultOutput.textContent = "계산 결과: " + result;
+    });
+
+    // 초기화 버튼을 눌렀을 때 결과 문구도 초기화
+    form.addEventListener("reset", function () {
+      resultOutput.textContent = "결과가 여기에 표시됩니다.";
+    });
+  </script>
+</body>
+</html>
