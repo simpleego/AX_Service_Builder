@@ -24,6 +24,10 @@
 ## 3-Tier 클라이언트-서버 구조
 <img width="100%"  alt="image" src="https://github.com/user-attachments/assets/3a2366e7-c1ee-4b6b-a1c1-71dfc7fdad29" />
 
+## Cloud 구조
+<img width="1024" height="579" alt="image" src="https://github.com/user-attachments/assets/b854efc0-577f-483f-8f14-14f3eb3d7135" />
+
+
 
 ---
 
