@@ -248,6 +248,8 @@ button:hover { background-color: navy; }
 
 ---
 
+[CSS_Flex_Grid](https://github.com/simpleego/AX_Service_Builder/blob/main/01-ax-product-planning/Summary/02_CSS_%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83_%EB%B0%9C%EC%A0%84%EC%82%AC_Flex_Grid_%EB%B9%84%EA%B5%90.md)
+
 # 3부. JavaScript — 웹 문서의 동작
 
 ## 3-1. 변수와 자료형
