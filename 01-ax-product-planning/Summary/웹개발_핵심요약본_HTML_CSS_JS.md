@@ -8,6 +8,33 @@
 
 ## 0. 웹은 어떻게 동작하는가? (큰 그림)
 
+## 간단한 웹 클라이언트 서버 구조
+<img width="702" height="471" alt="image" src="https://github.com/user-attachments/assets/729d2f80-6120-4543-b18f-64de7f930793" />
+
+---
+
+## 웹 클라이언트 서버 구조와 웹 프로그램의 관계
+<img width="1858" height="912" alt="image" src="https://github.com/user-attachments/assets/a00f78df-cd57-491f-8410-f17cbf387577" />
+
+---
+
+
+## 로드 밸런서 구조
+<img width="1080" height="608" alt="image" src="https://github.com/user-attachments/assets/435f75c7-8fa1-4261-9485-fcceedf0289e" />
+
+---
+
+
+## 클라이언트-서버 응용 구조
+<img width="382" height="685" alt="image" src="https://github.com/user-attachments/assets/a51c0dbe-8128-447c-afed-41da3047b5e2" />
+<img width="382" height="685" alt="image" src="https://github.com/user-attachments/assets/3e9e08b2-2a33-4633-aeee-602e98734bb1" />
+
+
+
+---
+
+
+
 ```
 [브라우저(클라이언트)] ──요청(Request)──▶ [서버]
 [브라우저(클라이언트)] ◀──응답(Response)── [서버]
