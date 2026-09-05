@@ -11,39 +11,23 @@
 ## 간단한 웹 클라이언트 서버 구조
 <img width="702" height="471" alt="image" src="https://github.com/user-attachments/assets/729d2f80-6120-4543-b18f-64de7f930793" />
 
----
-
 ## 웹 클라이언트 서버 구조와 웹 프로그램의 관계
 <img width="1858" height="912" alt="image" src="https://github.com/user-attachments/assets/a00f78df-cd57-491f-8410-f17cbf387577" />
-
----
-
 
 ## 로드 밸런서 구조
 <img width="1080" height="608" alt="image" src="https://github.com/user-attachments/assets/435f75c7-8fa1-4261-9485-fcceedf0289e" />
 
----
-
-
 ## 클라이언트-서버 응용 구조
-<img width="100%"  alt="image" src="https://github.com/user-attachments/assets/a51c0dbe-8128-447c-afed-41da3047b5e2" />
-
 <img width="100%"  alt="image" src="https://github.com/user-attachments/assets/af996c10-122b-4a12-96b2-e58c91fae08b" />
 
 
+## 3-Tier 클라이언트-서버 구조
+<img width="100%"  alt="image" src="https://github.com/user-attachments/assets/3a2366e7-c1ee-4b6b-a1c1-71dfc7fdad29" />
 
 
 ---
 
-
-
-```
-[브라우저(클라이언트)] ──요청(Request)──▶ [서버]
-[브라우저(클라이언트)] ◀──응답(Response)── [서버]
-                                (HTML, CSS, JS 파일 전달)
-```
-
-브라우저가 받은 3가지 파일의 역할 분담:
+## 브라우저가 받은 3가지 파일의 역할 분담:
 
 | 기술 | 역할 | 비유 |
 |------|------|------|
