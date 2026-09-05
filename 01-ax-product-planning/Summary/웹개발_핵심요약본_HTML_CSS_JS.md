@@ -26,8 +26,10 @@
 
 
 ## 클라이언트-서버 응용 구조
-<img width="382" height="685" alt="image" src="https://github.com/user-attachments/assets/a51c0dbe-8128-447c-afed-41da3047b5e2" />
-<img width="382" height="685" alt="image" src="https://github.com/user-attachments/assets/3e9e08b2-2a33-4633-aeee-602e98734bb1" />
+<img width="100%"  alt="image" src="https://github.com/user-attachments/assets/a51c0dbe-8128-447c-afed-41da3047b5e2" />
+
+<img width="100%"  alt="image" src="https://github.com/user-attachments/assets/af996c10-122b-4a12-96b2-e58c91fae08b" />
+
 
 
 
