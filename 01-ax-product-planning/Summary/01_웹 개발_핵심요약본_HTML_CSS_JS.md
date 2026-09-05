@@ -18,7 +18,12 @@
 <img width="1080" height="608" alt="image" src="https://github.com/user-attachments/assets/435f75c7-8fa1-4261-9485-fcceedf0289e" />
 
 ## 클라이언트-서버 응용 구조
+
+<img width="511" height="685" alt="image" src="https://github.com/user-attachments/assets/6da99c72-bb8e-4a1f-adb5-15aaba6b62b8" />
+
 <img width="100%"  alt="image" src="https://github.com/user-attachments/assets/af996c10-122b-4a12-96b2-e58c91fae08b" />
+
+
 
 
 ## 3-Tier 클라이언트-서버 구조
