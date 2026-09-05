@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>예제 1 - 회원가입 폼</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f3f5f7; color: #222; }
+    header, footer { padding: 20px; text-align: center; background: #243b53; color: white; }
+    main { width: 90%; max-width: 600px; margin: 30px auto; }
+    form { padding: 25px; border-radius: 10px; background: white; box-shadow: 0 4px 14px #0002; }
+    fieldset { margin-bottom: 20px; border: 1px solid #ccd5df; border-radius: 8px; }
+    legend { padding: 0 8px; font-weight: bold; }
+    label { display: block; margin-top: 14px; font-weight: bold; }
+    input, select, textarea, button { width: 100%; padding: 10px; margin-top: 6px; font: inherit; }
+    .inline { display: flex; gap: 18px; margin: 12px 0; }
+    .inline label { display: flex; align-items: center; gap: 6px; margin: 0; font-weight: normal; }
+    .inline input { width: auto; margin: 0; }
+    button { border: 0; border-radius: 6px; background: #1565c0; color: white; cursor: pointer; }
+    button:hover { background: #0d47a1; }
+    #message { min-height: 24px; font-weight: bold; color: #087f5b; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>웹개발 기초 회원가입</h1>
+    <p>시맨틱 태그와 다양한 폼 요소를 연습합니다.</p>
+  </header>
+
+  <main>
+    <section aria-labelledby="form-title">
+      <h2 id="form-title">회원 정보 입력</h2>
+      <form id="joinForm">
+        <fieldset>
+          <legend>필수 정보</legend>
+
+          <label for="name">이름</label>
+          <input id="name" name="name" type="text" required minlength="2" placeholder="홍길동">
+
+          <label for="email">이메일</label>
+          <input id="email" name="email" type="email" required placeholder="user@example.com">
+
+          <label for="password">비밀번호</label>
+          <input id="password" name="password" type="password" required minlength="8" placeholder="8자 이상">
+        </fieldset>
+
+        <fieldset>
+          <legend>추가 정보</legend>
+
+          <label for="job">관심 직무</label>
+          <select id="job" name="job">
+            <option value="frontend">프론트엔드</option>
+            <option value="backend">백엔드</option>
+            <option value="fullstack">풀스택</option>
+          </select>
+
+          <p><strong>학습 수준</strong></p>
+          <div class="inline">
+            <label><input type="radio" name="level" value="beginner" checked> 입문</label>
+            <label><input type="radio" name="level" value="basic"> 기초</label>
+          </div>
+
+          <label for="memo">학습 목표</label>
+          <textarea id="memo" name="memo" rows="4" placeholder="학습 목표를 입력하세요."></textarea>
+
+          <div class="inline">
+            <label><input id="agree" type="checkbox" required> 개인정보 수집에 동의합니다.</label>
+          </div>
+        </fieldset>
+
+        <button type="submit">가입하기</button>
+        <p id="message" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer><small>&copy; 2026 Web Basics Class</small></footer>
+
+  <script>
+    const joinForm = document.querySelector('#joinForm');
+    const message = document.querySelector('#message');
+
+    joinForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const name = document.querySelector('#name').value;
+      message.textContent = name + '님, 회원가입이 완료되었습니다.';
+      joinForm.reset();
+    });
+  </script>
+</body>
+</html>
+
