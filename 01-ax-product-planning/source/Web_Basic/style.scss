@@ -1,0 +1,107 @@
+// ======================================
+// 1. 변수 Variable
+// ======================================
+
+$main-color: royalblue;
+$sub-color: lightblue;
+$text-color: white;
+
+$box-size: 150px;
+
+
+// ======================================
+// 2. 함수 Function
+// ======================================
+
+@function double-size($size) {
+    @return $size * 2;
+}
+
+
+// ======================================
+// 기본 스타일
+// ======================================
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+}
+
+
+h1 {
+    color: $main-color;
+}
+
+
+// ======================================
+// 3. 중첩 Nesting
+// ======================================
+
+nav {
+
+    background-color: $main-color;
+    padding: 15px;
+
+    ul {
+
+        display: flex;
+        gap: 30px;
+
+        list-style: none;
+        padding: 0;
+
+        li {
+
+            a {
+
+                color: $text-color;
+                text-decoration: none;
+
+                &:hover {
+                    color: yellow;
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+
+// ======================================
+// 변수 + 함수 사용
+// ======================================
+
+.big-box {
+
+    width: double-size($box-size);
+    height: 100px;
+
+    background-color: $sub-color;
+
+    margin-top: 30px;
+    padding: 20px;
+
+}
+
+
+// ======================================
+// 4. 반복문 Loop
+// ======================================
+
+@for $i from 1 through 5 {
+
+    .box-#{$i} {
+
+        width: 100px * $i;
+
+        padding: 10px;
+        margin: 10px 0;
+
+        background-color: lightgray;
+
+    }
+
+}
