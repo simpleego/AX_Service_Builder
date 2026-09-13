@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sass 핵심 기능 예제</title>
+
+    <!-- SCSS가 아니라 컴파일된 CSS를 연결 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Sass 핵심 기능</h1>
+
+
+    <h2>1. 중첩 Nesting</h2>
+
+    <nav>
+        <ul>
+            <li><a href="#">홈</a></li>
+            <li><a href="#">상품</a></li>
+            <li><a href="#">게시판</a></li>
+            <li><a href="#">로그인</a></li>
+        </ul>
+    </nav>
+
+
+    <h2>2. 변수 + 함수</h2>
+
+    <div class="big-box">
+        $box-size = 150px
+
+        <br><br>
+
+        double-size(150px)
+
+        <br>
+
+        → 300px
+    </div>
+
+
+    <h2>3. 반복문</h2>
+
+    <div class="box-1">box-1 : 100px</div>
+    <div class="box-2">box-2 : 200px</div>
+    <div class="box-3">box-3 : 300px</div>
+    <div class="box-4">box-4 : 400px</div>
+    <div class="box-5">box-5 : 500px</div>
+
+</body>
+</html>

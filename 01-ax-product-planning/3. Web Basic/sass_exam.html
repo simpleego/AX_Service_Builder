@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sass 핵심 기능 예제</title>
+
+    <style>
+
+        /*
+        ==========================================================
+        [SASS / SCSS 원본 코드]
+
+        아래 SCSS 코드는 브라우저가 직접 실행하지 못합니다.
+        Sass 컴파일러를 사용하여 CSS로 변환해야 합니다.
+        ==========================================================
+
+
+        // -------------------------------------
+        // 1. 변수 Variable
+        // -------------------------------------
+
+        $main-color: royalblue;
+        $sub-color: lightblue;
+        $text-color: white;
+
+        $box-size: 150px;
+
+
+        // -------------------------------------
+        // 2. 함수 Function
+        // -------------------------------------
+
+        @function double-size($size) {
+            @return $size * 2;
+        }
+
+
+        // -------------------------------------
+        // 기본 스타일
+        // -------------------------------------
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+
+        h1 {
+            color: $main-color;
+        }
+
+
+        // -------------------------------------
+        // 3. 중첩 Nesting
+        // -------------------------------------
+
+        nav {
+
+            background-color: $main-color;
+            padding: 15px;
+
+            ul {
+
+                display: flex;
+                gap: 30px;
+
+                list-style: none;
+                padding: 0;
+
+                li {
+
+                    a {
+
+                        color: $text-color;
+                        text-decoration: none;
+
+                        &:hover {
+                            color: yellow;
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+        // -------------------------------------
+        // 함수 사용
+        // -------------------------------------
+
+        .big-box {
+
+            width: double-size($box-size);
+            height: 100px;
+
+            background-color: $sub-color;
+
+            margin-top: 30px;
+
+            padding: 20px;
+
+        }
+
+
+        // -------------------------------------
+        // 4. 반복문 Loop
+        // -------------------------------------
+
+        @for $i from 1 through 5 {
+
+            .box-#{$i} {
+
+                width: 100px * $i;
+                padding: 10px;
+
+                margin: 10px 0;
+
+                background-color: lightgray;
+
+            }
+
+        }
+
+        ==========================================================
+        */
+
+
+        /* ======================================================
+           위의 Sass를 컴파일한 실제 CSS
+           ====================================================== */
+
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+
+        h1 {
+            color: royalblue;
+        }
+
+
+        /* 중첩 Sass가 CSS로 변환된 결과 */
+
+        nav {
+            background-color: royalblue;
+            padding: 15px;
+        }
+
+
+        nav ul {
+            display: flex;
+            gap: 30px;
+
+            list-style: none;
+            padding: 0;
+        }
+
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+
+        nav ul li a:hover {
+            color: yellow;
+        }
+
+
+        /* 함수 결과
+           double-size(150px)
+           → 300px
+        */
+
+        .big-box {
+            width: 300px;
+            height: 100px;
+
+            background-color: lightblue;
+
+            margin-top: 30px;
+            padding: 20px;
+        }
+
+
+        /* 반복문
+
+        @for $i from 1 through 5
+
+        위 코드가 다음 CSS를 생성합니다.
+        */
+
+        .box-1 {
+            width: 100px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: lightgray;
+        }
+
+
+        .box-2 {
+            width: 200px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: lightgray;
+        }
+
+
+        .box-3 {
+            width: 300px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: lightgray;
+        }
+
+
+        .box-4 {
+            width: 400px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: lightgray;
+        }
+
+
+        .box-5 {
+            width: 500px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: lightgray;
+        }
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <h1>Sass 핵심 기능</h1>
+
+
+    <!-- ======================================
+         중첩 예제
+         ====================================== -->
+
+    <h2>1. 중첩 Nesting</h2>
+
+    <nav>
+
+        <ul>
+
+            <li>
+                <a href="#">홈</a>
+            </li>
+
+            <li>
+                <a href="#">상품</a>
+            </li>
+
+            <li>
+                <a href="#">게시판</a>
+            </li>
+
+            <li>
+                <a href="#">로그인</a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+
+    <!-- ======================================
+         변수 + 함수 예제
+         ====================================== -->
+
+    <h2>2. 변수 + 함수</h2>
+
+    <div class="big-box">
+
+        $box-size = 150px
+
+        <br><br>
+
+        double-size(150px)
+
+        <br>
+
+        → 300px
+
+    </div>
+
+
+    <!-- ======================================
+         반복문 예제
+         ====================================== -->
+
+    <h2>3. 반복문</h2>
+
+
+    <div class="box-1">
+        box-1 : 100px
+    </div>
+
+
+    <div class="box-2">
+        box-2 : 200px
+    </div>
+
+
+    <div class="box-3">
+        box-3 : 300px
+    </div>
+
+
+    <div class="box-4">
+        box-4 : 400px
+    </div>
+
+
+    <div class="box-5">
+        box-5 : 500px
+    </div>
+
+
+</body>
+</html>
