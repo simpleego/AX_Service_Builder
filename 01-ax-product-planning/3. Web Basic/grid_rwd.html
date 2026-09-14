@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
 
     <title>CSS Grid 반응형 레이아웃</title>
 
@@ -10,10 +10,13 @@
         /* 전체 요소 크기 계산 방식 통일 */
         * {
             box-sizing: border-box;
+             margin: 0; 
+             padding: 0;
         }
 
         body {
-            margin: 0;
+             margin: 0; 
+             padding: 0;
             font-family: Arial, sans-serif;
         }
 
@@ -25,7 +28,8 @@
 
         .container {
             display: grid;
-
+            /*direction: rtl;*/
+            
             grid-template-columns: 1fr;
 
             grid-template-areas:
@@ -78,7 +82,6 @@
             padding: 20px;
         }
 
-
         /* Footer */
         footer {
             grid-area: footer;
@@ -94,6 +97,7 @@
            2열 구조
            ========================================= */
 
+        /* 화면의 크기가 최소 768px 이상일 때 적용되는 스타일 */
         @media (min-width: 768px) {
 
             .container {
@@ -116,6 +120,7 @@
            3열 구조
            ========================================= */
 
+        /* 화면의 크기가 최소 1200px 이상일 때 적용되는 스타일 */
         @media (min-width: 1200px) {
 
             .container {

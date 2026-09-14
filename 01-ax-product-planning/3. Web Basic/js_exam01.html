@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>성년/미성년 구분하기</title>
+    <style>
+        body {
+            margin: 30px;
+        }
+        main {
+            max-width: 300px;
+            margin: 10px auto;
+            border: 10px solid #ddd;
+            padding: 1em;
+        }
+        input, button {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>성년/미성년 구분하기</h1>
+        <form>
+            <label for="age">주민번호 입력:</label>
+            <input type="text" id="age" name="age" size="15" required><br><br>
+            <button type="button" onclick="checkAge()">확인</button>
+            <button type="reset">초기화</button><br><br>
+
+            <label for="result">결과:</label>
+            <output id="result"></output><br><br>
+        </form>
+    </main>
+    
+</body>
+<script>
+    function checkAge() {
+        // 데이터 준비
+        juminNum = document.getElementById("age").value;
+        console.log('juminNum:'+juminNum)
+
+        // 데이터 처리
+        birthYear = parseInt(juminNum.substring(0,2)) + 2000;
+        console.log('birthYear:'+birthYear)
+
+        age = 2026 - birthYear;
+        console.log('age:'+age)
+
+        // 성년/미성년 판단(조건처리)
+        // 기준: 나이가 20이상이면 성년, 아니면 미성년
+        if (age >= 20){
+            result = "성년"
+        } else {
+            result = "미성년"
+        }
+
+        // 데이터 출력
+
+
+    }
+    </script>
+</html>
