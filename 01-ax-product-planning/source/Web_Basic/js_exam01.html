@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>성년/미성년 구분하기</title>
+    <style>
+        body {
+            margin: 30px;
+        }
+        main {
+            max-width: 300px;
+            margin: 10px auto;
+            border: 10px solid #ddd;
+            padding: 1em;
+        }
+        input, button {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>성년/미성년 구분하기</h1>
+        <form>
+            <label for="name">이름 입력:</label>
+            <input type="text" id="name" name="name" size="15"
+            placeholder="예시)홍길동" required><br>
+            <label for="age">주민번호 입력:</label>
+            <input type="text" id="age" name="age" size="15"
+            placeholder="예시)020625-4403619" required><br><br>
+            <button type="button" onclick="checkAge()">확인</button>
+            <button type="reset">초기화</button><br><br>
+
+            <output id="result">회원정보 : </output><br><br>
+        </form>
+    </main>
+    
+    
+</body>
+<script>
+    function checkAge() {
+
+        // alert("체크 함수에 진입");
+        // 데이터 준비
+        // document.write("<h1>회원정보 처리</h1>");
+        name = document.getElementById("name").value;
+        juminNum = document.getElementById("age").value;
+        output = "회원정보 : <br>";
+        gender = juminNum.substr(7,1);
+        console.log('juminNum:'+juminNum)
+        console.log('이름:'+name)
+        console.log('성별:'+gender)
+        console.log('출력값:'+output)
+
+        output = output + name;
+
+        year = 2000; // 기본값을 2000으로 설정
+        gender1 = "남자"
+
+        if(gender === '2'){
+            gender1 = "여자"
+        }
+        if(gender === '4'){
+            gender1 = "여자"
+        }
+        output = output +','+ gender1
+
+        if(gender == '1'){
+            year = 1900;
+        }
+        if(gender == '2'){
+            year = 1900;
+        }
+
+        // 데이터 처리
+        birthYear = parseInt(juminNum.substring(0,2)) + year;
+        console.log('birthYear:'+birthYear)
+
+        const now = new Date(); // 현재 날짜 및 시간 객체 생성
+        const currYear = now.getFullYear(); // 4자리 연도 추출
+
+        console.log(currYear); // 예: 2026
+
+        age = currYear - birthYear;
+        console.log('age:'+age)
+
+        output = output +', 나이는 '+ age;
+
+        // 성년/미성년 판단(조건처리)
+        // 기준: 나이가 20이상이면 성년, 아니면 미성년
+        if (age >= 20){
+            output += ", 성년"
+        } else {
+            output += ", 미성년"
+        }
+
+        // 데이터 출력
+        document.getElementById("result").innerHTML = output+"입니다."; 
+
+    }
+    </script>
+</html>
