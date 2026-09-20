@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>학생 성적 계산</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; padding: 24px; background: #f4f6fa; color: #223; }
+    main { max-width: 1000px; margin: auto; }
+    .panel { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+    .scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 680px; }
+    th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: center; }
+    th { background: #edf2ff; }
+    input { width: 100%; min-width: 65px; padding: 9px; border: 1px solid #aaa; border-radius: 4px; }
+    input[type="text"] { min-width: 110px; }
+    button { padding: 10px 16px; margin-top: 14px; border: 0; border-radius: 5px; cursor: pointer; background: #2459ca; color: white; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    #message { min-height: 24px; color: #a12323; }
+    #count { margin-left: 12px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>학생 성적 계산</h1>
+  <p>1~10명 · 점수는 0~100 사이의 정수 · 평균 90/80/70/60점 이상 A/B/C/D, 그 미만 F</p>
+  <form id="scoreForm" class="panel">
+    <div class="scroll">
+      <table>
+        <thead><tr><th>번호</th><th>이름</th><th>학과</th><th>국어</th><th>영어</th><th>수학</th></tr></thead>
+        <tbody id="students"></tbody>
+      </table>
+    </div>
+    <button type="button" id="addButton">학생 추가</button>
+    <button type="submit" id="submitButton">성적 계산</button>
+    <span id="count"></span>
+  </form>
+  <p id="message" role="status" aria-live="polite"></p>
+  <section id="resultPanel" class="panel" hidden>
+    <h2>계산 결과</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>이름</th><th>학과</th><th>국어</th><th>영어</th><th>수학</th><th>총점</th><th>평균</th><th>평점</th></tr></thead>
+        <tbody id="results"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<script>
+  const form = document.querySelector("#scoreForm");
+  const studentsBody = document.querySelector("#students");
+  const addButton = document.querySelector("#addButton");
+  const submitButton = document.querySelector("#submitButton");
+  const message = document.querySelector("#message");
+  const resultPanel = document.querySelector("#resultPanel");
+  const resultsBody = document.querySelector("#results");
+
+  // 1. 학생 입력란 추가 (최대 10명)
+  function addStudent() {
+    if (studentsBody.rows.length >= 10) return;
+    const number = studentsBody.rows.length + 1;
+    const row = studentsBody.insertRow();
+    row.innerHTML = `
+      <td>${number}</td>
+      <td><input name="name" aria-label="${number}번 이름" maxlength="30" required></td>
+      <td><input name="department" aria-label="${number}번 학과" maxlength="50" required></td>
+      <td><input name="korean" aria-label="${number}번 국어" type="number" min="0" max="100" step="1" required></td>
+      <td><input name="english" aria-label="${number}번 영어" type="number" min="0" max="100" step="1" required></td>
+      <td><input name="math" aria-label="${number}번 수학" type="number" min="0" max="100" step="1" required></td>`;
+    document.querySelector("#count").textContent = `${number} / 10명`;
+    addButton.disabled = number === 10;
+    resultPanel.hidden = true;
+  }
+
+  addButton.addEventListener("click", addStudent);
+  addStudent(); // 시작할 때 한 명만 표시
+
+  form.addEventListener("input", () => {
+    resultPanel.hidden = true;
+    message.textContent = "";
+  });
+
+  // 2. 각 행을 객체로 만들고, 객체들을 배열에 담아 전송
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    message.textContent = "";
+    resultPanel.hidden = true;
+    if (!form.reportValidity()) return;
+
+    const students = [];
+    for (const row of studentsBody.rows) {
+      const student = {
+        name: row.querySelector('[name="name"]').value.trim(),
+        department: row.querySelector('[name="department"]').value.trim(),
+        korean: Number(row.querySelector('[name="korean"]').value),
+        english: Number(row.querySelector('[name="english"]').value),
+        math: Number(row.querySelector('[name="math"]').value)
+      };
+      if (!student.name || !student.department) {
+        message.textContent = "이름과 학과에는 공백이 아닌 내용을 입력하세요.";
+        return;
+      }
+      students.push(student);
+    }
+
+    // 전송 중에는 입력을 잠가 표시 결과와 입력이 달라지는 것을 방지
+    form.querySelectorAll("input, button").forEach(el => el.disabled = true);
+    message.textContent = "계산 중입니다…";
+    try {
+      const response = await fetch("/scores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(students)
+      });
+      if (!response.ok) {
+        throw new Error(response.status === 422
+          ? "입력을 확인하세요. 학생은 1~10명, 점수는 0~100 정수여야 합니다."
+          : "서버에서 계산하지 못했습니다. 다시 시도하세요.");
+      }
+      const results = await response.json();
+
+      // 3. 서버가 반환한 배열을 표로 표시
+      resultsBody.replaceChildren();
+      for (const student of results) {
+        const row = resultsBody.insertRow();
+        const values = [student.name, student.department, student.korean,
+          student.english, student.math, student.total,
+          student.average.toFixed(2), student.grade];
+        for (const value of values) {
+          row.insertCell().textContent = value; // 입력값을 HTML로 해석하지 않음
+        }
+      }
+      resultPanel.hidden = false;
+      message.textContent = `${results.length}명의 계산이 완료되었습니다.`;
+    } catch (error) {
+      message.textContent = error instanceof TypeError
+        ? "서버에 연결할 수 없습니다. FastAPI 실행 상태를 확인하세요."
+        : error.message;
+    } finally {
+      form.querySelectorAll("input, button").forEach(el => el.disabled = false);
+      addButton.disabled = studentsBody.rows.length >= 10;
+    }
+  });
+</script>
+</body>
+</html>
