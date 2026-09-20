@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>학생 성적 계산 · 2차 버전</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px; background: #f4f6fa; color: #223; font-family: sans-serif; }
+    main { max-width: 1200px; margin: auto; }
+    .panel { padding: 20px; background: white; border-radius: 12px; }
+    .scroll { overflow-x: auto; }
+    table { width: 100%; min-width: 990px; border-collapse: collapse; }
+    th, td { padding: 8px; text-align: center; border-bottom: 1px solid #ddd; }
+    thead th { background: #eaf0ff; }
+    input { width: 100%; min-width: 68px; padding: 9px; border: 1px solid #aab; border-radius: 4px; }
+    input[type="text"]:not([readonly]) { min-width: 115px; }
+    input[readonly] { background: #edf3fa; color: #174582; border-color: #d6e0ee; text-align: center; }
+    tfoot { border-top: 3px solid #8aa3c7; background: #f8faff; }
+    tfoot th { text-align: right; }
+    button { padding: 10px 12px; border: 0; border-radius: 5px; background: #2459ca; color: white; cursor: pointer; white-space: nowrap; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    .actions { display: flex; gap: 12px; align-items: center; margin: 18px 0; }
+    #message { min-height: 24px; color: #8e2424; }
+    .note { color: #526078; font-size: 14px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>학생 성적 계산 <small>2차 버전</small></h1>
+  <p>학생 1~10명 · 점수 0~100 정수 · 빈 점수는 0점으로 계산</p>
+  <form id="scoreForm" class="panel" novalidate>
+    <div class="actions">
+      <button type="button" id="addButton">학생 추가</button>
+      <button type="submit">학생별 계산</button>
+      <span id="count"></span>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>번호</th><th>이름</th><th>학과</th><th>국어</th><th>영어</th><th>수학</th><th>총점</th><th>평균</th><th>평점</th></tr></thead>
+        <tbody id="students"></tbody>
+        <tfoot id="summary"></tfoot>
+      </table>
+    </div>
+    <p class="note">과목별 통계는 현재 표시된 모든 학생 행을 포함합니다. 빈 점수도 평균의 인원수와 최저점에 포함됩니다.<br>
+      학생별 계산은 이름·학과가 필요하며, 과목별 계산은 이름·학과 없이도 가능합니다.<br>
+      평점: 평균 90점 이상 A / 80점 이상 B / 70점 이상 C / 60점 이상 D / 나머지 F</p>
+  </form>
+  <p id="message" role="status" aria-live="polite"></p>
+</main>
+<script>
+  const form = document.querySelector('#scoreForm');
+  const studentsBody = document.querySelector('#students');
+  const summary = document.querySelector('#summary');
+  const addButton = document.querySelector('#addButton');
+  const message = document.querySelector('#message');
+  const subjects = { korean: '국어', english: '영어', math: '수학' };
+  let busy = false;
+
+  // 통계 입력란과 과목별 버튼을 처음부터 고정 배치
+  for (const [key, label] of Object.entries({total: '과목 총점', average: '과목 평균', maximum: '최고점', minimum: '최저점'})) {
+    const row = summary.insertRow();
+    row.innerHTML = `<th colspan="3" scope="row">${label}</th>`;
+    for (const [subject, name] of Object.entries(subjects)) {
+      row.insertCell().innerHTML = `<input id="${subject}-${key}" aria-label="${name} ${label}" readonly placeholder="—">`;
+    }
+    const remaining = row.insertCell();
+    remaining.colSpan = 3;
+  }
+  const buttonsRow = summary.insertRow();
+  buttonsRow.innerHTML = '<th colspan="3">과목별 계산</th>';
+  for (const [subject, name] of Object.entries(subjects)) {
+    buttonsRow.insertCell().innerHTML = `<button type="button" data-subject="${subject}">${name} 계산</button>`;
+  }
+  buttonsRow.insertCell().colSpan = 3;
+
+  function clearResults() {
+    form.querySelectorAll('input[readonly]').forEach(input => input.value = '');
+  }
+
+  function addStudent() {
+    if (busy || studentsBody.rows.length >= 10) return;
+    const number = studentsBody.rows.length + 1;
+    const row = studentsBody.insertRow();
+    row.innerHTML = `<td>${number}</td>
+      <td><input type="text" name="name" aria-label="${number}번 이름" maxlength="30" required></td>
+      <td><input type="text" name="department" aria-label="${number}번 학과" maxlength="50" required></td>`;
+    for (const [key, label] of Object.entries(subjects)) {
+      row.insertCell().innerHTML = `<input type="number" name="${key}" aria-label="${number}번 ${label}" min="0" max="100" step="1" placeholder="0">`;
+    }
+    for (const [key, label] of Object.entries({total: '총점', average: '평균', grade: '평점'})) {
+      row.insertCell().innerHTML = `<input name="${key}" aria-label="${number}번 ${label}" readonly placeholder="—">`;
+    }
+    document.querySelector('#count').textContent = `${number} / 10명`;
+    addButton.disabled = number === 10;
+    clearResults();
+    message.textContent = '';
+  }
+
+  // 모든 과목의 점수를 검사. 빈 값은 0, 잘못된 값은 전송 중단.
+  function collectStudents(requireNames) {
+    const students = [];
+    for (const row of studentsBody.rows) {
+      const student = {};
+      for (const key of ['name', 'department']) {
+        const input = row.querySelector(`[name="${key}"]`);
+        student[key] = input.value.trim();
+        if (requireNames && !student[key]) {
+          input.focus();
+          throw new Error(`${row.cells[0].textContent}번 학생의 이름과 학과를 입력하세요.`);
+        }
+      }
+      for (const key of Object.keys(subjects)) {
+        const input = row.querySelector(`[name="${key}"]`);
+        // badInput 검사로 숫자 입력 중의 잘못된 문자열을 빈 점수와 구분
+        if (!input.reportValidity()) throw new Error('모든 점수는 0~100 사이의 정수로 입력하세요.');
+        student[key] = input.value === '' ? 0 : Number(input.value);
+      }
+      students.push(student);
+    }
+    return students;
+  }
+
+  async function calculate(subject = null) {
+    if (busy) return;
+    message.textContent = '';
+    try {
+      const students = collectStudents(subject === null);
+      busy = true;
+      form.querySelectorAll('input:not([readonly]), button').forEach(el => el.disabled = true);
+      message.textContent = '서버에서 계산 중입니다…';
+      const url = subject === null ? '/scores' : `/subjects/${subject}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(students) // 학생 객체 배열을 JSON으로 전송
+      });
+      if (!response.ok) throw new Error('입력값 또는 서버 상태를 확인하세요.');
+      const result = await response.json();
+      if (subject === null) {
+        result.forEach((student, index) => {
+          const row = studentsBody.rows[index];
+          row.querySelector('[name="total"]').value = student.total;
+          row.querySelector('[name="average"]').value = student.average.toFixed(2);
+          row.querySelector('[name="grade"]').value = student.grade;
+        });
+      } else {
+        for (const key of ['total', 'average', 'maximum', 'minimum']) {
+          document.getElementById(`${subject}-${key}`).value =
+            key === 'average' ? result[key].toFixed(2) : result[key];
+        }
+      }
+      message.textContent = `${subject === null ? '학생별' : subjects[subject]} 계산 완료`;
+    } catch (error) {
+      message.textContent = error instanceof TypeError ? '서버에 연결할 수 없습니다. 실행 상태를 확인하세요.' : error.message;
+    } finally {
+      busy = false;
+      form.querySelectorAll('input:not([readonly]), button').forEach(el => el.disabled = false);
+      addButton.disabled = studentsBody.rows.length >= 10;
+    }
+  }
+
+  addButton.addEventListener('click', addStudent);
+  form.addEventListener('submit', event => { event.preventDefault(); calculate(); });
+  summary.addEventListener('click', event => {
+    const button = event.target.closest('button[data-subject]');
+    if (button) calculate(button.dataset.subject);
+  });
+  form.addEventListener('input', () => {
+    clearResults(); // UI는 유지하고 이전 결과만 비워 재계산 필요를 명확하게 표시
+    message.textContent = '입력이 변경되었습니다. 필요한 계산 버튼을 눌러주세요.';
+  });
+  addStudent();
+</script>
+</body>
+</html>
