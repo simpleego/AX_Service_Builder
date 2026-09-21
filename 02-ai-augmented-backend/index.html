@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        .container {
+            width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+
+        input {
+            width: 100px;
+            padding: 8px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <h2>FastAPI 계산기</h2>
+
+        <div>
+            숫자1 :
+            <input type="number" id="num1">
+        </div>
+
+        <div>
+            숫자2 :
+            <input type="number" id="num2">
+        </div>
+
+        <button onclick="add()">더하기</button>
+        <button onclick="sub()">빼기</button>
+
+        <div id="result">
+            결과가 여기에 표시됩니다.
+        </div>
+
+    </div>
+</body>
+<script>
+
+const server="http:127.0.0.1:8000";
+
+async function add() {
+
+    const num1 = document.getElementById("num1").value;
+    const num2 = document.getElementById("num2").value;
+
+    // -------------------------------------------------
+    // 1. GET 방식 - Query Parameter
+    // 현재 활성화
+    // -------------------------------------------------
+    /*
+    const response = await fetch(
+        `${server}/add?num1=${num1}&num2=${num2}`
+    );
+
+    const data = await response.json();
+
+    document.getElementById("result").innerHTML =
+        "합계 : " + data["합계"];
+
+    */
+
+    
+    // -------------------------------------------------
+    // 2. POST 방식
+    // 테스트할 때 위의 GET 코드를 주석 처리하고
+    // 아래 코드를 활성화
+    // -------------------------------------------------
+
+    console.log(server)
+    console.log(num1)
+
+    const response = await fetch(
+        "http://127.0.0.1:8000/add", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            num1: Number(num1),
+            num2: Number(num2)
+        })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("result").innerHTML =
+        "합계 : " + data["합계"];
+    
+}
+
+
+
+// =====================================================
+// 빼기
+// =====================================================
+
+async function sub() {
+
+    const num1 = document.getElementById("num1").value;
+    const num2 = document.getElementById("num2").value;
+
+
+    // -------------------------------------------------
+    // 1. GET 방식 - Query Parameter
+    // 현재 활성화
+    // -------------------------------------------------
+
+    const response = await fetch(
+        `${server}/sub?num1=${num1}&num2=${num2}`
+    );
+
+    const data = await response.json();
+
+    document.getElementById("result").innerHTML =
+        "결과 : " + data["결과"];
+
+
+
+    /*
+    // -------------------------------------------------
+    // 2. POST 방식
+    // -------------------------------------------------
+
+    const response = await fetch(`${server}/sub`, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            num1: Number(num1),
+            num2: Number(num2)
+        })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("result").innerHTML =
+        "결과 : " + data["결과"];
+    */
+}
+</script>
+
+</html>
