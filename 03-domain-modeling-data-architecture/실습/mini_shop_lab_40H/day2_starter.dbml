@@ -1,0 +1,39 @@
+
+// Day 2 - Starter : 기본 4개 테이블만
+// dbdiagram.io 에 붙여넣기
+Project mini_shop {
+  database_type: 'MySQL'
+  Note: 'Mini Shop Mall v1 - Starter'
+}
+
+Table users {
+  id bigint [pk, increment]
+  email varchar(255) [unique, not null]
+  password_hash varchar(255) [not null]
+  name varchar(100) [not null]
+  created_at datetime [default: `now()`, not null]
+}
+
+Table categories {
+  id bigint [pk, increment]
+  name varchar(100) [not null]
+  parent_id bigint [ref: > categories.id]
+  depth int [default: 0]
+}
+
+Table products {
+  id bigint [pk, increment]
+  name varchar(200) [not null]
+  price int [not null, note: '원 단위']
+  stock int [default: 0, not null]
+  is_active boolean [default: true]
+  created_at datetime [default: `now()`]
+}
+
+Table product_categories {
+  product_id bigint [ref: > products.id]
+  category_id bigint [ref: > categories.id]
+  indexes {
+    (product_id, category_id) [pk]
+  }
+}
