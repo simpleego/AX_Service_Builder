@@ -1,0 +1,152 @@
+
+// Day 2~5 - Final : 쇼핑몰 전체 ERD
+Project mini_shop_full {
+  database_type: 'MySQL'
+  Note: 'Mini Shop Mall - Full Domain (User/Cart/Order/Payment/Review/Coupon)'
+}
+
+Table users {
+  id bigint [pk, increment]
+  email varchar(255) [unique, not null]
+  password_hash varchar(255) [not null]
+  name varchar(100) [not null]
+  phone varchar(20)
+  created_at datetime [default: `now()`, not null]
+  updated_at datetime [default: `now()`]
+}
+
+Table categories {
+  id bigint [pk, increment]
+  name varchar(100) [not null]
+  parent_id bigint [ref: > categories.id]
+  depth int [default: 0]
+  sort_order int [default: 0]
+  Indexes { parent_id }
+}
+
+Table products {
+  id bigint [pk, increment]
+  name varchar(200) [not null]
+  slug varchar(200) [unique]
+  price int [not null]
+  compare_price int [note: '정가']
+  stock int [default: 0, not null]
+  review_count int [default: 0, note: '반정규화']
+  review_avg decimal(3,2) [default: 0]
+  is_active boolean [default: true]
+  created_at datetime [default: `now()`]
+  updated_at datetime [default: `now()`]
+  Indexes {
+    is_active
+    (is_active, created_at)
+  }
+}
+
+Table product_categories {
+  product_id bigint [ref: > products.id]
+  category_id bigint [ref: > categories.id]
+  Indexes { (product_id, category_id) [pk] }
+}
+
+Table carts {
+  id bigint [pk, increment]
+  user_id bigint [unique, ref: > users.id, not null]
+  created_at datetime [default: `now()`]
+  updated_at datetime [default: `now()`]
+}
+
+Table cart_items {
+  id bigint [pk, increment]
+  cart_id bigint [ref: > carts.id, not null]
+  product_id bigint [ref: > products.id, not null]
+  quantity int [default: 1, not null]
+  created_at datetime [default: `now()`]
+  Indexes {
+    (cart_id, product_id) [unique]
+    product_id
+  }
+}
+
+Table coupons {
+  id bigint [pk, increment]
+  code varchar(50) [unique, not null]
+  discount_type enum('RATE','FIXED') [not null]
+  discount_value int [not null]
+  min_order_amount int [default: 0]
+  max_discount_amount int
+  total_issued int [default: 0]
+  total_used int [default: 0]
+  expires_at datetime
+  is_active boolean [default: true]
+}
+
+Table orders {
+  id bigint [pk, increment]
+  order_no varchar(20) [unique, not null, note: 'ORD-YYYYMMDD-XXXX']
+  user_id bigint [ref: > users.id, not null]
+  status enum('PENDING','PAID','PREPARING','SHIPPED','DELIVERED','CANCELLED') [default: 'PENDING']
+  total_amount int [not null]
+  discount_amount int [default: 0]
+  final_amount int [not null]
+  coupon_id bigint [ref: > coupons.id]
+  created_at datetime [default: `now()`]
+  updated_at datetime [default: `now()`]
+  Indexes {
+    user_id
+    (user_id, created_at) [name: 'idx_orders_user_created']
+    status
+  }
+}
+
+Table order_items {
+  id bigint [pk, increment]
+  order_id bigint [ref: > orders.id, not null]
+  product_id bigint [ref: > products.id, not null]
+  product_name varchar(200) [not null, note: '스냅샷']
+  unit_price int [not null]
+  quantity int [not null]
+  subtotal int [not null]
+  Indexes {
+    order_id
+    product_id
+  }
+}
+
+Table payments {
+  id bigint [pk, increment]
+  order_id bigint [unique, ref: > orders.id, not null]
+  method enum('CARD','TRANSFER','KAKAO_PAY') [not null]
+  amount int [not null]
+  status enum('READY','COMPLETED','FAILED','CANCELLED') [default: 'READY']
+  pg_tid varchar(100) [note: 'PG사 거래ID']
+  paid_at datetime
+  created_at datetime [default: `now()`]
+}
+
+Table reviews {
+  id bigint [pk, increment]
+  product_id bigint [ref: > products.id, not null]
+  user_id bigint [ref: > users.id, not null]
+  order_item_id bigint [unique, ref: > order_items.id, not null]
+  rating smallint [not null, note: '1~5']
+  content text
+  created_at datetime [default: `now()`]
+  Indexes {
+    (product_id, created_at)
+    (user_id, product_id) [unique]
+  }
+}
+
+Table order_status_logs {
+  id bigint [pk, increment]
+  order_id bigint [ref: > orders.id, not null]
+  from_status varchar(20)
+  to_status varchar(20) [not null]
+  changed_by varchar(100)
+  created_at datetime [default: `now()`]
+  Indexes { order_id }
+}
+
+Ref: carts.user_id > users.id
+Ref: cart_items.cart_id > carts.id
+Ref: cart_items.product_id > products.id
