@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<button onclick="login()">로그인</button>
+<button onclick="mypage()">내 정보</button>
+
+<p id="result"></p>
+
+<script>
+
+async function login() {
+
+    const response = await fetch(
+        "http://127.0.0.1:8000/login"
+    );
+
+    const data = await response.json();
+
+    document.getElementById("result").innerText =
+        JSON.stringify(data);
+}
+
+
+async function mypage() {
+
+    const response = await fetch(
+        "http://127.0.0.1:8000/mypage"
+    );
+
+    const data = await response.json();
+
+    document.getElementById("result").innerText =
+        JSON.stringify(data);
+}
+
+</script>
+
+</body>
+</html>
