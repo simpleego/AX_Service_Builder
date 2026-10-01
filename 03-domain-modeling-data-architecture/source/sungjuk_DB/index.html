@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학생 성적 관리 · MariaDB</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:28px;background:#f3f6fb;color:#24324a;font-family:system-ui,sans-serif}main{max-width:1200px;margin:auto}h1{margin-bottom:8px}h2{font-size:19px;margin:0 0 18px}p{line-height:1.6}.muted{color:#5b6c80;font-size:14px}.panel{background:white;border:1px solid #dce4f0;border-radius:12px;padding:22px;margin:20px 0}.fields{display:grid;grid-template-columns:1.2fr 1.5fr repeat(3,1fr);gap:14px}label{display:block;font-size:14px;font-weight:600}input{font:inherit;width:100%;padding:10px;border:1px solid #aab9cc;border-radius:6px;margin-top:7px}input:focus{outline:2px solid #3868d6;outline-offset:2px}button{font:inherit;padding:10px 16px;border:0;border-radius:6px;background:#2459ca;color:white;cursor:pointer;white-space:nowrap}button.secondary{background:#e9effa;color:#234b87}button.danger{background:#fff0f0;color:#a32626}button:disabled{opacity:.5;cursor:wait}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}.search{display:flex;align-items:end;gap:10px;margin-bottom:16px}.search label{flex:1;max-width:400px}.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:850px}th,td{padding:12px 9px;border-bottom:1px solid #e0e7f1;text-align:center}th{background:#edf3fc;font-size:14px}td button{padding:7px 11px;margin:2px}.result{background:#f7faff;color:#174582;font-weight:600}.stats{min-width:540px}.stats td{font-variant-numeric:tabular-nums}#message{padding:12px 16px;background:#e9f0fd;border-radius:8px;min-height:48px}#message.error{background:#ffeded;color:#9a2323}#cancel[hidden]{display:none}#savedResult{font-weight:600;color:#174582}@media(max-width:700px){body{padding:14px}.fields{grid-template-columns:repeat(3,1fr)}.fields label:nth-child(-n+2){grid-column:1/-1}.panel{padding:16px}.search{flex-wrap:wrap}h1{font-size:25px}}
+</style>
+</head>
+<body>
+<main>
+<h1>학생 성적 관리</h1>
+<p class="muted">이름·학과·국어·영어·수학 점수를 등록하고 저장된 성적을 관리하세요.</p>
+<p id="message" role="status" aria-live="polite">저장된 성적을 불러오는 중입니다…</p>
+<section class="panel" aria-labelledby="formTitle">
+<h2 id="formTitle">학생 등록</h2>
+<form id="studentForm">
+<div class="fields">
+<label>이름<input name="name" maxlength="30" required autocomplete="off"></label>
+<label>학과<input name="department" maxlength="50" required autocomplete="off"></label>
+<label>국어<input name="korean" type="number" min="0" max="100" step="1" placeholder="0"></label>
+<label>영어<input name="english" type="number" min="0" max="100" step="1" placeholder="0"></label>
+<label>수학<input name="math" type="number" min="0" max="100" step="1" placeholder="0"></label>
+</div>
+<div class="actions"><button id="save" type="submit">등록하기</button><button id="cancel" type="button" class="secondary" hidden>수정 취소</button><output id="savedResult"></output></div>
+<p class="muted">점수는 0~100 사이 정수입니다. 빈 점수는 0점으로 저장합니다.<br>학점: 평균 90 이상 A · 80 이상 B · 70 이상 C · 60 이상 D · 나머지 F</p>
+</form>
+</section>
+<section class="panel" aria-labelledby="listTitle">
+<h2 id="listTitle">성적 조회 <span id="count" class="muted"></span></h2>
+<form id="searchForm" class="search"><label>이름 또는 학과 검색<input id="query" maxlength="50" placeholder="전체 조회는 검색어를 비워주세요"></label><button type="submit">조회</button><button id="all" class="secondary" type="button">전체 조회</button></form>
+<div class="scroll"><table><thead><tr><th>ID</th><th>이름</th><th>학과</th><th>국어</th><th>영어</th><th>수학</th><th>총점</th><th>평균</th><th>학점</th><th>관리</th></tr></thead><tbody id="students"></tbody></table></div>
+</section>
+<section class="panel" aria-labelledby="statsTitle">
+<h2 id="statsTitle">과목별 통계</h2>
+<p class="muted">저장된 전체 학생 기준입니다. 검색 결과나 아직 저장하지 않은 입력값은 통계 범위를 바꾸지 않습니다.</p>
+<div class="scroll"><table class="stats"><thead><tr><th>과목</th><th>인원</th><th>총점</th><th>평균</th><th>최소값</th><th>최대값</th></tr></thead><tbody id="statistics"></tbody></table></div>
+<div class="actions"><button id="refreshStats" type="button" class="secondary">통계 새로고침</button></div>
+</section>
+</main>
+<script>
+const form = document.querySelector('#studentForm');
+const tbody = document.querySelector('#students');
+const statsBody = document.querySelector('#statistics');
+const message = document.querySelector('#message');
+const query = document.querySelector('#query');
+const subjects = {korean:'국어',english:'영어',math:'수학'};
+let editingId = null;
+let busy = false;
+let activeQuery = '';
+
+function notify(text, error=false) {
+  message.textContent = text;
+  message.classList.toggle('error', error);
+}
+async function api(url, options={}) {
+  const response = await fetch(url, options);
+  if (response.status === 204) return null;
+  const data = await response.json().catch(() => null);
+  if (!response.ok) {
+    const detail = data?.detail;
+    throw new Error(typeof detail === 'string' ? detail :
+      response.status === 422 ? '이름·학과와 0~100 사이 정수 점수를 확인하세요.' : '요청에 실패했습니다. 서버 상태를 확인하세요.');
+  }
+  if (data === null) throw new Error('서버 응답 형식이 올바르지 않습니다. FastAPI 주소로 접속하세요.');
+  return data;
+}
+async function run(task) {
+  if (busy) return;
+  busy = true;
+  document.querySelectorAll('button,input').forEach(el => el.disabled = true);
+  try { await task(); }
+  catch (error) { notify(error instanceof TypeError ? '서버 연결에 실패했습니다. 서버 실행 상태를 확인하세요.' : error.message, true); }
+  finally {
+    busy = false;
+    document.querySelectorAll('button,input').forEach(el => el.disabled = false);
+  }
+}
+function addCell(row, value, className='') {
+  const cell = row.insertCell();
+  cell.textContent = value; // 사용자 이름·학과를 HTML로 해석하지 않습니다.
+  cell.className = className;
+  return cell;
+}
+function emptyRow(body, columns, text) {
+  body.replaceChildren();
+  const cell = body.insertRow().insertCell();
+  cell.colSpan = columns;
+  cell.textContent = text;
+}
+async function loadStudents() {
+  const students = await api(`/students?q=${encodeURIComponent(activeQuery)}`);
+  tbody.replaceChildren();
+  document.querySelector('#count').textContent = `${students.length}명`;
+  if (!students.length) { emptyRow(tbody, 10, '조회된 학생이 없습니다.'); return; }
+  for (const student of students) {
+    const row = tbody.insertRow();
+    for (const key of ['id','name','department','korean','english','math']) addCell(row,student[key]);
+    addCell(row,student.total,'result');
+    addCell(row,Number(student.average).toFixed(2),'result');
+    addCell(row,student.grade,'result');
+    const actions = row.insertCell();
+    for (const [action,label,style] of [['edit','수정','secondary'],['delete','삭제','danger']]) {
+      const button = document.createElement('button');
+      button.type = 'button'; button.textContent = label; button.className = style;
+      button.dataset.action = action; button.dataset.id = student.id;
+      button.dataset.name = student.name; button.disabled = busy;
+      button.setAttribute('aria-label', `${student.name} ${label}`);
+      actions.append(button);
+    }
+  }
+}
+async function loadStats() {
+  const stats = await api('/subjects');
+  statsBody.replaceChildren();
+  for (const stat of stats) {
+    const row = statsBody.insertRow();
+    addCell(row,subjects[stat.subject]);
+    for (const key of ['student_count','total','average','minimum','maximum']) {
+      addCell(row,stat[key] === null ? '—' : key === 'average' ? Number(stat[key]).toFixed(2) : stat[key]);
+    }
+  }
+}
+async function reloadAll() {
+  // 일부 조회가 실패해도 다른 요청이 끝나기 전 버튼이 활성화되지 않게 합니다.
+  const results = await Promise.allSettled([loadStudents(),loadStats()]);
+  if (results[0].status === 'rejected') {
+    emptyRow(tbody,10,'목록을 불러오지 못했습니다. 다시 조회하세요.');
+    document.querySelector('#count').textContent = '';
+  }
+  if (results[1].status === 'rejected') emptyRow(statsBody,6,'통계를 불러오지 못했습니다. 다시 조회하세요.');
+  const failure = results.find(result => result.status === 'rejected');
+  if (failure) throw failure.reason;
+}
+function resetEditor() {
+  editingId = null;
+  form.reset();
+  document.querySelector('#formTitle').textContent = '학생 등록';
+  document.querySelector('#save').textContent = '등록하기';
+  document.querySelector('#cancel').hidden = true;
+  document.querySelector('#savedResult').textContent = '';
+}
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  if (busy || !form.reportValidity()) return;
+  const data = {};
+  for (const key of ['name','department']) {
+    data[key] = form.elements[key].value.trim();
+    if (!data[key]) { notify('이름과 학과를 입력하세요.',true); form.elements[key].focus(); return; }
+  }
+  for (const key of Object.keys(subjects)) data[key] = form.elements[key].value === '' ? 0 : Number(form.elements[key].value);
+  const id = editingId;
+  run(async () => {
+    const result = await api(id === null ? '/students' : `/students/${id}`, {
+      method:id === null ? 'POST' : 'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)
+    });
+    resetEditor();
+    document.querySelector('#savedResult').textContent = `${result.name} · 총점 ${result.total} · 평균 ${Number(result.average).toFixed(2)} · 학점 ${result.grade}`;
+    try { await reloadAll(); notify(`${id === null ? '등록' : '수정'}이 완료되었습니다. 전체 학생 통계를 갱신했습니다.`); }
+    catch (error) { notify(`저장은 완료되었습니다. 화면 갱신 실패: ${error.message}`,true); }
+  });
+});
+tbody.addEventListener('click', event => {
+  const button = event.target.closest('button[data-action]');
+  if (!button || busy) return;
+  const id = Number(button.dataset.id);
+  if (button.dataset.action === 'edit') {
+    if (editingId !== null && !confirm('현재 수정 입력을 버리고 다른 학생을 조회할까요?')) return;
+    run(async () => {
+      const student = await api(`/students/${id}`);
+      editingId = id;
+      for (const key of ['name','department',...Object.keys(subjects)]) form.elements[key].value = student[key];
+      document.querySelector('#formTitle').textContent = `학생 수정 · ID ${id}`;
+      document.querySelector('#save').textContent = '수정 저장';
+      document.querySelector('#cancel').hidden = false;
+      document.querySelector('#savedResult').textContent = '';
+      form.scrollIntoView({behavior:'smooth',block:'center'});
+      notify('입력값을 변경한 뒤 수정 저장을 누르세요.');
+    });
+  } else {
+    if (!confirm(`${button.dataset.name} (ID ${id}) 학생의 성적을 삭제할까요?`)) return;
+    run(async () => {
+      await api(`/students/${id}`,{method:'DELETE'});
+      if (editingId === id) resetEditor();
+      try { await reloadAll(); notify('삭제가 완료되었습니다. 전체 학생 통계를 갱신했습니다.'); }
+      catch (error) { notify(`삭제는 완료되었습니다. 화면 갱신 실패: ${error.message}`,true); }
+    });
+  }
+});
+document.querySelector('#searchForm').addEventListener('submit',event => {
+  event.preventDefault();
+  run(async () => { activeQuery = query.value.trim(); await loadStudents(); notify('조회가 완료되었습니다. 과목별 통계는 전체 학생 기준입니다.'); });
+});
+document.querySelector('#all').addEventListener('click',() => run(async () => {
+  query.value = ''; activeQuery = ''; await reloadAll(); notify('전체 학생과 통계를 조회했습니다.');
+}));
+document.querySelector('#cancel').addEventListener('click',() => { resetEditor(); notify('수정을 취소했습니다.'); });
+document.querySelector('#refreshStats').addEventListener('click',() => run(async () => {
+  try { await loadStats(); notify('전체 학생 통계를 갱신했습니다.'); }
+  catch (error) { emptyRow(statsBody,6,'통계를 불러오지 못했습니다. 다시 조회하세요.'); throw error; }
+}));
+run(async () => { await reloadAll(); notify('조회 완료. 새 학생을 등록하거나 저장된 성적을 수정할 수 있습니다.'); });
+</script>
+</body>
+</html>
