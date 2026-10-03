@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 02. 관계 데이터 모델</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-light.min.css">
+<style>
+  body { background:#fff; margin:0; }
+  .markdown-body { max-width:980px; margin:0 auto; padding:32px 16px; }
+  .markdown-body img { max-width:100%; }
+  .mermaid { text-align:center; margin:16px 0; }
+</style>
+</head>
+<body>
+<article id="content" class="markdown-body">불러오는 중…</article>
+<script id="md" type="text/markdown">[🏠 목차](README.html) · ◀ 이전 [1장 데이터베이스 시스템](01장_데이터베이스_시스템.html) · 다음 ▶ [3장 SQL 기초](03장_SQL_기초.html)
+
+# Chapter 02. 관계 데이터 모델
+
+> **이 장의 위치**: 마당서점의 `Book`, `Customer`, `Orders`가 왜 "테이블(릴레이션)"이라는 형태로 저장되는지, 테이블끼리 어떻게 연결되고 어떤 규칙(제약조건)을 지켜야 하는지, 그리고 SQL의 이론적 바탕인 **관계대수**를 배웁니다.
+
+---
+
+## 📌 학습 목표
+
+- [ ] 릴레이션, 스키마, 인스턴스, 속성, 투플, 도메인, 차수, 카디날리티를 설명할 수 있다.
+- [ ] 슈퍼키·후보키·기본키·대체키·대리키·외래키를 구분할 수 있다.
+- [ ] 도메인·개체·참조 무결성 제약조건을 MySQL `CREATE TABLE`로 표현할 수 있다.
+- [ ] 관계대수 연산(σ, π, ∪, ∩, −, ×, ⋈, ÷)을 이해하고 같은 의미의 SQL로 바꿀 수 있다.
+
+```mermaid
+mindmap
+  root((2장<br/>관계 데이터 모델))
+    릴레이션
+      스키마와 인스턴스
+      속성 · 투플 · 도메인
+      차수 · 카디날리티
+      릴레이션의 특징 6가지
+    무결성 제약조건
+      키 6종류
+      도메인 무결성
+      개체 무결성
+      참조 무결성
+      CASCADE · SET NULL
+    관계대수
+      셀렉션 σ · 프로젝션 π
+      집합 연산 ∪ ∩ −
+      카티전 프로덕트 ×
+      조인 ⋈ · 외부조인 · 세미조인
+      디비전 ÷
+```
+
+---
+
+## 1. 관계 데이터 모델의 개념
+
+### 1.1 릴레이션(relation)
+
+> **릴레이션** = 행(row)과 열(column)로 구성된 **테이블**
+
+`Book` 테이블의 첫 번째 행 `(1, 축구의 역사, 굿스포츠, 7000)`은 **네 개의 집합**에서 원소를 하나씩 골라 만든 것입니다. 이렇게 골라진 값들이 서로 **관계(relationship)** 를 맺고 있기 때문에 "릴레이션"이라고 부릅니다.
+
+```mermaid
+flowchart LR
+    subgraph D["도메인(값의 집합)"]
+        D1["도서번호<br/>{1, 2, 3, 4, 5}"]
+        D2["도서이름<br/>{축구의 역사, 축구 아는 여자, …}"]
+        D3["출판사<br/>{굿스포츠, 나무수, 대한미디어}"]
+        D4["가격<br/>{7000, 13000, 22000, …}"]
+    end
+    D1 -->|"1"| T
+    D2 -->|"축구의 역사"| T
+    D3 -->|"굿스포츠"| T
+    D4 -->|"7000"| T
+    T["투플 (1, 축구의 역사, 굿스포츠, 7000)"]
+```
+
+| 관계의 종류 | 의미 | 마당서점 예 |
+|---|---|---|
+| ① 릴레이션 **내**의 관계 | 한 행 안의 값들이 서로 연관됨 | "축구의 역사"의 출판사는 굿스포츠, 가격은 7000 |
+| ② 릴레이션 **간**의 관계 | 테이블과 테이블이 연관됨 | `Orders.custid` 가 `Customer.custid` 를 가리킴 |
+
+### 1.2 릴레이션 스키마와 인스턴스
+
+```mermaid
+flowchart TB
+    subgraph R["릴레이션 = 스키마 + 인스턴스"]
+        S["📐 스키마 (내포, intension)<br/>Book(bookid, bookname, publisher, price)<br/>— 구조, 거의 변하지 않음(정적)"]
+        I["📦 인스턴스 (외연, extension)<br/>실제 저장된 투플들의 집합<br/>— 삽입·삭제·수정으로 계속 변함(동적)"]
+    end
+    S --- I
+```
+
+| 용어 | 다른 이름 | 의미 | Book 테이블에서 |
+|---|---|---|---|
+| **속성** (attribute) | 열, 컬럼, 필드 | 스키마를 구성하는 각 항목 | bookid, bookname, publisher, price |
+| **도메인** (domain) | — | 속성이 가질 수 있는 값의 집합 | price: 0 이상의 정수 |
+| **차수** (degree) | — | 속성의 **개수** | 4 |
+| **투플** (tuple) | 행, 레코드 | 인스턴스를 구성하는 각 행 | (1, 축구의 역사, 굿스포츠, 7000) |
+| **카디날리티** (cardinality) | — | 투플의 **개수** | 10 |
+
+**스키마 표기법**
+
+```text
+Book(bookid, bookname, publisher, price)
+Book(bookid:INT, bookname:VARCHAR(40), publisher:VARCHAR(40), price:INT)
+```
+
+```sql
+-- MySQL에서 스키마(구조) 확인
+DESC Book;
+
+-- 인스턴스(데이터)와 카디날리티 확인
+SELECT * FROM Book;
+SELECT COUNT(*) AS cardinality FROM Book;      -- 10
+
+-- 차수(열 개수) 확인
+SELECT COUNT(*) AS degree
+FROM   information_schema.COLUMNS
+WHERE  TABLE_SCHEMA = 'madang' AND TABLE_NAME = 'Book';   -- 4
+```
+
+### 1.3 릴레이션의 특징
+
+| # | 특징 | 설명 | 위반 예 |
+|:---:|---|---|---|
+| 1 | **속성은 단일 값**을 가진다 | 한 칸에 값이 하나만(원자값) | phone = '010-1111, 010-2222' |
+| 2 | **속성은 서로 다른 이름**을 가진다 | 한 릴레이션에 같은 이름의 열 불가 | name, name |
+| 3 | 한 속성의 값은 **같은 도메인** | 같은 열에는 같은 종류의 값만 | price 열에 '비쌈' |
+| 4 | **속성의 순서는 상관없다** | (이름, 주소) = (주소, 이름) | — |
+| 5 | **중복된 투플은 허용하지 않는다** | 모든 행은 서로 달라야 함 | 같은 행 2개 |
+| 6 | **투플의 순서는 상관없다** | 삽입·삭제에 따라 순서가 바뀔 수 있음 | — |
+
+> 🔁 **실제 DBMS와 차이**: 이론상 릴레이션은 중복 투플을 허용하지 않지만, SQL 테이블은 **기본키가 없으면 중복 행을 허용**합니다. 그래서 실무에서는 반드시 기본키를 지정합니다. 또한 `SELECT` 결과의 행 순서는 보장되지 않으므로 순서가 필요하면 `ORDER BY`를 씁니다.
+
+### 1.4 관계 데이터 모델
+
+```mermaid
+flowchart LR
+    M["관계 데이터 모델"] --> A["① 데이터 구조<br/>릴레이션(2차원 테이블)"]
+    M --> B["② 제약조건<br/>무결성 규칙"]
+    M --> C["③ 연산<br/>관계대수"]
+    A -.->|"SQL: CREATE TABLE"| X1[" "]
+    B -.->|"SQL: PRIMARY KEY, FOREIGN KEY"| X2[" "]
+    C -.->|"SQL: SELECT"| X3[" "]
+    style X1 fill:none,stroke:none
+    style X2 fill:none,stroke:none
+    style X3 fill:none,stroke:none
+```
+
+---
+
+## 2. 무결성 제약조건
+
+### 2.1 키(key)
+
+> **키**: 투플을 **유일하게 식별**하거나 릴레이션 간의 **관계를 맺는 데** 쓰는 속성(의 집합)
+
+설명을 위해 주민번호가 있는 고객 릴레이션을 가정합니다.
+
+`고객(고객번호, 이름, 주민번호, 주소, 핸드폰)`
+
+| 속성 | 투플을 식별할 수 있나? | 이유 |
+|---|:---:|---|
+| 고객번호 | ✅ | 고객마다 유일한 번호 부여 |
+| 이름 | ❌ | 동명이인 가능 |
+| 주민번호 | ✅ | 개인마다 유일 |
+| 주소 | ❌ | 가족은 같은 주소 |
+| 핸드폰 | ❌ | 여러 대를 쓰거나 없는 사람도 있음 |
+
+```mermaid
+flowchart TB
+    SK["슈퍼키 (Super Key)<br/>유일성 ✅<br/>예: (고객번호), (고객번호, 이름), (주민번호, 주소) …"]
+    CK["후보키 (Candidate Key)<br/>유일성 ✅ + 최소성 ✅<br/>예: (고객번호), (주민번호)"]
+    PK["기본키 (Primary Key)<br/>후보키 중 대표 1개<br/>예: 고객번호"]
+    AK["대체키 (Alternate Key)<br/>기본키가 되지 못한 후보키<br/>예: 주민번호"]
+    SK --> CK --> PK
+    CK --> AK
+    SUR["대리키 (Surrogate Key)<br/>마땅한 키가 없을 때 만든 일련번호<br/>예: AUTO_INCREMENT"]
+    FK["외래키 (Foreign Key)<br/>다른 릴레이션의 기본키를 참조<br/>예: Orders.custid"]
+```
+
+| 키 | 정의 | 마당서점 예 |
+|---|---|---|
+| **슈퍼키** | 투플을 유일하게 식별할 수 있는 속성(집합) | `(custid)`, `(custid, name)`, `(custid, name, phone)` … |
+| **후보키** | 유일하게 식별하는 **최소** 속성 집합 | `Customer`: `(custid)` / `Orders`: `(orderid)`, `(custid, bookid)`* |
+| **기본키** | 후보키 중 선택된 대표 키 (밑줄 표기) | `Book.bookid`, `Customer.custid`, `Orders.orderid` |
+| **대체키** | 기본키로 선택되지 않은 후보키 | 주민번호가 있다면 주민번호 |
+| **대리키(인조키)** | DBMS가 임의로 생성한 일련번호 | `orderid INT AUTO_INCREMENT` |
+| **외래키** | 다른(또는 자기) 릴레이션의 기본키를 참조 | `Orders.custid → Customer.custid`, `Orders.bookid → Book.bookid` |
+
+\* 현재 데이터에서 `(custid, bookid)` 조합은 겹치지 않지만, 같은 고객이 같은 책을 다시 살 수 있으므로 실제로는 후보키로 보기 어렵습니다. 그래서 `orderid` 같은 **대리키**를 기본키로 둡니다. → 키는 *현재 데이터*가 아니라 *의미(업무 규칙)* 로 정합니다.
+
+```sql
+-- custid가 후보키가 될 수 없는 이유: 한 고객이 여러 번 주문
+SELECT custid, COUNT(*) AS 주문수
+FROM   Orders
+GROUP  BY custid
+HAVING COUNT(*) > 1;
+```
+
+| custid | 주문수 |
+|---:|---:|
+| 1 | 3 |
+| 2 | 2 |
+| 3 | 3 |
+| 4 | 2 |
+
+**기본키 선정 시 고려사항**
+
+- 투플을 식별할 수 있는 **고유한 값**이어야 한다.
+- **NULL 값을 허용하지 않는다.**
+- 키 값의 **변동이 없어야** 한다.
+- **최대한 적은 수**의 속성으로 구성한다.
+- 향후 키를 사용하는 데 문제가 없어야 한다.
+
+**외래키의 특징**
+
+```mermaid
+erDiagram
+    Customer ||--o{ Orders : "custid"
+    Book     ||--o{ Orders : "bookid"
+    Customer {
+        INT custid PK
+        VARCHAR name
+    }
+    Book {
+        INT bookid PK
+        VARCHAR bookname
+    }
+    Orders {
+        INT orderid PK
+        INT custid FK
+        INT bookid FK
+    }
+```
+
+- 다른 릴레이션의 **기본키를 참조**하여 릴레이션 간 관계를 표현한다.
+- 참조하는 쪽(외래키)과 참조되는 쪽(기본키)의 **도메인이 같아야** 한다.
+- **NULL 값과 중복 값을 허용**한다. (박지성의 주문이 3건 → custid=1 이 3번 등장)
+- **자기 자신의 기본키를 참조**할 수 있다. (예: 사원.관리자번호 → 사원.사원번호)
+- 외래키가 **기본키의 일부**가 될 수 있다.
+
+```sql
+-- 자기 자신을 참조하는 외래키 예: 추천인 고객
+CREATE TABLE Member (
+    memid      INT PRIMARY KEY,
+    name       VARCHAR(40),
+    recommender INT,
+    FOREIGN KEY (recommender) REFERENCES Member(memid)
+);
+```
+
+### 2.2 무결성 제약조건의 종류
+
+> **데이터 무결성(integrity)**: 데이터베이스에 저장된 데이터의 **일관성과 정확성**을 지키는 것
+
+| 제약조건 | 다른 이름 | 규칙 | MySQL 표현 |
+|---|---|---|---|
+| **도메인 무결성** | 도메인 제약 | 각 속성 값은 도메인에 정의된 값만 | 데이터 타입, `NOT NULL`, `DEFAULT`, `CHECK` |
+| **개체 무결성** | 기본키 제약 | 기본키는 **NULL 불가 + 유일** | `PRIMARY KEY` |
+| **참조 무결성** | 외래키 제약 | 외래키 값은 부모의 기본키 값이거나 NULL | `FOREIGN KEY ... REFERENCES` |
+| (UNIQUE 제약) | 유일성 제약 | 값이 서로 달라야 함, **NULL은 허용** | `UNIQUE` |
+
+```sql
+-- 네 가지 제약조건을 모두 사용한 예
+CREATE TABLE NewBook (
+    bookid    INT          PRIMARY KEY,                       -- 개체 무결성
+    bookname  VARCHAR(40)  NOT NULL,                          -- 도메인 무결성
+    isbn      VARCHAR(13)  UNIQUE,                            -- UNIQUE (NULL 허용)
+    publisher VARCHAR(40)  DEFAULT '미정',                    -- 도메인 무결성
+    price     INT          CHECK (price >= 1000 AND price <= 100000)  -- 도메인 무결성
+);
+
+CREATE TABLE NewOrders (
+    orderid   INT PRIMARY KEY,
+    bookid    INT,
+    saleprice INT,
+    FOREIGN KEY (bookid) REFERENCES NewBook(bookid)           -- 참조 무결성
+);
+```
+
+> 🔁 **MySQL 버전 주의**: `CHECK` 제약은 MySQL **8.0.16 이상**에서만 실제로 검사됩니다. 그 이전 버전은 문법만 허용하고 무시합니다.
+
+### 2.3 무결성 제약조건의 수행
+
+#### ① 개체 무결성 제약조건
+
+| 연산 | 동작 |
+|---|---|
+| 삽입 | 기본키 값이 **같거나 NULL**이면 삽입 금지 |
+| 수정 | 기본키 값을 **이미 있는 값이나 NULL로** 수정 금지 |
+| 삭제 | 특별한 확인 없이 즉시 수행 |
+
+```sql
+INSERT INTO Book VALUES (1, '중복 테스트', '굿스포츠', 1000);
+-- Error 1062: Duplicate entry '1' for key 'Book.PRIMARY'
+
+INSERT INTO Book VALUES (NULL, 'NULL 테스트', '굿스포츠', 1000);
+-- Error 1048: Column 'bookid' cannot be null
+```
+
+#### ② 참조 무결성 제약조건
+
+```mermaid
+flowchart LR
+    P["👨 부모 릴레이션<br/>Customer<br/>(참조되는 쪽, 기본키)"]
+    C["👶 자식 릴레이션<br/>Orders<br/>(참조하는 쪽, 외래키)"]
+    C -->|"custid 참조"| P
+```
+
+| 연산 | 부모 (Customer) | 자식 (Orders) |
+|---|---|---|
+| **삽입** | 그냥 삽입 가능 | 부모에 없는 custid면 **삽입 금지** |
+| **삭제** | 자식이 참조 중이면 **금지 또는 추가 작업** 필요 | 그냥 삭제 가능 |
+| **수정** | 삭제 + 삽입으로 보고 각 규칙 적용 | 부모에 없는 값으로 수정 금지 |
+
+```sql
+-- 자식 삽입 실패: 99번 고객이 없음
+INSERT INTO Orders VALUES (11, 99, 1, 7000, '2020-07-11');
+-- Error 1452: Cannot add or update a child row: a foreign key constraint fails
+
+-- 부모 삭제 실패: 1번 고객(박지성)의 주문이 남아 있음
+DELETE FROM Customer WHERE custid = 1;
+-- Error 1451: Cannot delete or update a parent row: a foreign key constraint fails
+```
+
+**부모 투플을 삭제할 때의 처리 옵션**
+
+| 교안의 설명 | 옵션 | 동작 | MySQL(InnoDB) |
+|---|---|---|---|
+| ① 즉시 작업을 중지 | `RESTRICT` / `NO ACTION` | 자식이 있으면 삭제 거부 (기본값) | ✅ |
+| ② 자식의 관련 투플을 삭제 | `CASCADE` | 자식 행도 함께 삭제 | ✅ |
+| ③ 미리 정한 다른 값으로 변경 | `SET DEFAULT` | 자식의 외래키를 기본값으로 | ❌ 지원 안 함 |
+| ④ NULL로 설정 | `SET NULL` | 자식의 외래키를 NULL로 | ✅ |
+
+```mermaid
+flowchart TB
+    DEL["DELETE FROM Customer<br/>WHERE custid = 1"] --> Q{"ON DELETE 옵션?"}
+    Q -->|"RESTRICT / NO ACTION"| R1["❌ 삭제 거부<br/>Error 1451"]
+    Q -->|"CASCADE"| R2["✅ 고객 삭제<br/>+ 박지성 주문 3건도 삭제"]
+    Q -->|"SET NULL"| R3["✅ 고객 삭제<br/>+ 주문 3건의 custid = NULL"]
+```
+
+```sql
+-- 옵션을 지정한 외래키
+CREATE TABLE Orders2 (
+    orderid INT PRIMARY KEY,
+    custid  INT,
+    bookid  INT,
+    FOREIGN KEY (custid) REFERENCES Customer(custid)
+        ON DELETE CASCADE        -- 고객 삭제 시 주문도 삭제
+        ON UPDATE CASCADE,       -- 고객번호 변경 시 함께 변경
+    FOREIGN KEY (bookid) REFERENCES Book(bookid)
+        ON DELETE SET NULL       -- 도서 삭제 시 bookid를 NULL로
+);
+```
+
+---
+
+## 3. 관계대수
+
+### 3.1 관계대수와 관계해석
+
+> **관계대수(relational algebra)**: 릴레이션에서 원하는 결과를 얻기 위해 수학의 대수처럼 **연산자**를 이용해 질의하는 방법을 기술한 언어
+
+| 구분 | 관계대수 | 관계해석 |
+|---|---|---|
+| 성격 | **절차적** — *어떻게* 찾는지 | **선언적** — *무엇을* 찾는지 |
+| 쓰임 | DBMS 내부 처리(질의 실행 계획) | SQL의 이론적 기반 |
+| 표현 능력 | 동일 | 동일 |
+
+**릴레이션의 수학적 의미** — 릴레이션은 **카티전 프로덕트의 부분집합**
+
+```text
+학번 = {2, 4},  과목 = {데이터베이스, 자료구조, 프로그래밍}
+
+학번 × 과목 = {(2,데이터베이스), (2,자료구조), (2,프로그래밍),
+               (4,데이터베이스), (4,자료구조), (4,프로그래밍)}   ← 가능한 모든 조합 6개
+
+수강 = {(2,데이터베이스), (2,자료구조), (4,프로그래밍)}           ← 실제로 일어난 일 = 릴레이션
+```
+
+### 3.2 관계대수 연산자 한눈에 보기
+
+| 분류 | 연산자 | 기호 | 형식 | 대응 SQL |
+|---|---|:---:|---|---|
+| 순수 관계 연산 | 셀렉션 | σ | σ<조건>(R) | `WHERE` |
+| | 프로젝션 | π | π<속성들>(R) | `SELECT 열 목록` |
+| | 조인 | ⋈ | R ⋈<조건> S | `JOIN ... ON` |
+| | 디비전 | ÷ | R ÷ S | `NOT EXISTS` 이중 부정 |
+| 일반 집합 연산 | 합집합 | ∪ | R ∪ S | `UNION` |
+| | 교집합 | ∩ | R ∩ S | `INTERSECT` (8.0.31+) |
+| | 차집합 | − | R − S | `EXCEPT` (8.0.31+) / `NOT IN` |
+| | 카티전 프로덕트 | × | R × S | `CROSS JOIN` |
+
+```mermaid
+flowchart LR
+    subgraph U["단항 연산 (릴레이션 1개)"]
+        s["σ 셀렉션<br/>행을 고른다 ➡ 수평"]
+        p["π 프로젝션<br/>열을 고른다 ⬇ 수직"]
+    end
+    subgraph B["이항 연산 (릴레이션 2개)"]
+        set["∪ ∩ −<br/>집합 연산"]
+        x["× 카티전 프로덕트"]
+        j["⋈ 조인"]
+        d["÷ 디비전"]
+    end
+```
+
+> 관계대수식의 **결과도 릴레이션**입니다. 그래서 연산 결과에 다시 연산을 적용할 수 있습니다. 예: π<sub>bookname</sub>(σ<sub>price≤8000</sub>(Book))
+
+### 3.3 셀렉션(σ)과 프로젝션(π)
+
+#### 셀렉션 σ — 조건에 맞는 **행(투플)** 추출
+
+> **질의 2-1** 마당서점에서 판매하는 도서 중 8,000원 이하인 도서를 검색하시오.
+>
+> σ<sub>price ≤ 8000</sub>(Book)
+
+```sql
+SELECT *
+FROM   Book
+WHERE  price <= 8000;
+```
+
+| bookid | bookname | publisher | price |
+|---:|---|---|---:|
+| 1 | 축구의 역사 | 굿스포츠 | 7000 |
+| 5 | 피겨 교본 | 굿스포츠 | 8000 |
+| 6 | 역도 단계별기술 | 굿스포츠 | 6000 |
+| 9 | 올림픽 이야기 | 삼성당 | 7500 |
+
+**복합 조건**: ∧(AND), ∨(OR), ¬(NOT)
+
+> σ<sub>price ≤ 8000 ∧ bookid ≥ 3</sub>(Book)
+
+```sql
+SELECT * FROM Book WHERE price <= 8000 AND bookid >= 3;   -- 5, 6, 9번
+```
+
+#### 프로젝션 π — 원하는 **열(속성)** 추출
+
+> **질의 2-2** 신간도서 안내를 위해 고객의 이름, 주소, 전화번호가 적힌 주소록을 만드시오.
+>
+> π<sub>name, address, phone</sub>(Customer)
+
+```sql
+SELECT name, address, phone
+FROM   Customer;
+```
+
+| name | address | phone |
+|---|---|---|
+| 박지성 | 영국 맨체스터 | 000-5000-0001 |
+| 김연아 | 대한민국 서울 | 000-6000-0001 |
+| 장미란 | 대한민국 강원도 | 000-7000-0001 |
+| 추신수 | 미국 클리블랜드 | 000-8000-0001 |
+| 박세리 | 대한민국 대전 | NULL |
+
+```mermaid
+flowchart LR
+    T[("Book<br/>10행 × 4열")] -->|"σ: 행 선택<br/>price ≤ 8000"| A[("4행 × 4열")]
+    A -->|"π: 열 선택<br/>bookname, publisher"| B[("4행 × 2열")]
+```
+
+> 🔁 **관계대수 vs SQL**: 관계대수의 π는 결과에서 **중복을 자동 제거**합니다(릴레이션은 중복 불가). SQL의 `SELECT`는 중복을 남기므로 같은 효과를 내려면 `SELECT DISTINCT`를 씁니다.
+> ```sql
+> SELECT DISTINCT publisher FROM Book;   -- π publisher (Book)
+> ```
+
+### 3.4 집합 연산
+
+지점 A와 지점 B가 각각 도서를 관리한다고 가정합니다. (합집합·교집합·차집합은 두 릴레이션의 **속성 수와 도메인이 같아야**(합병 가능) 합니다.)
+
+```sql
+-- 실습용 두 지점 테이블 만들기
+CREATE TABLE BookA AS SELECT * FROM Book WHERE bookid IN (1, 2, 3, 4, 5);
+CREATE TABLE BookB AS SELECT * FROM Book WHERE bookid IN (4, 5, 6, 7);
+```
+
+```mermaid
+flowchart LR
+    subgraph A["BookA (지점 A)"]
+        a1["1 축구의 역사"]; a2["2 축구 아는 여자"]; a3["3 축구의 이해"]
+        ab4["4 골프 바이블"]; ab5["5 피겨 교본"]
+    end
+    subgraph B["BookB (지점 B)"]
+        b4["4 골프 바이블"]; b5["5 피겨 교본"]
+        b6["6 역도 단계별기술"]; b7["7 야구의 추억"]
+    end
+    style ab4 fill:#d6f5d6
+    style ab5 fill:#d6f5d6
+    style b4 fill:#d6f5d6
+    style b5 fill:#d6f5d6
+```
+
+| 질의 | 관계대수 | MySQL | 결과 bookid |
+|---|---|---|---|
+| **2-3** 두 지점의 도서를 하나로 | BookA ∪ BookB | `SELECT * FROM BookA UNION SELECT * FROM BookB;` | 1, 2, 3, 4, 5, 6, 7 |
+| **2-4** 두 지점이 모두 보유한 도서 | BookA ∩ BookB | `SELECT * FROM BookA INTERSECT SELECT * FROM BookB;` | 4, 5 |
+| **2-5** 지점 A에만 있는 도서 | BookA − BookB | `SELECT * FROM BookA EXCEPT SELECT * FROM BookB;` | 1, 2, 3 |
+
+```sql
+-- MySQL 8.0.31 미만이면 INTERSECT / EXCEPT 대신
+SELECT * FROM BookA WHERE bookid IN     (SELECT bookid FROM BookB);   -- 교집합
+SELECT * FROM BookA WHERE bookid NOT IN (SELECT bookid FROM BookB);   -- 차집합
+```
+
+> 🔁 **Oracle 비교**: 오라클은 차집합을 `MINUS`로 쓰지만, SQL 표준과 MySQL은 `EXCEPT`를 씁니다.
+
+### 3.5 카티전 프로덕트(×)
+
+두 릴레이션의 **모든 투플을 짝지어** 연결합니다.
+
+- 결과 차수 = 두 릴레이션 차수의 **합** (Customer 4 + Orders 5 = 9)
+- 결과 카디날리티 = 두 릴레이션 카디날리티의 **곱** (5 × 10 = 50)
+
+> **질의 2-6** Customer × Orders
+
+```sql
+SELECT *
+FROM   Customer CROSS JOIN Orders;      -- 또는 FROM Customer, Orders
+
+SELECT COUNT(*) FROM Customer, Orders;  -- 50
+```
+
+```mermaid
+flowchart LR
+    C["Customer<br/>5행 × 4열"] --> X(("×"))
+    O["Orders<br/>10행 × 5열"] --> X
+    X --> R["결과<br/>5×10 = 50행<br/>4+5 = 9열"]
+```
+
+> 카티전 프로덕트에는 **의미 없는 조합**(박지성 고객 + 김연아의 주문)도 섞여 있습니다. 여기서 *의미 있는 행만* 고르는 것이 바로 **조인**입니다.
+
+### 3.6 조인(⋈)
+
+> **조인** = 카티전 프로덕트 + 셀렉션 : R ⋈<sub>c</sub> S = σ<sub>c</sub>(R × S)
+
+```mermaid
+flowchart TB
+    J["조인 연산"] --> BASIC["기본 연산"]
+    J --> EXT["확장 연산"]
+    BASIC --> T["세타조인 θ<br/>{=, ≠, <, ≤, >, ≥}"]
+    T --> E["동등조인<br/>θ가 '='"]
+    E --> N["자연조인 ⋈N<br/>공통 속성 한 번만"]
+    EXT --> S["세미조인 ⋉<br/>한쪽 결과만"]
+    EXT --> OJ["외부조인 ⟕ ⟖ ⟗<br/>실패한 투플도 NULL로"]
+```
+
+#### 동등조인 (equi join)
+
+> **질의 2-7** 고객과 고객의 주문 사항을 모두 보이시오.
+>
+> Customer ⋈<sub>Customer.custid = Orders.custid</sub> Orders
+
+```sql
+SELECT *
+FROM   Customer c
+JOIN   Orders   o ON c.custid = o.custid;
+```
+
+결과(10행, custid 열이 **두 번** 나옴 — 일부만 표시):
+
+| c.custid | name | address | phone | orderid | o.custid | bookid | saleprice | orderdate |
+|---:|---|---|---|---:|---:|---:|---:|---|
+| 1 | 박지성 | 영국 맨체스터 | 000-5000-0001 | 1 | 1 | 1 | 6000 | 2020-07-01 |
+| 1 | 박지성 | 영국 맨체스터 | 000-5000-0001 | 2 | 1 | 3 | 21000 | 2020-07-03 |
+| 2 | 김연아 | 대한민국 서울 | 000-6000-0001 | 3 | 2 | 5 | 8000 | 2020-07-03 |
+| … | | | | | | | | |
+
+#### 자연조인 (natural join)
+
+> **질의 2-8** 같은 속성은 한 번만 표시하시오.
+>
+> Customer ⋈<sub>N(custid)</sub> Orders
+
+```sql
+SELECT *
+FROM   Customer NATURAL JOIN Orders;      -- 이름이 같은 열(custid)로 자동 조인
+
+-- 같은 결과 (권장: 조인 열을 명시)
+SELECT *
+FROM   Customer JOIN Orders USING (custid);
+```
+
+> ⚠️ `NATURAL JOIN`은 **이름이 같은 모든 열**로 조인하므로, 나중에 두 테이블에 같은 이름의 열이 추가되면 결과가 바뀝니다. 수업에서는 개념 이해용으로만 쓰고, 실무에서는 `JOIN ... ON` 을 권장합니다.
+
+#### 외부조인 (outer join)
+
+자연조인에서 **짝이 없어 빠진 투플도 포함**하고, 빈 속성은 NULL로 채웁니다. 마당서점에서 **박세리(5번)** 는 주문이 없어 일반 조인에서는 사라집니다.
+
+```mermaid
+flowchart LR
+    subgraph C["Customer"]
+        c1["1 박지성"]; c2["2 김연아"]; c3["3 장미란"]; c4["4 추신수"]
+        c5["5 박세리"]
+    end
+    subgraph O["Orders"]
+        o["주문 10건<br/>(custid 1~4)"]
+    end
+    c1 & c2 & c3 & c4 --- o
+    c5 -.-x|"짝 없음"| o
+    style c5 fill:#ffd3d3,stroke:#d33
+```
+
+> **질의 2-9** ① 고객 기준으로, 주문 내역이 없는 고객도 모두 보이시오. — Customer ⟕ Orders
+
+```sql
+SELECT c.name, o.orderid, o.saleprice
+FROM   Customer c
+LEFT OUTER JOIN Orders o ON c.custid = o.custid;
+```
+
+| name | orderid | saleprice |
+|---|---:|---:|
+| 박지성 | 1 | 6000 |
+| 박지성 | 2 | 21000 |
+| 박지성 | 6 | 12000 |
+| 김연아 | 3 | 8000 |
+| 김연아 | 9 | 7000 |
+| 장미란 | 4 | 6000 |
+| 장미란 | 8 | 12000 |
+| 장미란 | 10 | 13000 |
+| 추신수 | 5 | 20000 |
+| 추신수 | 7 | 13000 |
+| **박세리** | **NULL** | **NULL** |
+
+| 종류 | 기호 | 기준 | MySQL |
+|---|:---:|---|---|
+| 왼쪽 외부조인 | ⟕ | 왼쪽 릴레이션의 모든 투플 | `LEFT OUTER JOIN` |
+| 오른쪽 외부조인 | ⟖ | 오른쪽 릴레이션의 모든 투플 | `RIGHT OUTER JOIN` |
+| 완전 외부조인 | ⟗ | 양쪽 모두 | ❗ 미지원 → `LEFT JOIN ... UNION ... RIGHT JOIN` |
+
+```sql
+-- 완전 외부조인 흉내 (MySQL은 FULL OUTER JOIN 미지원)
+SELECT c.name, o.orderid FROM Customer c LEFT  JOIN Orders o ON c.custid = o.custid
+UNION
+SELECT c.name, o.orderid FROM Customer c RIGHT JOIN Orders o ON c.custid = o.custid;
+```
+
+#### 세미조인 (semi join, ⋉)
+
+자연조인을 한 뒤 **한쪽 릴레이션의 속성만** 돌려줍니다. (기호의 닫힌 쪽)
+
+> **질의 2-10** 고객 중 주문 내역이 있는 고객의 고객 정보를 보이시오. — Customer ⋉ Orders
+
+```sql
+SELECT *
+FROM   Customer c
+WHERE  EXISTS (SELECT * FROM Orders o WHERE o.custid = c.custid);
+-- 또는 WHERE custid IN (SELECT custid FROM Orders)
+```
+
+→ 박지성, 김연아, 장미란, 추신수 (박세리 제외, 각 고객은 **한 번씩만** 나옴)
+
+### 3.7 디비전(÷)
+
+> R ÷ S : S의 **모든** 투플과 관계를 맺고 있는 R의 투플을 반환 — "**모든 ~을 한**" 질의
+
+예: **굿스포츠에서 출판한 모든 도서를 구매한 고객**은?
+
+```text
+구매(custid, bookid)              굿스포츠도서(bookid)
+ (1,1) (1,5) (1,6) (2,5) (3,1)   ÷   1, 5, 6        =   custid 1
+```
+
+```mermaid
+flowchart LR
+    R["구매(custid, bookid)<br/>(1,1) (1,5) (1,6)<br/>(2,5) (3,1)"] --> D(("÷"))
+    S["굿스포츠 도서<br/>{1, 5, 6}"] --> D
+    D --> Res["custid = 1<br/>세 권을 모두 산 고객"]
+```
+
+```sql
+-- "구매하지 않은 굿스포츠 도서가 하나도 없는(NOT EXISTS) 고객" = 이중 부정
+SELECT c.name
+FROM   Customer c
+WHERE  NOT EXISTS (
+        SELECT * FROM Book b
+        WHERE  b.publisher = '굿스포츠'
+        AND    NOT EXISTS (
+                SELECT * FROM Orders o
+                WHERE  o.custid = c.custid AND o.bookid = b.bookid));
+```
+
+→ 현재 마당서점 데이터에서는 굿스포츠 도서(1, 5, 6번)를 모두 산 고객이 없으므로 **결과 0행**입니다.
+
+```sql
+-- 박지성(1번)이 5, 6번 도서를 추가로 사면? (트랜잭션으로 시험 후 되돌리기 → 8장)
+START TRANSACTION;
+INSERT INTO Orders VALUES (11, 1, 5, 8000, '2020-07-11'), (12, 1, 6, 6000, '2020-07-11');
+-- 위의 디비전 SQL을 다시 실행하면 → 박지성
+ROLLBACK;
+```
+
+### 3.8 관계대수 사용 예제
+
+> **질의 2-11** 가격이 8,000원 이하인 도서의 이름과 출판사를 보이시오.
+
+| 상황 | 관계대수 | SQL |
+|---|---|---|
+| 지점이 하나 | π<sub>bookname, publisher</sub>(σ<sub>price≤8000</sub>(Book)) | `SELECT bookname, publisher FROM Book WHERE price <= 8000;` |
+| 지점이 둘 | π<sub>bookname, publisher</sub>(σ<sub>price≤8000</sub>(BookA) ∪ σ<sub>price≤8000</sub>(BookB)) | `... FROM BookA WHERE price<=8000 UNION ... FROM BookB WHERE price<=8000` |
+
+> **질의 2-12** 박지성 고객의 거래 내역 중 주문번호, 이름, 판매가격을 보이시오.
+
+**방법 1 — 카티전 프로덕트 사용**
+
+π<sub>orderid, name, saleprice</sub>(σ<sub>Customer.custid = Orders.custid ∧ name='박지성'</sub>(Customer × Orders))
+
+**방법 2 — 조인 사용**
+
+π<sub>orderid, name, saleprice</sub>(σ<sub>name='박지성'</sub>(Customer ⋈<sub>custid</sub> Orders))
+
+```mermaid
+flowchart BT
+    C[("Customer")] --> J["⋈ custid"]
+    O[("Orders")] --> J
+    J --> S["σ name = '박지성'"]
+    S --> P["π orderid, name, saleprice"]
+```
+
+```sql
+SELECT o.orderid, c.name, o.saleprice
+FROM   Customer c
+JOIN   Orders   o ON c.custid = o.custid
+WHERE  c.name = '박지성';
+```
+
+| orderid | name | saleprice |
+|---:|---|---:|
+| 1 | 박지성 | 6000 |
+| 2 | 박지성 | 21000 |
+| 6 | 박지성 | 12000 |
+
+> 💡 두 식의 결과는 같지만, **조인을 먼저**(또는 셀렉션을 먼저) 하면 중간 결과가 작아져 훨씬 효율적입니다. DBMS의 **질의 최적화기**가 이런 식 변환을 자동으로 수행합니다.
+
+---
+
+## 📝 핵심 요약
+
+| # | 키워드 | 한 줄 정리 |
+|:---:|---|---|
+| 1 | 릴레이션 | 행과 열로 구성된 테이블 = 스키마(정적) + 인스턴스(동적) |
+| 2 | 용어 | 속성(열) · 투플(행) · 도메인(값의 집합) · 차수(열 수) · 카디날리티(행 수) |
+| 3 | 특징 | 단일 값, 속성 이름 유일, 같은 도메인, 속성·투플 순서 무관, 중복 투플 불가 |
+| 4 | 키 | 슈퍼키 ⊇ 후보키(최소성) → 기본키 / 대체키, 대리키, 외래키 |
+| 5 | 무결성 | 도메인(타입·CHECK) · 개체(PK: NULL·중복 불가) · 참조(FK) |
+| 6 | 참조 옵션 | RESTRICT(NO ACTION) · CASCADE · SET NULL · (SET DEFAULT: MySQL 미지원) |
+| 7 | 관계대수 | 절차적 언어, 결과도 릴레이션 |
+| 8 | σ / π | 행 선택(WHERE) / 열 선택(SELECT, DISTINCT) |
+| 9 | 집합 연산 | ∪ UNION · ∩ INTERSECT · − EXCEPT, 합병 가능해야 함 |
+| 10 | 조인 | σ(R×S), 동등·자연·외부(⟕⟖⟗)·세미(⋉) |
+| 11 | 디비전 | "모든 ~을 한" 질의, SQL은 NOT EXISTS 이중 부정 |
+
+---
+
+## ✅ 확인 문제
+
+<details>
+<summary>1. 릴레이션 스키마를 외연(extension)이라고 한다. (O/X)</summary>
+
+**X** — 스키마는 **내포(intension)**, 인스턴스가 **외연(extension)** 입니다. 스키마는 정적, 인스턴스는 동적입니다.
+</details>
+
+<details>
+<summary>2. 릴레이션의 특징으로 알맞은 것은? ① 중복 투플 존재 ② 투플 간 순서 정의 ③ 속성 간 순서 정의 ④ 모든 속성 값은 원자값</summary>
+
+**④**
+</details>
+
+<details>
+<summary>3. 하나의 속성이 가질 수 있는 값의 집합을 무엇이라 하는가?</summary>
+
+**도메인(domain)**
+</details>
+
+<details>
+<summary>4. 외래키에 대한 설명으로 옳은 것은? ① R1의 속성 FK가 R2의 기본키인 것 ② FK와 참조되는 기본키의 도메인은 달라도 된다 ③ FK는 NULL을 가질 수 없다 ④ 후보키 중 대표로 삼은 키</summary>
+
+**①** — ②는 도메인이 같아야 하고, ③ 외래키는 NULL 허용, ④는 기본키 설명입니다.
+</details>
+
+<details>
+<summary>5. 기본키를 구성하는 속성 값은 NULL이나 중복 값을 가질 수 없다는 제약조건은?</summary>
+
+**개체 무결성 제약조건**
+</details>
+
+<details>
+<summary>6. 릴레이션의 수직적 부분집합(열)을 반환하는 관계대수 연산자는?</summary>
+
+**프로젝션(π, projection)**
+</details>
+
+<details>
+<summary>7. A(X, Y)와 B(Y, Z)를 자연조인한 결과 C에 대해 항상 맞는 설명은? ① C의 카디날리티 > A ② C의 카디날리티 < A ③ C의 차수 > A의 차수 ④ C의 차수 < A의 차수</summary>
+
+**③** — C의 속성은 (X, Y, Z)로 3개, A는 2개. 카디날리티는 데이터에 따라 많을 수도 적을 수도 있습니다.
+</details>
+
+<details>
+<summary>8. [SQL] 주문 내역이 없는 고객의 이름을 구하시오. (외부조인 사용)</summary>
+
+```sql
+SELECT c.name
+FROM   Customer c
+LEFT JOIN Orders o ON c.custid = o.custid
+WHERE  o.orderid IS NULL;
+```
+→ 박세리
+</details>
+
+<details>
+<summary>9. [SQL] 관계대수식 π<sub>bookname</sub>(σ<sub>publisher='대한미디어'</sub>(Book)) 을 SQL로 바꾸시오.</summary>
+
+```sql
+SELECT DISTINCT bookname
+FROM   Book
+WHERE  publisher = '대한미디어';
+```
+→ 축구의 이해, 골프 바이블
+</details>
+
+<details>
+<summary>10. [SQL] Orders 테이블에 존재하지 않는 고객번호(99)로 주문을 넣으면 어떤 오류가 나는가? 어떤 제약조건 때문인가?</summary>
+
+`Error 1452 (Cannot add or update a child row: a foreign key constraint fails)` — **참조 무결성 제약조건** 위반
+</details>
+
+---
+
+> 📚 출처: 한빛아카데미 「데이터베이스 개론과 실습」 2장 강의교안을 참고하여 요약·재구성. 모든 그림은 Mermaid로 새로 작성, SQL은 MySQL 8.0 기준.
+
+[🏠 목차](README.html) · ◀ 이전 [1장 데이터베이스 시스템](01장_데이터베이스_시스템.html) · 다음 ▶ [3장 SQL 기초](03장_SQL_기초.html)
+</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const src = document.getElementById("md").textContent;
+const renderer = new marked.Renderer();
+const baseCode = renderer.code.bind(renderer);
+renderer.code = (code, lang, esc) => {
+  if (lang === "mermaid") return `<pre class="mermaid">${code.replace(/</g,"&lt;")}</pre>`;
+  return baseCode(code, lang, esc);
+};
+document.getElementById("content").innerHTML = marked.parse(src, { renderer });
+mermaid.initialize({ startOnLoad:false, theme:"default", gantt: { useWidth: 900 } });
+await mermaid.run({ querySelector: ".mermaid" });
+</script>
+</body>
+</html>
