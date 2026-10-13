@@ -32,6 +32,8 @@ Postman으로 HTTP 요청을 구성하고 상태·본문·헤더를 검증한다
 <a id="s2"></a>
 ## 2. 테스트 전략과 준비
 
+<img src="https://github.com/simpleego/AX_Service_Builder/blob/main/04-api-architecture-auth-security/07_Postman_API_%ED%85%8C%EC%8A%A4%ED%8A%B8.png">
+
 테스트는 “응답이 왔다”를 확인하는 것이 아니라 스펙의 기대와 실제를 비교하는 일이다. 200만 검사하면 다른 회원의 주문이 새거나 금액이 틀리는 문제를 놓칠 수 있다.
 
 | 종류 | 목적 | 예시 |
