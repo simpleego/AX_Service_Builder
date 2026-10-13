@@ -31,6 +31,8 @@ OAuth2의 역할과 인가 흐름을 설명한다. 로그인에는 OIDC 또는 �
 <a id="s2"></a>
 ## 2. OAuth2·OIDC·JWT 구분
 
+<img src="https://github.com/simpleego/AX_Service_Builder/blob/main/04-api-architecture-auth-security/05_OAuth2_OIDC_%EC%86%8C%EC%85%9C_%EB%A1%9C%EA%B7%B8%EC%9D%B8.png">
+
 OAuth2는 사용자가 앱에 **외부 자원 접근 권한을 위임**하는 프레임워크다. 로그인에 필요한 신원 확인 표준은 OAuth2 위의 OpenID Connect(OIDC)가 제공한다. OIDC가 없는 제공자는 자신의 사용자 정보 API를 통해 로그인 신원을 확인하는 방식이므로 해당 제공자의 문서를 따라야 한다.
 
 | 이름 | 무엇인가 | 이 사례에서 역할 |
