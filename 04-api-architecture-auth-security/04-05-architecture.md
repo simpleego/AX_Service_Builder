@@ -31,6 +31,8 @@ Router·Service·Repository의 책임을 분리한다. 의존성 주입과 트�
 <a id="s2"></a>
 ## 2. 왜 계층을 나누는가
 
+<img src="https://github.com/simpleego/AX_Service_Builder/blob/main/04-api-architecture-auth-security/06_%EA%B3%84%EC%B8%B5%ED%98%95_API_%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png">
+
 하나의 엔드포인트에서 HTTP 파싱·가격 계산·SQL·로그·토큰 검증까지 수행하면 업무 규칙을 바꾸거나 저장소를 교체할 때 여러 책임을 동시에 수정하게 된다. 계층은 **변경 이유와 책임**을 나누는 수단이다. 작은 앱에서 무조건 많은 폴더를 만드는 것이 목적은 아니다.
 
 ```mermaid
