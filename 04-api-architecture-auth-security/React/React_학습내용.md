@@ -1047,7 +1047,8 @@ flowchart TD
 
 최종적으로 다음 정도를 권장한다.
 
-```mindmap
+```mermaid
+mindmap
   root((frontend))
     src
       api
