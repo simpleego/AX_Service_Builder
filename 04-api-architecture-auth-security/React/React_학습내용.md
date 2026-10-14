@@ -1048,6 +1048,38 @@ flowchart TD
 최종적으로 다음 정도를 권장한다.
 
 ```mermaid
+flowchart TD
+    frontend --> src
+
+    src --> api
+    api --> client["client.js"]
+    api --> authApi["authApi.js"]
+    api --> productApi["productApi.js"]
+    api --> chatApi["chatApi.js"]
+
+    src --> components
+    components --> common
+    components --> layout
+    components --> product
+    components --> chat
+
+    src --> pages
+    pages --> Home["HomePage.jsx"]
+    pages --> Login["LoginPage.jsx"]
+    pages --> ProductPage["ProductPage.jsx"]
+    pages --> ChatPage["ChatPage.jsx"]
+    pages --> MyPage["MyPage.jsx"]
+
+    src --> contexts
+    contexts --> AuthContext["AuthContext.jsx"]
+
+    src --> hooks
+    src --> utils
+    src --> App["App.jsx"]
+    src --> main["main.jsx"]
+```
+
+```mermaid
 mindmap
   root((frontend))
     src
