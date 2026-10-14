@@ -492,7 +492,7 @@ function handleClick() {
 }
 ```
 
-학습:
+학습: 
 
 - onClick
 - onChange
