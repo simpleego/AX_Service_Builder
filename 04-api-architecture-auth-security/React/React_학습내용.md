@@ -1048,90 +1048,35 @@ flowchart TD
 최종적으로 다음 정도를 권장한다.
 
 ```mermaid
-flowchart TD
-    frontend --> src
+flowchart LR
+    F["frontend/"] --> S["src/"]
 
-    src --> api
-    api --> client["client.js"]
-    api --> authApi["authApi.js"]
-    api --> productApi["productApi.js"]
-    api --> chatApi["chatApi.js"]
+    S --> A["api/"]
+    A --> A1["client.js"]
+    A --> A2["authApi.js"]
+    A --> A3["productApi.js"]
+    A --> A4["chatApi.js"]
 
-    src --> components
-    components --> common
-    components --> layout
-    components --> product
-    components --> chat
+    S --> C["components/"]
+    C --> C1["common/"]
+    C --> C2["layout/"]
+    C --> C3["product/"]
+    C --> C4["chat/"]
 
-    src --> pages
-    pages --> Home["HomePage.jsx"]
-    pages --> Login["LoginPage.jsx"]
-    pages --> ProductPage["ProductPage.jsx"]
-    pages --> ChatPage["ChatPage.jsx"]
-    pages --> MyPage["MyPage.jsx"]
+    S --> P["pages/"]
+    P --> P1["HomePage.jsx"]
+    P --> P2["LoginPage.jsx"]
+    P --> P3["ProductPage.jsx"]
+    P --> P4["ChatPage.jsx"]
+    P --> P5["MyPage.jsx"]
 
-    src --> contexts
-    contexts --> AuthContext["AuthContext.jsx"]
+    S --> X["contexts/"]
+    X --> X1["AuthContext.jsx"]
 
-    src --> hooks
-    src --> utils
-    src --> App["App.jsx"]
-    src --> main["main.jsx"]
-```
-
-```mermaid
-mindmap
-  root((frontend))
-    src
-      api
-        client.js
-        authApi.js
-        productApi.js
-        chatApi.js
-      components
-        common
-        layout
-        product
-        chat
-      pages
-        HomePage.jsx
-        LoginPage.jsx
-        ProductPage.jsx
-        ChatPage.jsx
-        MyPage.jsx
-      contexts
-        AuthContext.jsx
-      hooks
-      utils
-      App.jsx
-      main.jsx
-```
-
-```text
-frontend/
-└─ src/
-   ├─ api/
-   │  ├─ client.js
-   │  ├─ authApi.js
-   │  ├─ productApi.js
-   │  └─ chatApi.js
-   ├─ components/
-   │  ├─ common/
-   │  ├─ layout/
-   │  ├─ product/
-   │  └─ chat/
-   ├─ pages/
-   │  ├─ HomePage.jsx
-   │  ├─ LoginPage.jsx
-   │  ├─ ProductPage.jsx
-   │  ├─ ChatPage.jsx
-   │  └─ MyPage.jsx
-   ├─ contexts/
-   │  └─ AuthContext.jsx
-   ├─ hooks/
-   ├─ utils/
-   ├─ App.jsx
-   └─ main.jsx
+    S --> H["hooks/"]
+    S --> U["utils/"]
+    S --> APP["App.jsx"]
+    S --> M["main.jsx"]
 ```
 
 ---
