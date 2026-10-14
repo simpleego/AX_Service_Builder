@@ -1047,7 +1047,7 @@ flowchart TD
 
 최종적으로 다음 정도를 권장한다.
 
-mindmap
+```mindmap
   root((frontend))
     src
       api
@@ -1072,6 +1072,7 @@ mindmap
       utils
       App.jsx
       main.jsx
+```
 
 ```text
 frontend/
