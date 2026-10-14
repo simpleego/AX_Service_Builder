@@ -81,31 +81,13 @@
 
 최종적으로 다음 구조를 구현할 수 있는 수준을 목표로 한다.
 
-```text
-┌───────────────────────────────┐
-│           React               │
-│                               │
-│  Pages / Components           │
-│  State / Router               │
-│  Login / JWT                  │
-│  API Client                   │
-└──────────────┬────────────────┘
-               │
-            REST API
-               │
-               ▼
-┌───────────────────────────────┐
-│           FastAPI             │
-│                               │
-│ Router / Service / Repository │
-│ JWT / OAuth2                  │
-└───────┬───────────┬───────────┘
-        │           │
-        ▼           ▼
-   PostgreSQL    LangChain
-                    │
-                    ▼
-                   LLM
+```mermaid
+graph LR
+  React["React\nPages / Components\nState / Router\nLogin / JWT\nAPI Client"] --> REST["REST API"]
+  REST --> FastAPI["FastAPI\nRouter / Service / Repository\nJWT / OAuth2"]
+  FastAPI --> PostgreSQL["PostgreSQL"]
+  FastAPI --> LangChain["LangChain"]
+  LangChain --> LLM["LLM"]
 ```
 
 React 자체가 목적이 아니라,
@@ -116,7 +98,7 @@ React 자체가 목적이 아니라,
 
 ---
 
-# 2. React를 어느 수준까지 학습할 것인가
+# 2. React를 ��느 수준까지 학습할 것인가
 
 React 학습 수준을 네 단계로 나누면 다음과 같다.
 
@@ -133,24 +115,9 @@ React 학습 수준을 네 단계로 나누면 다음과 같다.
 
 즉,
 
-```text
-Component를 만든다
-        ↓
-State를 관리한다
-        ↓
-사용자 입력을 처리한다
-        ↓
-페이지를 구성한다
-        ↓
-FastAPI를 호출한다
-        ↓
-JWT 인증을 처리한다
-        ↓
-AI API를 호출한다
-        ↓
-재사용 가능한 구조로 분리한다
-        ↓
-빌드·배포한다
+```mermaid
+graph TD
+  A[Component를 만든다] --> B[State를 관리한다] --> C[사용자 입력을 처리한다] --> D[페이지를 구성한다] --> E[FastAPI를 호출한다] --> F[JWT 인증을 처리한다] --> G[AI API를 호출한다] --> H[재사용 가능한 구조로 분리한다] --> I[빌드·배포한다]
 ```
 
 여기까지 수행할 수 있으면 충분하다.
@@ -251,23 +218,14 @@ function App() {
 
 핵심 비교:
 
-```text
-Vanilla JavaScript
-
-데이터 변경
-   ↓
-DOM 찾기
-   ↓
-DOM 직접 수정
-
-
-React
-
-데이터(State) 변경
-   ↓
-React
-   ↓
-UI 자동 갱신
+```mermaid
+graph LR
+  subgraph Vanilla[Vanilla JavaScript]
+    V1[데이터 변경] --> V2[DOM 찾기] --> V3[DOM 직접 수정]
+  end
+  subgraph ReactFlow[React]
+    R1[데이터(State) 변경] --> R2[React] --> R3[UI 자동 갱신]
+  end
 ```
 
 ### 반드시 이해해야 할 개념
@@ -421,14 +379,9 @@ products.map(product => (
 
 다음 구조를 이해한다.
 
-```text
-JSON 배열
-    ↓
-map()
-    ↓
-Component
-    ↓
-화면 목록
+```mermaid
+graph TD
+  JSON["JSON 배열"] --> Map[map()] --> Comp[Component] --> UI[화면 목록]
 ```
 
 ---
@@ -516,14 +469,9 @@ const [count, setCount] = useState(0);
 
 핵심 흐름:
 
-```text
-사용자 행동
-   ↓
-State 변경
-   ↓
-Component 다시 렌더링
-   ↓
-화면 변경
+```mermaid
+graph TD
+  User[사용자 행동] --> State[State 변경] --> Render[Component 다시 렌더링] --> Screen[화면 변경]
 ```
 
 State 문법보다 **상태 변화 → 렌더링**을 이해시키는 것이 중요하다.
@@ -567,14 +515,9 @@ const [name, setName] = useState("");
 
 데이터 흐름:
 
-```text
-사용자 입력
-   ↓
-onChange
-   ↓
-State
-   ↓
-UI
+```mermaid
+graph TD
+  Input[사용자 입력] --> OnChange[onChange] --> StateForm[State] --> UIForm[UI]
 ```
 
 ---
@@ -661,7 +604,7 @@ ProductPage
 AI에게 완성된 코드를 제공하고:
 
 ```text
-이 React 코드를 검토해줘.
+이 React 코드를 검토해줘。
 
 1. 불필요한 State
 2. 중복 코드
@@ -695,26 +638,13 @@ AI에게 완성된 코드를 제공하고:
 
 # 1교시 — 전체 구조 이해
 
-```text
-React
-
-ProductPage
-    ↓
-productApi.js
-    ↓
-HTTP
-
-=================
-
-FastAPI
-
-Router
- ↓
-Service
- ↓
-Repository
- ↓
-PostgreSQL
+```mermaid
+graph TD
+  ProductPage[ProductPage] --> ProductApi[productApi.js] --> HTTP[HTTP]
+  
+  subgraph Backend[FastAPI]
+    Router[Router] --> Service[Service] --> Repository[Repository] --> PostgreSQL[PostgreSQL]
+  end
 ```
 
 ---
@@ -755,20 +685,9 @@ useEffect(() => {
 
 흐름:
 
-```text
-Component
-   ↓
-외부 API와 동기화
-   ↓
-HTTP GET
-   ↓
-FastAPI
-   ↓
-JSON
-   ↓
-State
-   ↓
-UI
+```mermaid
+graph TD
+  Component[Component] --> Sync[외부 API와 동기화] --> HTTPGET[HTTP GET] --> FastAPIcall[FastAPI] --> JSONdata[JSON] --> State[State] --> UI[UI]
 ```
 
 ---
@@ -794,6 +713,13 @@ POST /api/products
    ↓
 
 FastAPI
+```
+
+(위의 단순 흐름은 GET/POST/PUT/DELETE 흐름으로 동일하게 mermaid로 표현 가능합니다.)
+
+```mermaid
+graph TD
+  ReactForm[React Form] --> JSONREQ[JSON] --> POST[POST /api/products] --> FastAPIrecv[FastAPI]
 ```
 
 ---
@@ -890,18 +816,9 @@ Application
 
 # 8교시 — 통합 CRUD 실습
 
-React + FastAPI + PostgreSQL 연결:
-
-```text
-React
- ↓
-REST API
- ↓
-FastAPI
- ↓
-SQLAlchemy
- ↓
-PostgreSQL
+```mermaid
+graph TD
+  React[React] --> REST[REST API] --> FastAPI[FastAPI] --> SQLAlchemy[SQLAlchemy] --> PostgreSQL[PostgreSQL]
 ```
 
 ### DAY 3 산출물
@@ -985,41 +902,11 @@ AppLayout
 
 # 4교시 — JWT 전체 흐름
 
-```text
-        LOGIN
+```mermaid
+graph TD
+  ReactLogin[React] --> PostLogin[POST /login] --> FastAPILogin[FastAPI] --> Verify[ID/PW 확인] --> JWTcreate[JWT 생성] --> ReactReceive[React]
 
-React
-  │
-  │ POST /login
-  ▼
-FastAPI
-  │
-  │ ID/PW 확인
-  ▼
-JWT 생성
-  │
-  ▼
-React
-```
-
-이후:
-
-```text
-React
-
-GET /users/me
-Authorization:
-Bearer <token>
-
-       ↓
-
-FastAPI
-
-JWT 검증
-       ↓
-사용자 식별
-       ↓
-Response
+  React2[React] --> GetUser["GET /users/me\nAuthorization: Bearer <token>"] --> FastAPIverify[FastAPI] --> JWTVerify[JWT 검증] --> Identify[사용자 식별] --> Response[Response]
 ```
 
 ---
@@ -1037,20 +924,16 @@ AuthContext
 └─ logout()
 ```
 
-Context는 이 정도 범위에서만 사용한다.
+Context는 이 정도 범위에서만 사용한다。
 
 ---
 
 # 6교시 — Protected Route
 
-```text
-/dashboard
-
-로그인?
-
-   ├─ YES → Dashboard
-   │
-   └─ NO  → Login
+```mermaid
+graph TD
+  Protected["/dashboard\n로그인?"] -->|YES| Dashboard[Dashboard]
+  Protected -->|NO| Login[Login]
 ```
 
 ---
@@ -1072,20 +955,9 @@ fetch(url, {
 
 # 8교시 — 인증 통합 실습
 
-완성 구조:
-
-```text
-LoginPage
-   ↓
-FastAPI
-   ↓
-JWT
-   ↓
-Auth State
-   ↓
-ProtectedRoute
-   ↓
-Dashboard
+```mermaid
+graph TD
+  LoginPage[LoginPage] --> FastAPIbackend[FastAPI] --> JWTtoken[JWT] --> AuthState[Auth State] --> ProtectedRoute[ProtectedRoute] --> Dashboard[Dashboard]
 ```
 
 ### DAY 4 산출물
@@ -1140,22 +1012,9 @@ ChatPage
 
 # 2교시 — LangChain API 연결
 
-```text
-React
-
-POST /api/chat
-      ↓
-FastAPI
-      ↓
-LangChain
-      ↓
-LLM
-      ↓
-FastAPI
-      ↓
-JSON
-      ↓
-React
+```mermaid
+graph TD
+  React[React] --> PostChat[POST /api/chat] --> FastAPI[FastAPI] --> LangChain[LangChain] --> LLM[LLM] --> FastAPIResp[FastAPI] --> ReactResp[React]
 ```
 
 예:
@@ -1194,28 +1053,9 @@ error
 
 흐름:
 
-```text
-질문 입력
-
- ↓
-
-Loading = true
-
- ↓
-
-AI API
-
- ↓
-
-응답
-
- ↓
-
-messages 추가
-
- ↓
-
-Loading = false
+```mermaid
+graph TD
+  Input[질문 입력] --> Loading[Loading = true] --> API[AI API] --> Response[응답] --> Messages[ messages 추가] --> LoadingFalse[Loading = false]
 ```
 
 ---
@@ -1277,7 +1117,7 @@ VITE_API_URL=
 https://api.example.com
 ```
 
-코드에 직접 주소를 반복해서 작성하지 않는다.
+코드에 직접 주소를 반복해서 작성하지 않는다。
 
 ---
 
@@ -1289,24 +1129,9 @@ npm run build
 
 구조:
 
-```text
-React Source
-
-      ↓
-
-Vite Build
-
-      ↓
-
-dist/
-
-      ↓
-
-Web Server / Container
-
-      ↓
-
-Deployment
+```mermaid
+graph TD
+  Source[React Source] --> Vite[Vite Build] --> Dist[dist/] --> Server[Web Server / Container] --> Deploy[Deployment]
 ```
 
 Vite는 개발 서버와 production용 build 기능을 제공한다. :chatgpt-content-reference{index="6"}
@@ -1321,7 +1146,7 @@ AI에게 단순히:
 코드 고쳐줘
 ```
 
-라고 하지 않는다.
+라고 하지 않는다。
 
 다음 관점으로 검토한다。
 
@@ -1353,7 +1178,7 @@ AI에게 단순히:
 
 ## 미션
 
-다음 기능을 가진 **AI 서비스 스타터킷 Frontend**를 완성한다.
+다음 기능을 가진 **AI 서비스 스타터킷 Frontend**를 완성한다。
 
 ### 필수 기능
 
@@ -1414,14 +1239,9 @@ CRUD UI
 
 ## DAY 3
 
-```text
-React
-  ↕
-REST API
-  ↕
-FastAPI
-  ↕
-PostgreSQL
+```mermaid
+graph TD
+  React[React] --> REST[REST API] --> FastAPI[FastAPI] --> PostgreSQL[PostgreSQL]
 ```
 
 ↓
@@ -1571,7 +1391,7 @@ FastAPI + React 기반 JWT 인증 구조를
 
 ### 문제 1
 
-다음 Component의 문제점을 찾아 수정하시오.
+다음 Component의 문제점을 찾아 수정하시오。
 
 ### 문제 2
 
@@ -1671,46 +1491,15 @@ React를 가르친 뒤 학생이 다음 질문에 답할 수 있으면 성공적
 
 # 최종 도달 수준
 
-```text
-             요구사항
-
-                ↓
-
-        Component 설계
-
-                ↓
-
-      React 화면 구현
-      ┌─────┴─────┐
-    State        Router
-
-      └─────┬─────┘
-            ↓
-
-        REST API
-
-            ↓
-
-         FastAPI
-
-       ┌────┴────┐
-       ↓         ↓
-
- PostgreSQL    LangChain
-                  ↓
-                 LLM
-
-            ↓
-
-     JWT / Authentication
-
-            ↓
-
-        Build / Deploy
-
-            ↓
-
-      GitHub Starter Kit
+```mermaid
+graph TD
+  Req[요구사항] --> CompDesign[Component 설계] --> ReactImpl[React 화면 구현] --> REST[REST API] --> FastAPI[FastAPI]
+  FastAPI --> PostgreSQL[PostgreSQL]
+  FastAPI --> LangChain[LangChain] --> LLM[LLM]
+  REST --> FastAPI
+  ReactImpl --> StateAndRouter[State / Router]
+  StateAndRouter --> REST
+  LLM --> Auth[JWT / Authentication] --> Build[Build / Deploy] --> Starter[GitHub Starter Kit]
 ```
 
 수강생이 React 코드를 모두 암기할 필요는 없다。
@@ -1735,7 +1524,7 @@ React를 가르친 뒤 학생이 다음 질문에 답할 수 있으면 성공적
 
 이번 React 과정에서 가장 중요한 변화는 다음이다。
 
-```mermaid name=04-api-architecture-auth-security/React/React_학습내용.md url=https://github.com/simpleego/AX_Service_Builder/blob/main/04-api-architecture-auth-security/React/React_%ED%95%99%EC%8A%B5%EB%82%B4%EC%9A%A9.md#%EA%B3%BC%EC%A0%95-%EC%84%A4%EA%B3%84%EC%9D%98-%ED%95%B5%EC%8B%AC-%EC%9B%90%EC%B9%99
+```mermaid
 graph LR
   subgraph 기존_React_교육["기존 React 교육"]
     direction TB
