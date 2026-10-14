@@ -1047,6 +1047,32 @@ flowchart TD
 
 최종적으로 다음 정도를 권장한다.
 
+mindmap
+  root((frontend))
+    src
+      api
+        client.js
+        authApi.js
+        productApi.js
+        chatApi.js
+      components
+        common
+        layout
+        product
+        chat
+      pages
+        HomePage.jsx
+        LoginPage.jsx
+        ProductPage.jsx
+        ChatPage.jsx
+        MyPage.jsx
+      contexts
+        AuthContext.jsx
+      hooks
+      utils
+      App.jsx
+      main.jsx
+
 ```text
 frontend/
 └─ src/
