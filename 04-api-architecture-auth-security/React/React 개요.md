@@ -1,6 +1,4 @@
-1차 프로젝트에서 **HTML/CSS/JavaScript + FastAPI + DB**까지 경험한 뒤 React로 전환한다면, React를 처음부터 깊게 가르치기보다는 **“FastAPI 기반 서비스를 React로 구조화하고 AI와 함께 확장할 수 있는 수준”**을 목표로 잡는 것이 좋습니다.
-
-특히 뒤이어 학습할 **REST API, JWT, OAuth2, Swagger, Postman**과 React 교육을 별개의 내용으로 분리하지 말고 하나의 흐름으로 연결하는 것이 효과적입니다.
+# React 개요
 
 ## 1. React 교육의 최종 목표
 
