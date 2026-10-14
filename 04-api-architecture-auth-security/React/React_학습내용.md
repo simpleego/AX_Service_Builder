@@ -743,7 +743,7 @@ const data =
 
 # 3교시 — useEffect
 
-React 공식 문서에서 Effect는 외부 시스템과 React Component를 동기화하는 Hook으로 설명된다. 네트워크나 외부 시스템과 연결되지 않은 단순 계산에 Effect를 남용하지 않는 것이 중요하다. :chatgpt-content-reference{index="3"}
+React 공식 문서에서 Effect는 외부 시스템과 React Component를 동기화하는 Hook으로 설명된다. 네트워크나 외부 시스템과 연결되지 않은 단순 계산에 Effect[...] 
 
 ```jsx
 useEffect(() => {
@@ -920,7 +920,7 @@ PostgreSQL
 4. 인증 API를 호출할 수 있다.
 5. 보호된 페이지를 구현할 수 있다.
 
-React Router는 현재 Declarative, Data, Framework 방식으로 사용할 수 있다. 이 과정에서는 FastAPI가 백엔드를 담당하므로 React Router의 복잡한 풀스택 Framework 기능보다 **Declarative 또는 Data 방식의 클라이언트 Routing**에 집중하는 것이 적합하다. :chatgpt-content-reference{index="4"}
+React Router는 현재 Declarative, Data, Framework 방식으로 사용할 수 있다. 이 과정에서는 FastAPI가 백엔드를 담당하므로 React Router의 복잡한 풀스택 Framework 기능[...] 
 
 ---
 
@@ -1038,8 +1038,6 @@ AuthContext
 ```
 
 Context는 이 정도 범위에서만 사용한다.
-
-Redux까지 확대하지 않는다.
 
 ---
 
@@ -1325,7 +1323,7 @@ AI에게 단순히:
 
 라고 하지 않는다.
 
-다음 관점으로 검토한다.
+다음 관점으로 검토한다。
 
 ```text
 1. Component 책임이 명확한가?
@@ -1556,7 +1554,7 @@ FastAPI + React 기반 JWT 인증 구조를
 
 # 수강생 평가방법
 
-기존 방식처럼 React 코드를 처음부터 암기하여 작성하는 평가보다는 다음 방법을 권장한다.
+기존 방식처럼 React 코드를 처음부터 암기하여 작성하는 평가보다는 다음 방법을 권장한다。
 
 | 평가 | 비중 |
 |---|---:|
@@ -1577,7 +1575,7 @@ FastAPI + React 기반 JWT 인증 구조를
 
 ### 문제 2
 
-다음 화면을 Component 구조로 설계하시오.
+다음 화면을 Component 구조로 설계하시오。
 
 ```text
 Dashboard
@@ -1588,7 +1586,7 @@ AI Chat
 
 ### 문제 3
 
-다음 API를 사용하는 React 코드를 AI를 활용하여 작성하고 결과를 검증하시오.
+다음 API를 사용하는 React 코드를 AI를 활용하여 작성하고 결과를 검증하시오。
 
 ```http
 GET /api/products
@@ -1602,9 +1600,9 @@ DELETE /api/products/{id}
 
 ### 문제 4
 
-로그인 후 `/mypage` 호출에서 HTTP 401 오류가 발생하였다.
+로그인 후 `/mypage` 호출에서 HTTP 401 오류가 발생하였다。
 
-다음을 조사하시오.
+다음을 조사하시오。
 
 ```text
 React 문제인가?
@@ -1620,13 +1618,13 @@ FastAPI 인증 문제인가?
 
 ### 문제 5
 
-AI가 생성한 React 코드에서 불필요한 State와 useEffect를 찾아 수정하시오.
+AI가 생성한 React 코드에서 불필요한 State와 useEffect를 찾아 수정하시오。
 
 ---
 
 # 강사가 특히 강조해야 할 7가지
 
-React를 가르친 뒤 학생이 다음 질문에 답할 수 있으면 성공적이다.
+React를 가르친 뒤 학생이 다음 질문에 답할 수 있으면 성공적이다。
 
 ### ① Component
 
@@ -1673,8 +1671,6 @@ React를 가르친 뒤 학생이 다음 질문에 답할 수 있으면 성공적
 
 # 최종 도달 수준
 
-40시간 이후 수강생에게 요구할 수준은 다음이다.
-
 ```text
              요구사항
 
@@ -1717,7 +1713,7 @@ React를 가르친 뒤 학생이 다음 질문에 답할 수 있으면 성공적
       GitHub Starter Kit
 ```
 
-수강생이 React 코드를 모두 암기할 필요는 없다.
+수강생이 React 코드를 모두 암기할 필요는 없다。
 
 대신,
 
@@ -1737,55 +1733,43 @@ React를 가르친 뒤 학생이 다음 질문에 답할 수 있으면 성공적
 
 # 과정 설계의 핵심 원칙
 
-이번 React 과정에서 가장 중요한 변화는 다음이다.
+이번 React 과정에서 가장 중요한 변화는 다음이다。
 
-```text
-기존 React 교육
+```mermaid name=04-api-architecture-auth-security/React/React_학습내용.md url=https://github.com/simpleego/AX_Service_Builder/blob/main/04-api-architecture-auth-security/React/React_%ED%95%99%EC%8A%B5%EB%82%B4%EC%9A%A9.md#%EA%B3%BC%EC%A0%95-%EC%84%A4%EA%B3%84%EC%9D%98-%ED%95%B5%EC%8B%AC-%EC%9B%90%EC%B9%99
+graph LR
+  subgraph 기존_React_교육["기존 React 교육"]
+    direction TB
+    JSX["JSX"]
+    Component["Component"]
+    Props["Props"]
+    State["State"]
+    Hook1["Hook"]
+    Hook2["Hook"]
+    Hook3["Hook"]
+    ReactSyntax["React 문법 학습"]
+    JSX --> Component --> Props --> State --> Hook1 --> Hook2 --> Hook3 --> ReactSyntax
+  end
 
-JSX
- ↓
-Component
- ↓
-Props
- ↓
-State
- ↓
-Hook
- ↓
-Hook
- ↓
-Hook
- ↓
-React 문법 학습
-
-
-AX 과정 React 교육
-
-화면 요구사항
- ↓
-Component 설계
- ↓
-State 설계
- ↓
-AI와 React 구현
- ↓
-FastAPI 연결
- ↓
-JWT 인증
- ↓
-AI Service 연결
- ↓
-Test / Debug
- ↓
-Build
- ↓
-Reusable Starter Kit
+  subgraph AX_과정_React_교육["AX 과정 React 교육"]
+    direction TB
+    Req["화면 요구사항"]
+    CompDesign["Component 설계"]
+    StateDesign["State 설계"]
+    AIReact["AI와 React 구현"]
+    FastAPI["FastAPI 연결"]
+    JWT["JWT 인증"]
+    AIService["AI Service 연결"]
+    TestDebug["Test / Debug"]
+    Build["Build"]
+    Starter["Reusable Starter Kit"]
+    Req --> CompDesign --> StateDesign --> AIReact --> FastAPI --> JWT --> AIService --> TestDebug --> Build --> Starter
+  end
 ```
 
-즉 **React 자체를 배우는 40시간이 아니라, React를 이용해 AI 풀스택 서비스를 구축하는 방법을 배우는 40시간**으로 구성한다.
+즉 **React 자체를 배우는 40시간이 아니라, React를 이용해 AI 풀스택 서비스를 구축하는 방법을 배우는 40시간**으로 구성한다。
 
-이 구성이라면 특히 **3일차부터 실제 2차 프로젝트의 frontend를 조금씩 만들기 시작해서, 5일차 결과물이 그대로 스타터킷의 초기 React 코드베이스가 되도록 하는 방식**이 좋습니다. 별도의 연습용 Todo 프로젝트를 끝까지 만들고 다시 본 프로젝트를 시작하는 것보다 교육 효율이 높습니다.
+이 구성이라면 특히 **3일차부터 실제 2차 프로젝트의 frontend를 조금씩 만들기 시작해서, 5일차 결과물이 그대로 스타터킷의 초기 React 코드베이스가 되...**
 
-또 한 가지 중요한 점은 **Redux를 40시간 안에 넣지 않는 것**입니다. 인증 정도는 Context로 처리하고, 나머지는 지역 State를 중심으로 구성하면 충분합니다. 이후 프로젝트 규모가 커져 전역 서버 상태 관리가 실제 문제가 될 때 TanStack Query나 별도 상태관리 도구를 도입하는 편이 교육적으로도 자연스럽습니다. React 공식 문서 역시 불필요한 Effect를 줄이고 상태 구조 자체를 제대로 설계하는 것을 강조합니다. [React](https://react.dev/learn/managing-state?utm_source=chatgpt.com)
+또 한 가지 중요한 점은 **Redux를 40시간 안에 넣지 않는 것**입니다. 인증 정도는 Context로 처리하고, 나머지는 지역 State를 중심으로 구성하면 충분합니... 
 
-제가 이 과정의 **React 핵심을 5개만 압축**한다면 `Component 설계 → State → API 연동 → Router/JWT → 재사용 구조`입니다. 이 다섯 가지를 확실히 이해한 뒤 AI를 사용하게 하는 것이 2차 프로젝트와 가장 잘 맞습니다.
+제가 이 과정의 **React 핵심을 5개만 압축**한다면 `Component 설계 → State → API 연동 → Router/JWT → 재사용 구조`입니다. 이 다섯 가지를 확실히 이해한 뒤 ...
