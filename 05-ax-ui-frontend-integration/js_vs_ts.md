@@ -47,6 +47,25 @@ TypeScript
 React + TypeScript
 ```
 
+```TypeScript
+// TypeScript
+interface User { // 모델 객체 선언
+id: string;
+name: string;
+email: string;
+}
+
+async function getUser(id: string): Promise<User | null> {
+const response = await fetch( /api/users/${id}`);
+if (!response.ok) return null;
+return response.json();
+}
+
+// 사용 시점
+const user = await getUser("123");
+console.log(user.nmae); // X IDE에서 즉시 오류 표시: 'nmae' →'name"
+```
+
 형태가 많이 사용됩니다.
 
 비전공자 교육에서는 **JavaScript 기본 문법을 먼저 익힌 뒤 TypeScript를 배우는 순서**가 이해하기 좋습니다. TypeScript도 결국 실행할 때는 JavaScript로 변환되기 때문입니다.
