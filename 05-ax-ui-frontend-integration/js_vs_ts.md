@@ -55,6 +55,8 @@ name: string;
 email: string;
 }
 
+TypeScript interface = 객체 구조를 정의해서 개발 단계에서 타입 오류를 잡기 위한 기능
+
 async function getUser(id: string): Promise<User | null> {
 const response = await fetch( /api/users/${id}`);
 if (!response.ok) return null;
