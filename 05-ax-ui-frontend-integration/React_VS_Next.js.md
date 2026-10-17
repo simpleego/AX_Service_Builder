@@ -12,6 +12,14 @@
 | SEO | 추가 설정 필요 | 상대적으로 유리 |
 | 프로젝트 구조 | 자유로움 | 정해진 구조가 있음 |
 
+---
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/006fbf3c-4028-43f5-a9b1-30bdd880903b" />
+
+---
+
+
+
+
 예를 들어 React만 사용하면 보통:
 
 ```text
