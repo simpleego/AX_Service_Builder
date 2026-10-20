@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FastAPI ↔ JavaScript | 통신 17종 실습</title>
+  <style>
+    :root{font-family:system-ui,'Malgun Gothic',sans-serif;color:#e9effa;background:#0b1020;color-scheme:dark}
+    *{box-sizing:border-box}body{margin:0}header{padding:28px 5vw;background:linear-gradient(105deg,#192c63,#13213c);border-bottom:1px solid #344568}
+    h1{margin:0 0 8px;font-size:clamp(24px,3vw,36px)}header p{color:#bdd0ef;margin:0}main{width:min(1300px,94%);margin:26px auto;display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
+    .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}.panel,.output{background:#151f36;border:1px solid #293858;border-radius:14px;padding:18px;box-shadow:0 8px 25px #05091540}
+    .panel h2{margin:0 0 7px;font-size:18px}.panel small{color:#9cadd0;display:block;margin-bottom:13px;line-height:1.5}.fields{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+    input{min-width:0;width:100%;background:#0d1730;border:1px solid #3c5075;border-radius:8px;padding:10px;color:white}input[type=number]{width:70px}input[type=file]{padding:7px}
+    button{border:0;border-radius:8px;padding:10px 12px;cursor:pointer;font-weight:700;background:#5c8ef8;color:#09152f}button:hover{filter:brightness(1.12)}button.secondary{background:#344767;color:#eaf2ff}button.danger{background:#ef7979;color:#281017}
+    .output{position:sticky;top:16px}pre{background:#090f20;border-radius:10px;padding:14px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:68vh;overflow:auto;font:13px/1.6 Consolas,monospace;color:#b9e9ca}
+    .badge{display:inline-block;color:#9fd8ac;border:1px solid #335b49;border-radius:30px;padding:5px 10px;font-size:12px;margin:8px 0}.hint{color:#b9c9df;font-size:13px;line-height:1.5}
+    @media(max-width:930px){main{grid-template-columns:1fr}.output{position:static}} 
+  </style>
+</head>
+<body>
+<header><h1>클라이언트 ↔ 서버 통신 실습</h1><p>Vanilla JavaScript + FastAPI | 17가지 전송 방식별 버튼을 눌러 결과 비교</p><span class="badge" id="health">서버 상태: 확인 전</span></header>
+<main>
+<section class="board">
+  <article class="panel"><h2>01. URL Path Parameter</h2><small>GET /students/{id} — 경로에 식별자 포함</small><div class="fields"><input id="path-id" type="number" value="1" min="1"></div><button onclick="pathDemo()">학생 조회</button></article>
+  <article class="panel"><h2>02. Query String</h2><small>GET /search?keyword=...&page=...</small><div class="fields"><input id="keyword" value="FastAPI"><input id="page" type="number" value="1" min="1"></div><button onclick="queryDemo()">검색 요청</button></article>
+  <article class="panel"><h2>03. 전통 HTML Form</h2><small>POST + 페이지 이동 (현재 탭에서 JSON 대신 HTML 응답)</small><form action="http://127.0.0.1:8000/traditional-login" method="post"><div class="fields"><input name="username" value="hong" required><input type="password" name="password" value="1234" required></div><button type="submit">Form 제출</button></form></article>
+  <article class="panel"><h2>04. XMLHttpRequest / AJAX</h2><small>XHR 객체로 GET, 페이지 변경 없이 데이터 수신</small><button onclick="xhrDemo()">XHR 요청</button></article>
+  <article class="panel"><h2>05. Fetch API GET</h2><small>fetch() + response.json()</small><button onclick="run('GET','/student')">Fetch 조회</button></article>
+  <article class="panel"><h2>06. JSON POST / 성적 계산</h2><small>JSON.stringify() → Pydantic 검증 → 평균/학점</small><div class="fields"><input id="score-name" value="홍길동" placeholder="이름"><label>국어 <input id="kor" type="number" value="90" min="0" max="100"></label><label>영어 <input id="eng" type="number" value="85" min="0" max="100"></label><label>수학 <input id="math" type="number" value="95" min="0" max="100"></label></div><button onclick="scoreDemo()">점수 계산</button></article>
+  <article class="panel"><h2>07. REST API CRUD</h2><small>조회 GET / 등록 POST / 수정 PUT / 삭제 DELETE</small><div class="fields"><input id="crud-id" type="number" value="1" min="1" placeholder="학생 ID"><input id="crud-name" value="이순신" placeholder="학생 이름"></div><div class="fields"><button onclick="run('GET','/students')">전체 조회</button><button onclick="crud('POST')">등록</button><button onclick="crud('PUT')">수정</button><button class="danger" onclick="crud('DELETE')">삭제</button></div></article>
+  <article class="panel"><h2>08. URLSearchParams</h2><small>application/x-www-form-urlencoded 전송</small><button onclick="urlencodedDemo()">URL 인코딩 전송</button></article>
+  <article class="panel"><h2>09. FormData</h2><small>multipart/form-data 입력 전송</small><button onclick="formDataDemo()">FormData 전송</button></article>
+  <article class="panel"><h2>10. 파일 업로드</h2><small>FormData + UploadFile / 최대 5MB, 저장하지 않음</small><div class="fields"><input id="upload-file" type="file"></div><button onclick="uploadDemo()">파일 전송</button></article>
+  <article class="panel"><h2>11. HTTP Header</h2><small>X-API-Key: demo-key-123 (교육용 고정 키)</small><button onclick="run('GET','/header-user',undefined,{'X-API-Key':'demo-key-123'})">Header 전송</button></article>
+  <article class="panel"><h2>12. Cookie</h2><small>HttpOnly Cookie 설정 → 다음 요청에 자동 포함</small><div class="fields"><button onclick="run('POST','/cookie-login',undefined,undefined,true)">설정</button><button onclick="run('GET','/mypage',undefined,undefined,true)">읽기</button><button class="secondary" onclick="run('POST','/cookie-logout',undefined,undefined,true)">삭제</button></div></article>
+  <article class="panel"><h2>13. Polling</h2><small>2초마다 GET /status 반복</small><div class="fields"><button onclick="startPolling()">시작</button><button class="secondary" onclick="stopPolling()">정지</button></div></article>
+  <article class="panel"><h2>14. Long Polling</h2><small>서버가 5초 후 응답하는 대기 방식 시연</small><div class="fields"><button onclick="startLongPoll()">시작</button><button class="secondary" onclick="stopLongPoll()">정지</button></div></article>
+  <article class="panel"><h2>15. SSE</h2><small>EventSource: 서버에서 진행률을 연속으로 전송</small><div class="fields"><button onclick="startSSE()">연결</button><button class="secondary" onclick="stopSSE()">종료</button></div></article>
+  <article class="panel"><h2>16. WebSocket</h2><small>WebSocket 양방향 메시지 송수신</small><div class="fields"><input id="ws-message" value="안녕하세요!" placeholder="메시지"><button onclick="connectWS()">연결</button><button onclick="sendWS()">전송</button><button class="secondary" onclick="disconnectWS()">종료</button></div></article>
+  <article class="panel"><h2>17. Streaming Response</h2><small>ReadableStream / TextDecoder로 텍스트 조각 수신</small><button onclick="streamDemo()">스트리밍 시작</button></article>
+</section>
+<aside class="output"><h2>실습 결과 모니터</h2><p class="hint">HTTP Method · URL · 응답 상태 · 서버 데이터가 기록됩니다. 개발자 도구(F12) → Network에서도 요청을 확인해 보세요.</p><button class="secondary" onclick="clearLog()">로그 지우기</button><pre id="log" aria-live="polite">버튼을 눌러 통신을 시작하세요.</pre></aside>
+</main>
+<script>
+'use strict';
+const API='http://127.0.0.1:8000';
+const $=id=>document.getElementById(id);
+let pollingTimer=null, longPollActive=false, longPollController=null, eventSource=null, socket=null;
+function stamp(){return new Date().toLocaleTimeString('ko-KR');}
+function log(label,data){const val=typeof data==='string'?data:JSON.stringify(data,null,2);$('log').textContent=`[${stamp()}] ${label}\n${val}\n\n`+($('log').textContent==='버튼을 눌러 통신을 시작하세요.'?'':$('log').textContent);}
+function clearLog(){$('log').textContent='';}
+async function parseResponse(r){const text=await r.text();let data;try{data=text?JSON.parse(text):null;}catch{data=text;}if(!r.ok)throw Error(`HTTP ${r.status}: ${JSON.stringify(data)}`);return data;}
+async function run(method,path,body,headers={},credentials=false){try{const opts={method,headers,credentials:credentials?'include':'same-origin'};if(body!==undefined)opts.body=body;const response=await fetch(API+path,opts);const data=await parseResponse(response);log(`${method} ${path} → ${response.status}`,data);return data;}catch(err){log(`오류: ${method} ${path}`,err.message);return null;}}
+function pathDemo(){run('GET','/students/'+encodeURIComponent($('path-id').value));}
+function queryDemo(){const qs=new URLSearchParams({keyword:$('keyword').value,page:$('page').value});run('GET','/search?'+qs);}
+function xhrDemo(){const x=new XMLHttpRequest();x.open('GET',API+'/student');x.onload=()=>{try{log(`XHR GET /student → ${x.status}`,JSON.parse(x.responseText));}catch(e){log('XHR 파싱 오류',e.message);}};x.onerror=()=>log('XHR 통신 오류','서버 연결을 확인하세요.');x.send();}
+function scoreDemo(){const data={name:$('score-name').value,kor:Number($('kor').value),eng:Number($('eng').value),math:Number($('math').value)};run('POST','/scores',JSON.stringify(data),{'Content-Type':'application/json'});}
+function crud(method){const id=encodeURIComponent($('crud-id').value);const path=method==='POST'?'/students':'/students/'+id;if(method==='DELETE')return run(method,path);return run(method,path,JSON.stringify({name:$('crud-name').value}),{'Content-Type':'application/json'});}
+function urlencodedDemo(){const b=new URLSearchParams({username:'hong',password:'1234'});run('POST','/urlencoded',b);}
+function formDataDemo(){const b=new FormData();b.append('username','hong');run('POST','/formdata',b);}
+function uploadDemo(){const f=$('upload-file').files[0];if(!f){log('파일 업로드','먼저 파일을 선택하세요.');return;}const b=new FormData();b.append('name','홍길동');b.append('file',f);run('POST','/upload',b);}
+function startPolling(){if(pollingTimer)return;log('Polling','2초 주기 시작');run('GET','/status');pollingTimer=setInterval(()=>run('GET','/status'),2000);}
+function stopPolling(){if(pollingTimer)clearInterval(pollingTimer);pollingTimer=null;log('Polling','정지');}
+async function startLongPoll(){if(longPollActive)return;longPollActive=true;log('Long Polling','대기 요청 시작 (5초)');while(longPollActive){longPollController=new AbortController();try{const r=await fetch(API+'/long-poll',{signal:longPollController.signal});const data=await parseResponse(r);if(longPollActive)log(`GET /long-poll → ${r.status}`,data);}catch(e){if(e.name!=='AbortError'){log('Long Polling 오류',e.message);longPollActive=false;}}}longPollController=null;}
+function stopLongPoll(){longPollActive=false;longPollController?.abort();log('Long Polling','정지');}
+function startSSE(){stopSSE(false);eventSource=new EventSource(API+'/events');log('SSE','연결 시작');eventSource.onmessage=e=>log('SSE data',e.data);eventSource.addEventListener('finished',e=>{log('SSE finished',e.data);stopSSE(false);});eventSource.onerror=()=>{log('SSE','연결 오류 또는 연결 끊김');stopSSE(false);};}
+function stopSSE(show=true){eventSource?.close();eventSource=null;if(show)log('SSE','연결 종료');}
+function connectWS(){if(socket&&socket.readyState<=1){log('WebSocket','이미 연결 중입니다.');return;}socket=new WebSocket(API.replace(/^http/,'ws')+'/ws');socket.onopen=()=>log('WebSocket','연결 성공');socket.onmessage=e=>log('WebSocket 서버 메시지',e.data);socket.onerror=()=>log('WebSocket','연결 오류');socket.onclose=()=>log('WebSocket','연결 종료');}
+function sendWS(){if(!socket||socket.readyState!==WebSocket.OPEN){log('WebSocket','먼저 연결 버튼을 누르세요.');return;}const message=$('ws-message').value;socket.send(message);log('WebSocket 전송',message);}
+function disconnectWS(){socket?.close();socket=null;}
+async function streamDemo(){try{const r=await fetch(API+'/stream');if(!r.ok)throw Error('HTTP '+r.status);if(!r.body)throw Error('ReadableStream 미지원');const reader=r.body.getReader(),decoder=new TextDecoder();let result='';log('Streaming','연결 및 수신 시작');while(true){const {value,done}=await reader.read();if(done)break;result+=decoder.decode(value,{stream:true});log('Streaming 누적 텍스트',result);}result+=decoder.decode();log('Streaming 최종 결과',result);}catch(e){log('Streaming 오류',e.message);}}
+(async()=>{try{const r=await fetch(API+'/hello');if(!r.ok)throw Error('서버 응답 오류');$('health').textContent='서버 상태: 연결 성공';}catch{$('health').textContent='서버 상태: 연결 안 됨 (8000 포트 확인)';}})();
+window.addEventListener('pagehide',()=>{stopPolling();stopLongPoll();stopSSE(false);disconnectWS();});
+</script>
+</body>
+</html>
