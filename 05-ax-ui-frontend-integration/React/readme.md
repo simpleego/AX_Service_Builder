@@ -15,6 +15,11 @@
 | 5-7 | [화면 QA 및 통합 실습](05-07-qa.md) | 8H | QA 체크리스트, 버그 리포트, 컴포넌트 테스트, 최종 시연 |
 | 합계 | 이론·시연 21H + 실습 28H + 검토·평가 7H | **56H** | 백엔드와 연동된 반응형 회원관리 화면 |
 
+## React 관련 기술 집합
+<img width="1055" height="1491" alt="image" src="https://github.com/user-attachments/assets/d538007a-6b42-4861-a3a8-0648a4d4fc23" />
+
+---
+
 ## 학습 경로
 
 ```mermaid
