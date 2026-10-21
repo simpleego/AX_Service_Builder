@@ -17,7 +17,7 @@
 
 ## React 관련 기술 집합
 <img width="1055" height="1491" alt="image" src="https://github.com/user-attachments/assets/d538007a-6b42-4861-a3a8-0648a4d4fc23" />
-
+[React 관련기술 보기](./React 관련기술.md)
 ---
 
 ## 학습 경로
