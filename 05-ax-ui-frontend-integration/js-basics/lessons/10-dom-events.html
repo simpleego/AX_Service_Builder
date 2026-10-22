@@ -1,0 +1,192 @@
+<!doctype html>
+<!--
+============================================================
+10. DOM과 이벤트: React가 왜 필요한지 느껴 보기
+실행: 이 파일을 브라우저(Chrome)로 열기 (파일을 더블클릭하거나 브라우저 창에 끌어다 놓기)
+      F12를 눌러 개발자 도구의 Console 탭도 함께 보세요.
+============================================================
+DOM = 브라우저가 HTML을 읽어 만든 "화면 요소 나무".
+자바스크립트로 DOM을 직접 바꾸면 화면이 바뀝니다.
+React가 없던 시절에는 이렇게 화면을 만들었고, React도 결국 DOM을 바꿉니다.
+
+이 페이지의 할 일 앱은 v1(react-mini)과 같은 기능을 React 없이 만든 것입니다.
+코드를 읽으면서 "React에서는 이 부분이 어떻게 사라지는지"를 생각해 보세요.
+-->
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>10. DOM과 이벤트</title>
+    <style>
+      body { font-family: system-ui, 'Malgun Gothic', sans-serif; max-width: 520px; margin: 32px auto; padding: 0 16px; line-height: 1.5; }
+      section { border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+      h2 { margin-top: 0; font-size: 1.1rem; }
+      li.done span { text-decoration: line-through; color: #999; }
+      li { display: flex; gap: 8px; align-items: center; padding: 4px 0; }
+      li span { flex: 1; }
+      .on { background: #333; color: #fff; }
+      .hint { color: #666; font-size: 0.9rem; }
+    </style>
+  </head>
+  <body>
+    <h1>10. DOM과 이벤트</h1>
+
+    <section>
+      <h2>1. 요소 찾기와 바꾸기</h2>
+      <p id="greeting">안녕하세요</p>
+      <button id="change-btn">글자 바꾸기</button>
+    </section>
+
+    <section>
+      <h2>2. 카운터 (이벤트와 상태)</h2>
+      <p>현재 값: <strong id="count">0</strong></p>
+      <button id="minus">-1</button>
+      <button id="plus">+1</button>
+      <p class="hint">값(count)이 바뀔 때마다 화면 글자도 "직접" 바꿔 줘야 합니다.</p>
+    </section>
+
+    <section>
+      <h2>3. 할 일 앱 (React 없이)</h2>
+      <h3 id="title">할 일</h3>
+      <form id="todo-form">
+        <input id="todo-input" placeholder="할 일을 입력하세요" />
+        <button type="submit">추가</button>
+      </form>
+      <p>
+        <button data-filter="all" class="on">전체</button>
+        <button data-filter="active">진행 중</button>
+        <button data-filter="done">완료</button>
+      </p>
+      <ul id="todo-list"></ul>
+      <p class="hint">새로고침해도 목록이 남아 있습니다(localStorage).</p>
+    </section>
+
+    <script>
+      // ── 1. 요소 찾기와 바꾸기 ─────────────────────────────
+      const greeting = document.querySelector('#greeting'); // CSS 선택자로 찾기
+      const changeBtn = document.querySelector('#change-btn');
+
+      // addEventListener(이벤트 이름, 실행할 함수)
+      changeBtn.addEventListener('click', () => {
+        greeting.textContent = '버튼을 눌렀습니다!'; // 글자 바꾸기
+        greeting.style.color = 'crimson';            // 스타일 바꾸기
+      });
+
+      // ── 2. 카운터 ─────────────────────────────────────────
+      let count = 0; // 상태(state)
+      const countEl = document.querySelector('#count');
+
+      function renderCount() {
+        countEl.textContent = count; // 상태를 화면에 반영
+      }
+      document.querySelector('#plus').addEventListener('click', () => {
+        count = count + 1;
+        renderCount(); // ← 이걸 빠뜨리면 값은 바뀌었는데 화면은 그대로!
+      });
+      document.querySelector('#minus').addEventListener('click', () => {
+        count = count - 1;
+        renderCount();
+      });
+
+      // ── 3. 할 일 앱 ───────────────────────────────────────
+      // 상태: 할 일 목록과 현재 필터
+      let todos = JSON.parse(localStorage.getItem('dom-todos') ?? '[]');
+      let filter = 'all';
+
+      const form = document.querySelector('#todo-form');
+      const input = document.querySelector('#todo-input');
+      const list = document.querySelector('#todo-list');
+      const titleEl = document.querySelector('#title');
+
+      // 상태 → 화면. 상태가 바뀔 때마다 "직접" 불러야 한다.
+      function render() {
+        const left = todos.filter(t => !t.done).length;
+        titleEl.textContent = `할 일 (${left}개 남음)`;
+
+        const visible = todos.filter(t =>
+          filter === 'active' ? !t.done : filter === 'done' ? t.done : true,
+        );
+
+        list.innerHTML = ''; // 기존 목록을 지우고 처음부터 다시 만든다
+        if (visible.length === 0) {
+          list.innerHTML = '<li class="hint">표시할 항목이 없습니다.</li>';
+        }
+        for (const todo of visible) {
+          const li = document.createElement('li'); // 새 요소 만들기
+          if (todo.done) li.classList.add('done');
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = todo.done;
+          checkbox.addEventListener('change', () => toggleTodo(todo.id));
+
+          const span = document.createElement('span');
+          span.textContent = todo.title; // innerHTML 대신 textContent: 사용자가 입력한 HTML이 실행되지 않게
+
+          const del = document.createElement('button');
+          del.textContent = '삭제';
+          del.addEventListener('click', () => deleteTodo(todo.id));
+
+          li.append(checkbox, span, del);
+          list.append(li); // 화면에 붙이기
+        }
+
+        // 필터 버튼 강조
+        document.querySelectorAll('[data-filter]').forEach(btn => {
+          btn.classList.toggle('on', btn.dataset.filter === filter);
+        });
+
+        localStorage.setItem('dom-todos', JSON.stringify(todos)); // 저장
+      }
+
+      // 상태를 바꾸는 함수들 (React 버전과 거의 같다!)
+      function addTodo(title) {
+        todos = [...todos, { id: Date.now(), title, done: false }];
+        render();
+      }
+      function toggleTodo(id) {
+        todos = todos.map(t => (t.id === id ? { ...t, done: !t.done } : t));
+        render();
+      }
+      function deleteTodo(id) {
+        todos = todos.filter(t => t.id !== id);
+        render();
+      }
+
+      // 이벤트 연결
+      form.addEventListener('submit', event => {
+        event.preventDefault(); // 폼 제출 시 페이지 새로고침 막기
+        const title = input.value.trim();
+        if (!title) return;
+        addTodo(title);
+        input.value = '';
+      });
+      document.querySelectorAll('[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          filter = btn.dataset.filter;
+          render();
+        });
+      });
+
+      render(); // 처음 화면 그리기
+      console.log('10강 페이지 준비 완료. 할 일 수:', todos.length);
+
+      /*
+      ============================================================
+      생각해 볼 점: React를 쓰면 무엇이 달라지나?
+      ------------------------------------------------------------
+      1. render()를 직접 부르지 않아도 된다.
+         setTodos(...)로 state만 바꾸면 React가 알아서 화면을 다시 그린다.
+      2. 화면을 "만드는 과정"(createElement, append, innerHTML = '')을 쓰지 않는다.
+         "이 state일 때 화면은 이렇게 생겼다"(JSX)만 적으면 된다.
+      3. 목록 전체를 지우고 다시 만들지 않는다.
+         React는 바뀐 부분만 찾아서 고친다. (그래서 key가 필요하다)
+      4. 그대로 남는 것: addTodo / toggleTodo / deleteTodo 안의
+         map, filter, 전개 연산자. 05~06강에서 배운 내용이 React의 핵심 로직이다.
+
+      v1 react-mini의 App.jsx를 열어 이 파일과 한 줄씩 비교해 보세요.
+      ============================================================
+      */
+    </script>
+  </body>
+</html>

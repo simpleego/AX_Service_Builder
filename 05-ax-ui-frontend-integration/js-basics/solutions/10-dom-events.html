@@ -1,0 +1,143 @@
+<!doctype html>
+<!--
+============================================================
+연습 10. DOM과 이벤트 (브라우저 실습)
+실행: exercises/10-dom-events.html 을 브라우저로 열기   (정답: solutions/10-dom-events.html)
+이 연습은 자동 채점이 없습니다. 화면에서 직접 눌러 보며 확인하세요.
+<script> 안의 ▼ 와 ▲ 사이에 코드를 작성하고, 저장한 뒤 브라우저를 새로고침하세요.
+막히면 F12 → Console 탭에서 빨간 에러 메시지를 읽어 보세요.
+============================================================
+-->
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>연습 10. DOM과 이벤트</title>
+    <style>
+      body { font-family: system-ui, 'Malgun Gothic', sans-serif; max-width: 520px; margin: 32px auto; padding: 0 16px; line-height: 1.5; }
+      section { border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+      h2 { margin-top: 0; font-size: 1.05rem; }
+      .goal { color: #666; font-size: 0.9rem; }
+      .over { color: crimson; font-weight: bold; }
+    </style>
+  </head>
+  <body>
+    <h1>연습 10. DOM과 이벤트</h1>
+
+    <section>
+      <h2>문제 1. 다크 모드 버튼</h2>
+      <p class="goal">버튼을 누르면 body 배경이 #222, 글자가 #eee로 바뀌고 버튼 글자가 "라이트 모드"가 됩니다. 다시 누르면 원래대로.</p>
+      <button id="theme-btn">다크 모드</button>
+    </section>
+
+    <section>
+      <h2>문제 2. 카운터 + 초기화</h2>
+      <p class="goal">+1, -1, 초기화 버튼이 동작하고, 값이 0보다 작아지지 않게 합니다.</p>
+      <p>값: <strong id="count">0</strong></p>
+      <button id="minus">-1</button>
+      <button id="plus">+1</button>
+      <button id="reset">초기화</button>
+    </section>
+
+    <section>
+      <h2>문제 3. 글자 수 세기</h2>
+      <p class="goal">입력할 때마다 "n / 20자"가 바뀌고, 20자를 넘으면 빨간색(class="over")이 됩니다. (input 이벤트)</p>
+      <input id="title-input" placeholder="제목을 입력하세요" />
+      <p id="char-count">0 / 20자</p>
+    </section>
+
+    <section>
+      <h2>문제 4. 장바구니 목록</h2>
+      <p class="goal">상품 이름을 입력하고 추가하면 목록에 생기고, 합계 개수가 바뀝니다. 빈 이름은 추가되지 않습니다.
+        상태는 배열(items)로 관리하고, 화면은 render() 함수 하나에서만 그립니다.</p>
+      <form id="cart-form">
+        <input id="item-input" placeholder="상품 이름" />
+        <button type="submit">추가</button>
+      </form>
+      <p id="cart-total">0개</p>
+      <ul id="cart-list"></ul>
+    </section>
+
+    <script>
+      // ── 문제 1 ─────────────────────────────────────────────
+      // 힌트: document.querySelector, addEventListener('click', …), document.body.style
+      // ▼
+      let dark = false;
+      const themeBtn = document.querySelector('#theme-btn');
+      themeBtn.addEventListener('click', () => {
+        dark = !dark;
+        document.body.style.background = dark ? '#222' : '';
+        document.body.style.color = dark ? '#eee' : '';
+        themeBtn.textContent = dark ? '라이트 모드' : '다크 모드';
+      });
+      // ▲
+
+      // ── 문제 2 ─────────────────────────────────────────────
+      // 힌트: let count = 0; 값을 바꾼 뒤에는 화면(#count)도 꼭 바꿔야 합니다.
+      // ▼
+      let count = 0;
+      const countEl = document.querySelector('#count');
+      const renderCount = () => (countEl.textContent = count);
+      document.querySelector('#plus').addEventListener('click', () => {
+        count += 1;
+        renderCount();
+      });
+      document.querySelector('#minus').addEventListener('click', () => {
+        count = Math.max(0, count - 1);
+        renderCount();
+      });
+      document.querySelector('#reset').addEventListener('click', () => {
+        count = 0;
+        renderCount();
+      });
+      // ▲
+
+      // ── 문제 3 ─────────────────────────────────────────────
+      // 힌트: input.addEventListener('input', event => …), event.target.value.length,
+      //       element.classList.toggle('over', 조건)
+      // ▼
+      const titleInput = document.querySelector('#title-input');
+      const charCount = document.querySelector('#char-count');
+      titleInput.addEventListener('input', event => {
+        const length = event.target.value.length;
+        charCount.textContent = `${length} / 20자`;
+        charCount.classList.toggle('over', length > 20);
+      });
+      // ▲
+
+      // ── 문제 4 ─────────────────────────────────────────────
+      // 힌트: let items = []; 추가할 때는 items = [...items, 새상품]; 그다음 render();
+      //       form의 submit 이벤트에서 event.preventDefault() 를 잊지 마세요.
+      //       목록은 document.createElement('li') 와 textContent 로 만듭니다.
+      // ▼
+      let items = [];
+      const cartForm = document.querySelector('#cart-form');
+      const itemInput = document.querySelector('#item-input');
+      const cartList = document.querySelector('#cart-list');
+      const cartTotal = document.querySelector('#cart-total');
+
+      function render() {
+        cartTotal.textContent = `${items.length}개`;
+        cartList.innerHTML = '';
+        for (const item of items) {
+          const li = document.createElement('li');
+          li.textContent = item;
+          cartList.append(li);
+        }
+      }
+
+      cartForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const name = itemInput.value.trim();
+        if (!name) return;
+        items = [...items, name];
+        itemInput.value = '';
+        render();
+      });
+      render();
+      // ▲
+
+      // 도전 과제: 문제 4의 각 항목 옆에 "삭제" 버튼을 달아 보세요. (filter 사용)
+    </script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "js-basics-for-react",
+  "private": true,
+  "version": "1.0.0",
+  "description": "React를 배우기 전에 알아야 할 자바스크립트 기초 (비전공자용)",
+  "type": "module",
+  "scripts": {
+    "check-solutions": "node lib/run-all.js solutions",
+    "check-exercises": "node lib/run-all.js exercises",
+    "check-lessons": "node lib/run-all.js lessons"
+  }
+}
