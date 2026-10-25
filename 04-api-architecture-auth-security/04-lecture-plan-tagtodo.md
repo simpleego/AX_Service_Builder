@@ -232,7 +232,8 @@ flowchart TD
 
 ### 📖 이론
 
-<img width="291" height="524" alt="image" src="https://github.com/user-attachments/assets/92595fda-db3c-4780-93d4-e26a41f39ddf" />
+<img width="935" height="1683" alt="image" src="https://github.com/user-attachments/assets/c6e10019-14b8-424a-b923-bed9f5d1efd1" />
+
 
 
 
