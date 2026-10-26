@@ -19,6 +19,8 @@ const DB = [
 async function fakeFetch(url) {
   await wait(100); // 네트워크가 걸리는 시간 흉내
   if (url === '/down') throw new TypeError('Failed to fetch'); // 서버가 꺼진 경우
+
+  // **“문자열이 /todos/로 시작하고, 그 뒤에 숫자가 한 개 이상 나오며, 숫자로 끝나야 한다”
   const match = url.match(/^\/todos\/(\d+)$/);
   if (url === '/todos') return { ok: true, status: 200, json: async () => DB };
   if (match) {
