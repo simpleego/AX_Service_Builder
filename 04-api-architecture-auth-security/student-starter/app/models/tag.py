@@ -1,0 +1,21 @@
+from sqlalchemy import Column, Integer, String, Table, ForeignKey
+from sqlalchemy.orm import relationship
+
+from app.db.database import Base
+
+# 1일차 ERD의 TODO_TAGS 교차 테이블 (N:M)
+todo_tags = Table(
+    "todo_tags",
+    Base.metadata,
+    Column("todo_id", Integer, ForeignKey("todos.id"), primary_key=True),
+    Column("tag_id", Integer, ForeignKey("tags.id"), primary_key=True),
+)
+
+
+class Tag(Base):
+    __tablename__ = "tags"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True, nullable=False)
+
+    todos = relationship("Todo", secondary=todo_tags, back_populates="tags")
