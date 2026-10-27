@@ -1,8 +1,8 @@
 # MPA(Multi Page Application)와 SPA(Single Page Application)
 > MPA와 SPA는 웹 애플리케이션의 '페이지 전환 방식'을 나누는 두 가지 핵심 아키텍처입니다.   
-[1] (https://magnificent7.tistory.com/entry/SPA-vs-MPA)
+[SPA](https://magnificent7.tistory.com/entry/SPA-vs-MPA)
 MPA는 메뉴를 누를 때마다 서버에서 새 페이지를 통째로 받아오는 전통적인 연극과 같고, SPA는 무대는 그대로 두고 필요한 소품(데이터)만 바꿔 끼우는 현대적인 연극과 같습니다.  
-[1] (https://itdaweb.com/community/spa-vs-mpa-%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%9A%B0%EB%A6%AC-%ED%9A%8C%EC%82%AC%EC%97%90-%EB%A7%9E%EB%8A%94-%EC%84%A0%ED%83%9D)
+[MPA](https://itdaweb.com/community/spa-vs-mpa-%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%9A%B0%EB%A6%AC-%ED%9A%8C%EC%82%AC%EC%97%90-%EB%A7%9E%EB%8A%94-%EC%84%A0%ED%83%9D)
 
 ## 📊 한눈에 비교하는 MPA vs SPA
 
