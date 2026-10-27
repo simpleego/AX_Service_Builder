@@ -1,3 +1,3 @@
 # 수업교재 소스 사이트 깃허브 주소
 
-[소플의 처음 만난 리액트](https://github.com/soaple/first-met-react-practice)
+[리액트완전정복](https://wikidocs.net/book/20311)
