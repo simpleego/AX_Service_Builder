@@ -1,3 +1,6 @@
 # FastAPI 계층화
 
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/b56fc85d-648a-42cd-9f74-8abfb7504710" />
+
+<img width="1196" height="798" alt="image" src="https://github.com/user-attachments/assets/f3190187-88ec-456a-b840-6779783a5ff6" />
+
