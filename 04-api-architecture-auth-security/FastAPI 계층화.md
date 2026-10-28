@@ -18,5 +18,7 @@
 
 ---
 
+## SpringFramework - MVC 패턴
+
 <img width="1196" height="798" alt="image" src="https://github.com/user-attachments/assets/f3190187-88ec-456a-b840-6779783a5ff6" />
 
