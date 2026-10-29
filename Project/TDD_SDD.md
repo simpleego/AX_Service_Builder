@@ -3,7 +3,7 @@
 - SDD(SDD(Specification-Driven Development, 명세 기반 개발)
 
 <img width="42.5%"  alt="image" src="https://github.com/user-attachments/assets/918953d2-abff-4648-8153-9c444d4db0cd" />
-<img width="56.5%"  alt="image" src="https://github.com/user-attachments/assets/0e87c26d-5671-410f-bf14-7d7aee85ede2" />
+<img width="56.9%"  alt="image" src="https://github.com/user-attachments/assets/0e87c26d-5671-410f-bf14-7d7aee85ede2" />
 
 ---
 
