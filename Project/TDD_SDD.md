@@ -2,8 +2,9 @@
 - TDD(Test Driven Development, 테스트 기반 개발)
 - SDD(SDD(Specification-Driven Development, 명세 기반 개발)
 
-<img width="400"  alt="image" src="https://github.com/user-attachments/assets/918953d2-abff-4648-8153-9c444d4db0cd" />
-<img width="400"  alt="image" src="https://github.com/user-attachments/assets/0e87c26d-5671-410f-bf14-7d7aee85ede2" />
+<img width="49%"  alt="image" src="https://github.com/user-attachments/assets/918953d2-abff-4648-8153-9c444d4db0cd" />
+  
+<img width="49%"  alt="image" src="https://github.com/user-attachments/assets/0e87c26d-5671-410f-bf14-7d7aee85ede2" />
 
 ---
 
