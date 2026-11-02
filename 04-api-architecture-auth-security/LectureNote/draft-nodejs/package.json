@@ -1,0 +1,11 @@
+{
+  "name": "todo-api-48h-course",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npm --prefix versions/v06-postman start",
+    "check": "node scripts/check.mjs",
+    "test:integration": "node --test tests/integration.test.mjs"
+  },
+  "engines": { "node": ">=22" }
+}

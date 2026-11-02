@@ -1,0 +1,3 @@
+# 최종 버전의 실행 의존성과 테스트 도구를 함께 설치한다.
+-r versions/v06-postman/requirements.txt
+pytest>=8.3,<10

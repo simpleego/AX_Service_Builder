@@ -1,0 +1,1278 @@
+{
+  "info": {
+    "name": "Todo API · 4과목 단계별 실습",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "v01~v02: 01 폴더. v03 이상: 02 폴더. Google 브라우저 로그인 뒤 03 폴더. 전체 컬렉션을 한 번에 실행하지 마세요."
+  },
+  "item": [
+    {
+      "name": "01 Public CRUD (v01-v02 only)",
+      "item": [
+        {
+          "name": "01 DB health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "02 생성",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"REST 실습\", \"completed\": false}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code===201) { pm.environment.set('todoId',pm.response.json().id); }",
+                  "pm.test('제목/완료 타입',()=>{ const x=pm.response.json(); pm.expect(x.title).to.be.a('string'); pm.expect(x.completed).to.be.a('boolean'); });"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "03 목록",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/todos?page=1&limit=20",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('배열',()=>pm.expect(pm.response.json().data).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "04 상세",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('제목/완료 타입',()=>{ const x=pm.response.json(); pm.expect(x.title).to.be.a('string'); pm.expect(x.completed).to.be.a('boolean'); });"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "05 완료 수정",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"completed\": true}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('완료',()=>pm.expect(pm.response.json().completed).to.eql(true));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "06 잘못된 제목",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \" \"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "07 owner 주입 차단",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"주입\", \"owner_id\": 2}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "08 빈 PATCH",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "09 삭제",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', () => pm.response.to.have.status(204));",
+                  "",
+                  "pm.test('빈 본문', () => pm.expect(pm.response.text()).to.eql(''));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "10 삭제 후 상세",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 Authenticated scenario (v03-v06)",
+      "item": [
+        {
+          "name": "01 A 가입 / 시나리오 초기화",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/register",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"{{emailA}}\", \"password\": \"{{password}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// 반복 실행 시 중복 이메일을 피한다. secret 대신 공개된 실습용 비밀번호만 사용한다.",
+                  "const run=Date.now()+'-'+Math.random().toString(16).slice(2);",
+                  "pm.environment.set('emailA','student-a-'+run+'@example.com');",
+                  "pm.environment.set('emailB','student-b-'+run+'@example.com');",
+                  "for (const key of ['accessToken','refreshToken','accessTokenB','refreshTokenB','oldRefreshToken','todoId']) pm.environment.unset(key);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "02 중복 가입",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/register",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"{{emailA}}\", \"password\": \"{{password}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "03 잘못된 비밀번호",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"{{emailA}}\", \"password\": \"wrong-password-123\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "04 A 로그인 / 토큰 저장",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"{{emailA}}\", \"password\": \"{{password}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if(pm.response.code===200){ const t=pm.response.json(); pm.environment.set('accessToken',t.accessToken); pm.environment.set('refreshToken',t.refreshToken); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "05 A Todo 생성",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"A 전용 Todo\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code===201) { pm.environment.set('todoId',pm.response.json().id); }",
+                  "pm.test('제목/완료 타입',()=>{ const x=pm.response.json(); pm.expect(x.title).to.be.a('string'); pm.expect(x.completed).to.be.a('boolean'); });"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "06 인증 없이 접근",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/todos",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "07 A 목록 필터",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos?completed=false&limit=10",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('내 Todo 포함',()=>pm.expect(pm.response.json().data.map(x=>x.id)).to.include(Number(pm.environment.get('todoId'))));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "08 B 가입",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/register",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"{{emailB}}\", \"password\": \"{{password}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "09 B 로그인",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"{{emailB}}\", \"password\": \"{{password}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if(pm.response.code===200){ const t=pm.response.json(); pm.environment.set('accessTokenB',t.accessToken); pm.environment.set('refreshTokenB',t.refreshToken); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "10 B로 A 상세 차단",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessTokenB}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "11 B로 A 수정 차단",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessTokenB}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"타인 변경\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "12 B로 A 삭제 차단",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessTokenB}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "13 A 완료 수정",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"completed\": true}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "14 빈 제목 차단",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "15 completed 타입 차단",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"completed\": \"true\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "16 page 범위 차단",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos?page=0",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "17 A refresh 회전",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/refresh",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"refreshToken\": \"{{refreshToken}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// 회전 전 값을 보관해 재사용 공격을 재현한다.",
+                  "pm.environment.set('oldRefreshToken',pm.environment.get('refreshToken'));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if(pm.response.code===200){ const t=pm.response.json(); pm.environment.set('accessToken',t.accessToken); pm.environment.set('refreshToken',t.refreshToken); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "18 이전 refresh 재사용 차단",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/refresh",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"refreshToken\": \"{{oldRefreshToken}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "19 새 refresh도 family 폐기 확인",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/refresh",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"refreshToken\": \"{{refreshToken}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "20 A 재로그인",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"{{emailA}}\", \"password\": \"{{password}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if(pm.response.code===200){ const t=pm.response.json(); pm.environment.set('accessToken',t.accessToken); pm.environment.set('refreshToken',t.refreshToken); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "21 A 삭제",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', () => pm.response.to.have.status(204));",
+                  "",
+                  "pm.test('빈 본문', () => pm.expect(pm.response.text()).to.eql(''));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "22 삭제 후 확인",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "23 로그아웃",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/logout",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"refreshToken\": \"{{refreshToken}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', () => pm.response.to.have.status(204));",
+                  "",
+                  "pm.test('빈 본문', () => pm.expect(pm.response.text()).to.eql(''));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "24 로그아웃 후 refresh 차단",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/refresh",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"refreshToken\": \"{{refreshToken}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "25 access는 만료 전까지 유효",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 Google manual follow-up (v04-v06)",
+      "item": [
+        {
+          "name": "01 소셜 사용자 Todo 생성",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"Google 로그인 실습\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code===201) { pm.environment.set('todoId',pm.response.json().id); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "02 소셜 사용자 목록",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "03 잘못된 state 차단 (Google 설정 필요)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/google/callback?state=wrong&code=wrong",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "04 소셜 Todo 삭제",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/todos/{{todoId}}",
+            "description": "상태코드를 확인하고 필요한 응답값을 환경변수로 저장합니다. 순서대로 실행하세요."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', () => pm.response.to.have.status(204));",
+                  "",
+                  "pm.test('빈 본문', () => pm.expect(pm.response.text()).to.eql(''));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    }
+  ]
+}
