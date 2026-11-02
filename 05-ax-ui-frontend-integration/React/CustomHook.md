@@ -12,7 +12,7 @@ Todo 앱에서 활용하기 좋은 커스텀 훅을 **저장·할 일 관리·�
 
 `src/hooks/useLocalStorage.js`
 
-```javascript
+```react
 import { useEffect, useState } from "react";
 
 // key는 사용 중 바뀌지 않는 고정된 문자열로 전달합니다.
