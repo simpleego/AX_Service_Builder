@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>디지털 시계</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- JSX 변환용 Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+    <!-- React 18 라이브러리 -->
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // React 루트는 한 번만 생성
+        const root = ReactDOM.createRoot(
+            document.getElementById('root')
+        );
+
+
+        function tick() {
+            const element = (
+                <div>
+                    <h1>안녕, 리액트!</h1>
+                    <h2>
+                        현재 시간: {new Date().toLocaleTimeString()}
+                    </h2>
+                </div>
+            );
+
+            root.render(element);
+        }
+
+        tick();                    // 처음 즉시 실행
+        setInterval(tick, 1000);  // 1초마다 실행
+
+    </script>
+</body>
+
+</html>
