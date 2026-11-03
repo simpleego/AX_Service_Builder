@@ -1,0 +1,73 @@
+### =============================================================
+### VS Code "REST Client" 확장 / IntelliJ HTTP Client 용 요청 모음
+### 각 요청 위의 "Send Request" 를 클릭해 실행 (쿠키는 자동 저장·전송됨)
+### =============================================================
+@base = http://127.0.0.1:8000
+
+### 0. 회원가입
+POST {{base}}/users/signup
+Content-Type: application/json
+
+{ "username": "hong", "email": "hong@example.com", "password": "1234" }
+
+### 0. 회원가입 (두 번째 사용자)
+POST {{base}}/users/signup
+Content-Type: application/json
+
+{ "username": "kim", "email": "kim@example.com", "password": "5678" }
+
+
+### ------------------------- 1-1. 평문 쿠키 -------------------------
+POST {{base}}/cookie/v1/login
+Content-Type: application/json
+
+{ "username": "hong", "password": "1234" }
+
+###
+GET {{base}}/cookie/v1/me
+
+### ⚠ 쿠키 위조: 로그인 없이 user_id=2 로 접근
+GET {{base}}/cookie/v1/me
+Cookie: user_id=2
+
+
+### ------------------------- 1-2. 서명 쿠키 -------------------------
+POST {{base}}/cookie/v2/login
+Content-Type: application/json
+
+{ "username": "hong", "password": "1234" }
+
+###
+GET {{base}}/cookie/v2/me
+
+### 쿠키 내용은 누구나 디코딩 가능 (암호화 아님)
+GET {{base}}/cookie/v2/inspect
+
+### 서명 변조 → 401
+GET {{base}}/cookie/v2/me
+Cookie: auth=eyJ1aWQiOjIsInVuYW1lIjoia2ltIn0.AAAAAA.forged-signature
+
+###
+POST {{base}}/cookie/v2/logout
+
+
+### ------------------------- 2. 서버 세션 -------------------------
+POST {{base}}/session/login
+Content-Type: application/json
+
+{ "username": "hong", "password": "1234" }
+
+###
+GET {{base}}/session/me
+
+###
+GET {{base}}/session/mypage
+
+###
+GET {{base}}/session/devices
+
+###
+POST {{base}}/session/logout
+
+###
+POST {{base}}/session/logout-all

@@ -1,0 +1,10 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+SQLAlchemy>=2.0
+PyMySQL>=1.1
+cryptography>=42      # MySQL 8의 caching_sha2_password 인증에 필요
+bcrypt>=4.1           # 비밀번호 해시
+itsdangerous>=2.1     # 서명된 쿠키(2단계 실습)
+python-dotenv>=1.0
+email-validator>=2.1
+httpx>=0.27           # scripts/demo_client.py 실행용
