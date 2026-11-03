@@ -1,0 +1,103 @@
+/* =============================================================
+   index.css — 화면 디자인(색, 크기, 배치)
+   className="..."으로 붙인 이름과 아래 .이름 { } 규칙이 연결된다.
+   ============================================================= */
+
+/* :root — 전체에서 쓰는 색상 변수. var(--이름)으로 꺼내 쓴다.
+   색을 바꾸고 싶으면 여기만 고치면 전체에 적용된다. */
+:root {
+  --bg: #f5f6f8;       /* 페이지 배경 */
+  --card: #ffffff;     /* 가운데 카드 배경 */
+  --text: #1d2330;     /* 기본 글자 */
+  --muted: #6b7280;    /* 흐린 글자 (설명, 날짜) */
+  --line: #e5e7eb;     /* 테두리·구분선 */
+  --primary: #2563eb;  /* 강조색 (버튼) */
+  --danger: #dc2626;   /* 위험·오류 (빨강) */
+  --ok: #16a34a;       /* 정상 (초록) */
+  font-family: system-ui, -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* box-sizing: 테두리와 안쪽 여백까지 포함해서 크기를 계산한다. (크기 계산이 쉬워짐) */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); }
+
+/* ---------- 가운데 흰색 카드 ---------- */
+.app {
+  max-width: 640px;   /* 최대 너비 */
+  margin: 40px auto;  /* 위아래 40px, 좌우 auto = 가운데 정렬 */
+  padding: 24px;
+  background: var(--card);
+  border-radius: 12px; /* 모서리 둥글게 */
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+}
+
+/* ---------- 제목줄 ---------- */
+/* flex: 안의 요소를 가로로 나란히 배치한다. space-between = 양 끝으로 벌림 */
+header { display: flex; align-items: center; justify-content: space-between; }
+h1 { margin: 0; font-size: 1.75rem; }
+.note { color: var(--muted); font-size: 0.85rem; margin: 4px 0 20px; }
+
+/* 서버 연결 상태 배지 (App.jsx의 health 상태에 따라 ok/down 클래스가 붙는다) */
+.health { font-size: 0.8rem; padding: 4px 10px; border-radius: 999px; background: var(--line); }
+.health.ok { background: #dcfce7; color: var(--ok); }
+.health.down { background: #fee2e2; color: var(--danger); }
+
+/* ---------- 버튼 ---------- */
+button {
+  font: inherit;
+  padding: 8px 14px;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer; /* 마우스를 올리면 손가락 모양 */
+}
+button:disabled { opacity: 0.45; cursor: not-allowed; } /* 누를 수 없는 버튼은 흐리게 */
+/* ghost: 배경 없는 옅은 버튼 (수정·삭제) */
+button.ghost { background: transparent; color: var(--muted); border-color: var(--line); padding: 4px 10px; }
+button.ghost:hover { color: var(--text); }
+button.ghost.danger:hover { color: var(--danger); border-color: var(--danger); }
+
+/* ---------- 입력칸 ---------- */
+.todo-form input, .todo-body .edit {
+  font: inherit;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  outline: none;
+}
+/* :focus — 입력칸을 클릭해 커서가 있을 때 테두리를 파랗게 */
+.todo-form input:focus, .todo-body .edit:focus { border-color: var(--primary); }
+
+.todo-form { display: flex; gap: 8px; }
+.todo-form input { flex: 1; min-width: 0; } /* flex: 1 = 남는 공간을 입력칸이 모두 차지 */
+
+/* ---------- 필터 버튼 ---------- */
+.filters { display: flex; gap: 6px; margin: 20px 0 12px; }
+.filters button { background: transparent; color: var(--muted); border-color: var(--line); padding: 4px 12px; }
+.filters button.active { background: var(--primary); color: #fff; border-color: var(--primary); } /* 선택된 필터 */
+
+/* ---------- 오류 상자 / 빈 목록 안내 ---------- */
+.error { background: #fee2e2; color: var(--danger); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
+.empty { text-align: center; color: var(--muted); padding: 24px 0; }
+
+/* ---------- 할 일 목록 ---------- */
+.todo-list { list-style: none; margin: 0; padding: 0; } /* 목록 앞의 점(•) 없애기 */
+.todo-item { display: flex; align-items: center; gap: 10px; padding: 10px 4px; border-bottom: 1px solid var(--line); }
+.todo-item input[type='checkbox'] { width: 18px; height: 18px; }
+.todo-body { flex: 1; display: flex; flex-direction: column; min-width: 0; } /* 제목과 날짜를 세로로 */
+.todo-body .title { word-break: break-word; cursor: text; } /* 긴 제목은 줄바꿈 */
+.todo-body .edit { width: 100%; padding: 4px 8px; }
+.todo-body small { color: var(--muted); font-size: 0.75rem; }
+/* 완료된 할 일은 취소선 + 흐린 글자 */
+.todo-item.done .title { text-decoration: line-through; color: var(--muted); }
+
+/* ---------- 페이지 이동 ---------- */
+.pager { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 16px; color: var(--muted); }
+
+/* ---------- 휴대폰 화면 (너비 680px 이하) ---------- */
+@media (max-width: 680px) {
+  .app { margin: 0; border-radius: 0; min-height: 100vh; padding: 16px; }
+}
