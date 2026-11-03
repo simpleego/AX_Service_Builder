@@ -1,9 +1,17 @@
 # 웹 보안 기술
+- CSRF
+- XSS
+- SQL Injection
 
 ---
 <img width="1122" height="1402" alt="image" src="https://github.com/user-attachments/assets/f06437b6-d1f6-45b5-9256-5f2ca7e767ce" />
 
 ---
+
+<img width="1122" height="1402" alt="image" src="https://github.com/user-attachments/assets/cefb21e3-6487-4757-a18b-ace9546daf3c" />
+
+---
+
 # CSRF와 XSS 완벽 이해: 비유부터 실제 공격 과정과 방어 코드까지
 
 웹 개발에서 CSRF와 XSS는 반드시 이해해야 하는 대표적인 웹 보안 공격입니다.
