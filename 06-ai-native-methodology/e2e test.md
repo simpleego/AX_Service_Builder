@@ -8,6 +8,9 @@ E2E 테스트(End-to-End Test)는 애플리케이션의 시작부터 끝까지, 
 
 ---
 
+[e2e_test](https://velog.io/@seung365/E2E-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EB%8F%84%EC%9E%85)
+[e2e_tester](https://medium.com/delivus/e2e-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B5%AC%EC%B6%95%EA%B8%B0-used-aws-step-functions-2fccb930218c)
+
 ### 1. E2E 테스트의 핵심 특징
 
 * **실제 환경 시뮬레이션:** 프론트엔드, 백엔드 서버, 데이터베이스, 외부 API, 네트워크 등 실제 서비스 운영에 필요한 모든 구성 요소가 연동된 상태에서 테스트를 진행합니다.
