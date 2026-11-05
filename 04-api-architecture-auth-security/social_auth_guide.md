@@ -8,6 +8,12 @@
 
 이 가이드는 **FastAPI가 콜백과 토큰 교환을 담당하고, 브라우저에는 우리 서비스의 세션 쿠키를 발급하는 방식**을 기준으로 합니다. 운영에서는 `https://app.example.com`에서 React를 제공하고 `/api`를 FastAPI로 연결하는 동일 출처 구성을 가정합니다.
 
+---
+
+<img width="1375" height="722" alt="image" src="https://github.com/user-attachments/assets/5df05075-3dd6-4c3b-8aa1-78ea4e2aca20" />
+
+---
+
 ## 1. 개발자가 먼저 알아야 할 개념
 
 | 개념 | 이 기능에서 하는 일 |
