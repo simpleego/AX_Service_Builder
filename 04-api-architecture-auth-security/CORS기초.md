@@ -6,11 +6,11 @@ CORS(Cross-Origin Resource Sharing, 교차 출처 리소스 공유)의 핵심 �
 ## 1. 출처(Origin)란?
 
 브라우저는 Protocol, Host, Port 3가지가 모두 같아야 동일한 출처로 인식합니다. 이 중 하나라도 다르면 교차 출처(Cross-Origin)가 됩니다.
-• 기준 URL: https://example.com:8080
-	• https://example.com ➔ 동일 출처 (경로만 다름)
-	• http://example.com:8080 ➔ 교차 출처 (Protocol 다름)
-	• https://example.com ➔ 교차 출처 (Host 다름)
-	• https://example.com:9090 ➔ 교차 출처 (Port 다름)
+• 기준 URL: https://example.com:8080  
+	• https://example.com ➔ 동일 출처 (경로만 다름)  
+	• http://example.com:8080 ➔ 교차 출처 (Protocol 다름)  
+	• https://example.com ➔ 교차 출처 (Host 다름)  
+	• https://example.com:9090 ➔ 교차 출처 (Port 다름)  
 
 ## 2. CORS의 핵심 작동 원리 (3가지 시나리오)
 
