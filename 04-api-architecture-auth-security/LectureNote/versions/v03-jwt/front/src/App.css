@@ -1,0 +1,99 @@
+body {
+  margin: 0;
+  font-family: system-ui, 'Malgun Gothic', sans-serif;
+  background: #f4f5f7;
+  color: #222;
+}
+main {
+  max-width: 560px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+h1 {
+  font-size: 1.4rem;
+}
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.row input {
+  flex: 1;
+}
+input[type='email'],
+input[type='password'],
+input:not([type]) {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #2f6fed;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+button:disabled {
+  opacity: 0.5;
+}
+button.secondary {
+  background: #e4e7ec;
+  color: #222;
+}
+button.danger {
+  background: #e5484d;
+  padding: 4px 10px;
+}
+.message {
+  margin: 8px 0;
+  color: #b42318;
+}
+.notice {
+  margin: 8px 0;
+  color: #1f6f43;
+}
+.todos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.todos li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+.todos label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.done {
+  text-decoration: line-through;
+  color: #999;
+}
+.empty {
+  color: #999;
+  text-align: center;
+}
