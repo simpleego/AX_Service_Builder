@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>React Input Render 예제</title>
+    <!-- React 18 라이브러리 CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- 브라우저에서 JSX를 해석하기 위한 Babel CDN -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <!-- 1. 렌더링할 대상 DOM 노드 (rootNode) -->
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // 2. rootNode 변수 선언 및 할당
+        const rootNode = document.getElementById('root');
+
+        // 3. React 루트 생성 및 초기 렌더링
+        const root = ReactDOM.createRoot(rootNode);
+        root.render(<input value="hi" readOnly />);
+
+        // 4. 1초 뒤 value를 null로 변경하여 다시 렌더링
+        setTimeout(function() {
+            root.render(<input value={null} />);
+        }, 10000);
+    </script>
+</body>
+</html>
