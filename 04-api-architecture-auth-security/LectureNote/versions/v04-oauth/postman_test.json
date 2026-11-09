@@ -1,0 +1,3025 @@
+{
+  "info": {
+    "name": "socialAuth - 회원가입·소셜 인증 테스트",
+    "description": "socialAuth 백엔드(FastAPI) 테스트 케이스. 설명서: postman_test_guide.md",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00 Health",
+      "description": "서버와 DB 연결을 확인한다.",
+      "item": [
+        {
+          "name": "TC-01 서버/DB 상태 확인",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.test('status = ok', () => pm.expect(pm.response.json().status).to.eql('ok'));",
+                  "pm.test('보안 헤더 nosniff', () => pm.response.to.have.header('X-Content-Type-Options', 'nosniff'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 회원가입",
+      "description": "로컬(이메일+비밀번호) 회원가입. 실행마다 새 이메일을 자동 생성한다.",
+      "item": [
+        {
+          "name": "TC-02 회원가입 성공",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// 실행할 때마다 겹치지 않는 이메일을 만든다.",
+                  "const stamp = Date.now();",
+                  "pm.collectionVariables.set('email', `qa_${stamp}@example.com`);",
+                  "pm.collectionVariables.set('emailB', `qa_b_${stamp}@example.com`);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 201', () => pm.response.to.have.status(201));",
+                  "const body = pm.response.json();",
+                  "pm.test('id, email만 반환 (비밀번호 미포함)', () => pm.expect(body).to.have.all.keys('id', 'email'));",
+                  "pm.test('이메일 일치', () => pm.expect(body.email).to.eql(pm.collectionVariables.get('email')));",
+                  "pm.collectionVariables.set('userId', body.id);",
+                  "pm.test('Cache-Control no-store', () => pm.response.to.have.header('Cache-Control', 'no-store'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-03 중복 이메일 가입 → 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 409', () => pm.response.to.have.status(409));",
+                  "pm.test('오류코드 EMAIL_EXISTS', () => pm.expect(pm.response.json().error.code).to.eql('EMAIL_EXISTS'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-04 이메일 대소문자만 다른 중복 → 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// 서버는 이메일을 소문자로 저장하므로 대문자로 바꿔도 같은 계정이다.",
+                  "const body = JSON.parse(pm.request.body.raw);",
+                  "body.email = pm.collectionVariables.get('email').toUpperCase();",
+                  "pm.request.body.raw = JSON.stringify(body);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 409', () => pm.response.to.have.status(409));",
+                  "pm.test('오류코드 EMAIL_EXISTS', () => pm.expect(pm.response.json().error.code).to.eql('EMAIL_EXISTS'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-05 비밀번호 12자 미만 → 422",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"short_pw@example.com\",\n  \"password\": \"short\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 422', () => pm.response.to.have.status(422));",
+                  "pm.test('오류코드 VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));",
+                  "",
+                  "pm.test('오류 위치가 password', () => pm.expect(pm.response.json().error.fields[0].loc).to.include('password'));",
+                  "pm.test('응답에 입력한 비밀번호 원문 없음', () => pm.expect(pm.response.text()).to.not.include('\"short\"'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-06 잘못된 이메일 형식 → 422",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"not-an-email\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 422', () => pm.response.to.have.status(422));",
+                  "pm.test('오류코드 VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-07 허용되지 않은 필드 포함 → 422",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"extra@example.com\",\n  \"password\": \"{{password}}\",\n  \"role\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 422', () => pm.response.to.have.status(422));",
+                  "pm.test('오류코드 VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 로그인",
+      "description": "로그인 실패/성공. 성공 시 accessToken, refreshToken을 컬렉션 변수에 저장한다.",
+      "item": [
+        {
+          "name": "TC-08 틀린 비밀번호 → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"WrongPassword999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 LOGIN_FAILED', () => pm.expect(pm.response.json().error.code).to.eql('LOGIN_FAILED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-09 없는 계정 → 401 (같은 오류코드)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nobody_{{$timestamp}}@example.com\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 LOGIN_FAILED', () => pm.expect(pm.response.json().error.code).to.eql('LOGIN_FAILED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-10 비밀번호 필드 누락 → 422",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 422', () => pm.response.to.have.status(422));",
+                  "pm.test('오류코드 VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-11 로그인 성공 → 토큰 발급",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "const t = pm.response.json();",
+                  "pm.test('TokenPair 형식', () => pm.expect(t).to.have.all.keys('accessToken', 'refreshToken', 'tokenType', 'expiresIn'));",
+                  "pm.test('tokenType = Bearer, expiresIn = 900', () => {",
+                  "    pm.expect(t.tokenType).to.eql('Bearer');",
+                  "    pm.expect(t.expiresIn).to.eql(900);",
+                  "});",
+                  "pm.test('refreshToken은 43자 opaque 문자열', () => pm.expect(t.refreshToken).to.match(/^[A-Za-z0-9_-]{43}$/));",
+                  "// JWT payload 확인 (서명 검증은 서버 몫)",
+                  "const payload = JSON.parse(atob(t.accessToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));",
+                  "pm.test('JWT claim: sub=userId, type=access, iss, aud, 만료 15분', () => {",
+                  "    pm.expect(payload.sub).to.eql(String(pm.collectionVariables.get('userId')));",
+                  "    pm.expect(payload.type).to.eql('access');",
+                  "    pm.expect(payload.iss).to.eql('todo-api');",
+                  "    pm.expect(payload.aud).to.eql('todo-client');",
+                  "    pm.expect(payload.exp - payload.iat).to.eql(900);",
+                  "});",
+                  "pm.collectionVariables.set('accessToken', t.accessToken);",
+                  "pm.collectionVariables.set('refreshToken', t.refreshToken);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 인증·Todo 소유권",
+      "description": "access JWT 검증과 Todo 소유권(IDOR 방지)을 확인한다.",
+      "item": [
+        {
+          "name": "TC-12 토큰 없이 Todo 목록 → 401",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 UNAUTHORIZED', () => pm.expect(pm.response.json().error.code).to.eql('UNAUTHORIZED'));",
+                  "",
+                  "pm.test('WWW-Authenticate: Bearer', () => pm.response.to.have.header('WWW-Authenticate', 'Bearer'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-13 서명을 바꾼 JWT → 401",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tamperedToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// 서명 마지막 글자를 바꿔 위조 토큰을 만든다.",
+                  "const t = pm.collectionVariables.get('accessToken');",
+                  "const last = t.slice(-1) === 'A' ? 'B' : 'A';",
+                  "pm.collectionVariables.set('tamperedToken', t.slice(0, -1) + last);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 UNAUTHORIZED', () => pm.expect(pm.response.json().error.code).to.eql('UNAUTHORIZED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-14 refreshToken을 Bearer로 사용 → 401",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{refreshToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 UNAUTHORIZED', () => pm.expect(pm.response.json().error.code).to.eql('UNAUTHORIZED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-15 Todo 생성 → 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman 테스트 할 일\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 201', () => pm.response.to.have.status(201));",
+                  "",
+                  "const t = pm.response.json();",
+                  "pm.test('Todo 응답 형식', () => {",
+                  "    pm.expect(t).to.have.all.keys('id', 'title', 'completed', 'created_at', 'updated_at');",
+                  "    pm.expect(t.id).to.be.a('number');",
+                  "});",
+                  "",
+                  "pm.test('Location 헤더', () => pm.expect(pm.response.headers.get('Location')).to.eql(`/api/todos/${t.id}`));",
+                  "pm.test('한글 제목 저장', () => pm.expect(t.title).to.eql('Postman 테스트 할 일'));",
+                  "pm.test('completed 기본값 false', () => pm.expect(t.completed).to.be.false);",
+                  "pm.collectionVariables.set('todoId', t.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-16 내 Todo 목록 → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('page/limit 반환', () => { pm.expect(b.page).to.eql(1); pm.expect(b.limit).to.eql(20); });",
+                  "pm.test('방금 만든 Todo 포함', () => pm.expect(b.data.map(x => x.id)).to.include(Number(pm.collectionVariables.get('todoId'))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-17 내 Todo 상세 → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{todoId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "",
+                  "const t = pm.response.json();",
+                  "pm.test('Todo 응답 형식', () => {",
+                  "    pm.expect(t).to.have.all.keys('id', 'title', 'completed', 'created_at', 'updated_at');",
+                  "    pm.expect(t.id).to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-18 Todo 완료 처리(PATCH) → 200",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{todoId}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completed\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.test('completed = true', () => pm.expect(pm.response.json().completed).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-19 빈 PATCH → 422",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{todoId}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 422', () => pm.response.to.have.status(422));",
+                  "pm.test('오류코드 VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-20 사용자 B 회원가입",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{emailB}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-21 사용자 B 로그인",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{emailB}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('accessTokenB', pm.response.json().accessToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-22 B가 A의 Todo 조회 → 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessTokenB}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{todoId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 404', () => pm.response.to.have.status(404));",
+                  "pm.test('오류코드 TODO_NOT_FOUND', () => pm.expect(pm.response.json().error.code).to.eql('TODO_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-23 B가 A의 Todo 삭제 → 404",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessTokenB}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{todoId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 404', () => pm.response.to.have.status(404));",
+                  "pm.test('오류코드 TODO_NOT_FOUND', () => pm.expect(pm.response.json().error.code).to.eql('TODO_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-24 B의 목록에 A의 Todo 없음",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessTokenB}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.test('빈 목록', () => pm.expect(pm.response.json().data).to.have.lengthOf(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-25 A가 Todo 삭제 → 204",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{todoId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-26 삭제 후 조회 → 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{todoId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 404', () => pm.response.to.have.status(404));",
+                  "pm.test('오류코드 TODO_NOT_FOUND', () => pm.expect(pm.response.json().error.code).to.eql('TODO_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 토큰 갱신·로그아웃",
+      "description": "refresh 토큰 회전, 재사용 탐지(family 폐기), 로그아웃을 확인한다.",
+      "item": [
+        {
+          "name": "TC-27 refresh 성공 → 새 토큰 쌍",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "const t = pm.response.json();",
+                  "pm.test('새 refreshToken은 이전과 다름', () => pm.expect(t.refreshToken).to.not.eql(pm.collectionVariables.get('refreshToken')));",
+                  "pm.collectionVariables.set('oldRefreshToken', pm.collectionVariables.get('refreshToken'));",
+                  "pm.collectionVariables.set('accessToken', t.accessToken);",
+                  "pm.collectionVariables.set('refreshToken', t.refreshToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-28 이전 refresh 재사용 → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{oldRefreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 REFRESH_REUSED_OR_EXPIRED', () => pm.expect(pm.response.json().error.code).to.eql('REFRESH_REUSED_OR_EXPIRED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-29 재사용 탐지 후 새 refresh도 폐기됨 → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 REFRESH_REUSED_OR_EXPIRED', () => pm.expect(pm.response.json().error.code).to.eql('REFRESH_REUSED_OR_EXPIRED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-30 refresh 형식 오류 → 422",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"too-short\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 422', () => pm.response.to.have.status(422));",
+                  "pm.test('오류코드 VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-31 존재하지 않는 refresh → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 INVALID_REFRESH', () => pm.expect(pm.response.json().error.code).to.eql('INVALID_REFRESH'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-32 다시 로그인",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('accessToken', pm.response.json().accessToken);",
+                  "pm.collectionVariables.set('refreshToken', pm.response.json().refreshToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-33 로그아웃 → 204",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-34 로그아웃한 refresh 사용 → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 REFRESH_REUSED_OR_EXPIRED', () => pm.expect(pm.response.json().error.code).to.eql('REFRESH_REUSED_OR_EXPIRED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-35 로그아웃 후에도 access JWT는 만료 전까지 유효",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200 (access JWT는 15분 동안 유효)', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 Google 소셜 인증 (자동)",
+      "description": "Google 로그인 시작 요청과 callback 방어 로직을 확인한다. 실제 Google 계정 로그인은 하지 않는다.",
+      "item": [
+        {
+          "name": "TC-36 Google 로그인 시작 → 302",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/google",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "google"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 302', () => pm.response.to.have.status(302));",
+                  "const loc = pm.response.headers.get('Location');",
+                  "pm.test('Google 인가 엔드포인트로 이동', () => pm.expect(loc).to.match(/^https:\\/\\/accounts\\.google\\.com\\/o\\/oauth2\\/v2\\/auth\\?/));",
+                  "const q = {};",
+                  "loc.split('?')[1].split('&').forEach(kv => { const [k, v] = kv.split('='); q[k] = decodeURIComponent(v.replace(/\\+/g, ' ')); });",
+                  "pm.test('OIDC 파라미터 (code, openid email profile)', () => {",
+                  "    pm.expect(q.response_type).to.eql('code');",
+                  "    pm.expect(q.scope).to.eql('openid email profile');",
+                  "    pm.expect(q.redirect_uri).to.eql(pm.collectionVariables.get('baseUrl') + '/api/auth/google/callback');",
+                  "});",
+                  "pm.test('state, nonce 포함', () => { pm.expect(q.state).to.have.length.above(40); pm.expect(q.nonce).to.have.length.above(40); });",
+                  "pm.test('PKCE S256', () => { pm.expect(q.code_challenge_method).to.eql('S256'); pm.expect(q.code_challenge).to.have.lengthOf(43); });",
+                  "const setCookie = pm.response.headers.all().filter(h => h.key.toLowerCase() === 'set-cookie').map(h => h.value).join(';');",
+                  "pm.test('oauth_binding 쿠키: HttpOnly, SameSite=Lax', () => {",
+                  "    pm.expect(setCookie).to.include('oauth_binding=');",
+                  "    pm.expect(setCookie.toLowerCase()).to.include('httponly');",
+                  "    pm.expect(setCookie.toLowerCase()).to.include('samesite=lax');",
+                  "});",
+                  "pm.collectionVariables.set('googleState', q.state);"
+                ]
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          }
+        },
+        {
+          "name": "TC-37 잘못된 state로 callback → 400",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/google/callback?state=wrong&code=wrong",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "google",
+                "callback"
+              ],
+              "query": [
+                {
+                  "key": "state",
+                  "value": "wrong"
+                },
+                {
+                  "key": "code",
+                  "value": "wrong"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 400', () => pm.response.to.have.status(400));",
+                  "pm.test('오류코드 INVALID_STATE', () => pm.expect(pm.response.json().error.code).to.eql('INVALID_STATE'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-38 state 없이 callback → 400",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/google/callback?code=wrong",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "google",
+                "callback"
+              ],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "wrong"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 400', () => pm.response.to.have.status(400));",
+                  "pm.test('오류코드 INVALID_STATE', () => pm.expect(pm.response.json().error.code).to.eql('INVALID_STATE'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-39 실제 state + 다른 브라우저(쿠키 불일치) → 400",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/google/callback?state={{googleState}}&code=wrong",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "google",
+                "callback"
+              ],
+              "query": [
+                {
+                  "key": "state",
+                  "value": "{{googleState}}"
+                },
+                {
+                  "key": "code",
+                  "value": "wrong"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// 공격자가 state만 훔쳐 다른 브라우저에서 callback을 호출하는 상황.",
+                  "// 쿠키 자동 전송을 끄고, 틀린 binding 쿠키를 직접 보낸다.",
+                  "pm.request.headers.upsert({ key: 'Cookie', value: 'oauth_binding=attacker-browser' });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 400', () => pm.response.to.have.status(400));",
+                  "pm.test('오류코드 INVALID_STATE', () => pm.expect(pm.response.json().error.code).to.eql('INVALID_STATE'));"
+                ]
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          }
+        },
+        {
+          "name": "TC-40 실제 state + 올바른 쿠키 + 가짜 code → 401",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/google/callback?state={{googleState}}&code=fake-code",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "google",
+                "callback"
+              ],
+              "query": [
+                {
+                  "key": "state",
+                  "value": "{{googleState}}"
+                },
+                {
+                  "key": "code",
+                  "value": "fake-code"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 OAUTH_FAILED', () => pm.expect(pm.response.json().error.code).to.eql('OAUTH_FAILED'));",
+                  "",
+                  "// state 검증은 통과하고(이 시점에 state는 소비됨), Google이 가짜 code를 거부한다."
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-41 같은 state 재사용(callback 재호출) → 400",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/google/callback?state={{googleState}}&code=fake-code",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "google",
+                "callback"
+              ],
+              "query": [
+                {
+                  "key": "state",
+                  "value": "{{googleState}}"
+                },
+                {
+                  "key": "code",
+                  "value": "fake-code"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 400', () => pm.response.to.have.status(400));",
+                  "pm.test('오류코드 INVALID_STATE', () => pm.expect(pm.response.json().error.code).to.eql('INVALID_STATE'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 Google 수동 후속 (브라우저 로그인 후)",
+      "description": "브라우저에서 /api/auth/google 로그인 후 받은 토큰을 googleAccessToken, googleRefreshToken 변수에 넣고 실행한다. 비어 있으면 자동으로 건너뛴다.",
+      "item": [
+        {
+          "name": "TC-42 Google 사용자 Todo 생성 → 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{googleAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Google 사용자의 할 일\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('googleAccessToken')) {",
+                  "    console.log('googleAccessToken이 비어 있어 건너뜀 (브라우저 Google 로그인 후 값을 넣으세요)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('googleTodoId', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-43 Google 사용자 Todo 목록 → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{googleAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('googleAccessToken')) {",
+                  "    console.log('googleAccessToken이 비어 있어 건너뜀 (브라우저 Google 로그인 후 값을 넣으세요)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.test('방금 만든 Todo 포함', () => pm.expect(pm.response.json().data.map(x => x.id)).to.include(Number(pm.collectionVariables.get('googleTodoId'))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-44 로컬 사용자 A는 Google 사용자 Todo 조회 불가 → 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{googleTodoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{googleTodoId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('googleAccessToken')) {",
+                  "    console.log('googleAccessToken이 비어 있어 건너뜀 (브라우저 Google 로그인 후 값을 넣으세요)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 404', () => pm.response.to.have.status(404));",
+                  "pm.test('오류코드 TODO_NOT_FOUND', () => pm.expect(pm.response.json().error.code).to.eql('TODO_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-45 Google 사용자 Todo 삭제 → 204",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{googleAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{googleTodoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{googleTodoId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('googleAccessToken')) {",
+                  "    console.log('googleAccessToken이 비어 있어 건너뜀 (브라우저 Google 로그인 후 값을 넣으세요)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-46 Google 사용자 refresh → 200",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{googleRefreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('googleRefreshToken')) {",
+                  "    console.log('googleRefreshToken이 비어 있어 건너뜀');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "// 회전된 새 토큰으로 교체해 두어야 다음 실행에서도 사용할 수 있다.",
+                  "pm.collectionVariables.set('googleAccessToken', pm.response.json().accessToken);",
+                  "pm.collectionVariables.set('googleRefreshToken', pm.response.json().refreshToken);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 인가 (역할 기반 관리자 API)",
+      "description": "일반 사용자는 403, 관리자는 200. 관리자 계정 준비는 postman_test_guide.md 참고.",
+      "item": [
+        {
+          "name": "TC-47 토큰 없이 관리자 API → 401 (인증 실패)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 401', () => pm.response.to.have.status(401));",
+                  "pm.test('오류코드 UNAUTHORIZED', () => pm.expect(pm.response.json().error.code).to.eql('UNAUTHORIZED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-48 일반 사용자 A의 /me → role=user",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.test('role = user', () => pm.expect(pm.response.json().role).to.eql('user'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-49 일반 사용자 A가 회원 목록 → 403 (인가 실패)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 403', () => pm.response.to.have.status(403));",
+                  "pm.test('오류코드 FORBIDDEN', () => pm.expect(pm.response.json().error.code).to.eql('FORBIDDEN'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-50 일반 사용자 A가 역할 변경 시도 → 403",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{userId}}/role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                "{{userId}}",
+                "role"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 403', () => pm.response.to.have.status(403));",
+                  "pm.test('오류코드 FORBIDDEN', () => pm.expect(pm.response.json().error.code).to.eql('FORBIDDEN'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-51 관리자 로그인",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('adminAccessToken', '');",
+                  "if (!pm.collectionVariables.get('adminEmail') || !pm.collectionVariables.get('adminPassword')) {",
+                  "    console.log('adminEmail/adminPassword가 비어 있어 관리자 테스트를 건너뜀');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('adminAccessToken', pm.response.json().accessToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-52 관리자 /me → role=admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('adminAccessToken')) {",
+                  "    console.log('adminAccessToken이 비어 있어 건너뜀 (postman_test_guide.md의 관리자 준비 참고)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "const me = pm.response.json();",
+                  "pm.test('role = admin (DB에서 관리자로 지정됨)', () => pm.expect(me.role).to.eql('admin'));",
+                  "pm.collectionVariables.set('adminUserId', me.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-53 관리자가 회원 목록 → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users?page=1&limit=100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('adminAccessToken')) {",
+                  "    console.log('adminAccessToken이 비어 있어 건너뜀 (postman_test_guide.md의 관리자 준비 참고)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('페이지 형식(items/page/limit/total)', () => pm.expect(body).to.have.all.keys('items', 'page', 'limit', 'total'));",
+                  "pm.test('비밀번호 해시는 응답에 없음', () => body.items.forEach(u => pm.expect(u).to.not.have.property('password_hash')));",
+                  "pm.test('관리자 본인이 목록에 role=admin으로 있음', () => {",
+                  "    const me = body.items.find(u => u.id === Number(pm.collectionVariables.get('adminUserId')));",
+                  "    pm.expect(me).to.be.an('object'); pm.expect(me.role).to.eql('admin');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-54 role=admin 필터 → 관리자만",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users?role=admin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "admin"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('adminAccessToken')) {",
+                  "    console.log('adminAccessToken이 비어 있어 건너뜀 (postman_test_guide.md의 관리자 준비 참고)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.test('모두 admin', () => pm.response.json().items.forEach(u => pm.expect(u.role).to.eql('admin')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-55 관리자가 A를 admin으로 승격 → 200",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{userId}}/role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                "{{userId}}",
+                "role"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('adminAccessToken')) {",
+                  "    console.log('adminAccessToken이 비어 있어 건너뜀 (postman_test_guide.md의 관리자 준비 참고)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.test('role = admin', () => pm.expect(pm.response.json().role).to.eql('admin'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-56 A가 기존 토큰 그대로 회원 목록 → 200 (즉시 반영)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('adminAccessToken')) {",
+                  "    console.log('adminAccessToken이 비어 있어 건너뜀 (postman_test_guide.md의 관리자 준비 참고)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-57 관리자가 A를 다시 user로 → 200",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{userId}}/role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                "{{userId}}",
+                "role"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"user\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('adminAccessToken')) {",
+                  "    console.log('adminAccessToken이 비어 있어 건너뜀 (postman_test_guide.md의 관리자 준비 참고)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 200', () => pm.response.to.have.status(200));",
+                  "pm.test('role = user', () => pm.expect(pm.response.json().role).to.eql('user'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-58 권한 회수 후 A의 같은 토큰 → 403 (즉시 회수)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('adminAccessToken')) {",
+                  "    console.log('adminAccessToken이 비어 있어 건너뜀 (postman_test_guide.md의 관리자 준비 참고)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 403', () => pm.response.to.have.status(403));",
+                  "pm.test('오류코드 FORBIDDEN', () => pm.expect(pm.response.json().error.code).to.eql('FORBIDDEN'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-59 허용되지 않은 역할 값 → 422",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{userId}}/role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                "{{userId}}",
+                "role"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"superuser\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('adminAccessToken')) {",
+                  "    console.log('adminAccessToken이 비어 있어 건너뜀 (postman_test_guide.md의 관리자 준비 참고)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 422', () => pm.response.to.have.status(422));",
+                  "pm.test('오류코드 VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-60 없는 회원의 역할 변경 → 404",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/4294967295/role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                "4294967295",
+                "role"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"user\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('adminAccessToken')) {",
+                  "    console.log('adminAccessToken이 비어 있어 건너뜀 (postman_test_guide.md의 관리자 준비 참고)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 404', () => pm.response.to.have.status(404));",
+                  "pm.test('오류코드 USER_NOT_FOUND', () => pm.expect(pm.response.json().error.code).to.eql('USER_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-61 관리자가 자기 역할 변경 → 409",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{adminUserId}}/role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                "{{adminUserId}}",
+                "role"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"user\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('adminAccessToken')) {",
+                  "    console.log('adminAccessToken이 비어 있어 건너뜀 (postman_test_guide.md의 관리자 준비 참고)');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('상태코드 409', () => pm.response.to.have.status(409));",
+                  "pm.test('오류코드 CANNOT_CHANGE_OWN_ROLE', () => pm.expect(pm.response.json().error.code).to.eql('CANNOT_CHANGE_OWN_ROLE'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "Password1234!",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "emailB",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "oldRefreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tamperedToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "accessTokenB",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "todoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "googleState",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "googleAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "googleRefreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "googleTodoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminEmail",
+      "value": "admin@example.com"
+    },
+    {
+      "key": "adminPassword",
+      "value": "AdminPassword1234!"
+    },
+    {
+      "key": "adminAccessToken",
+      "value": ""
+    },
+    {
+      "key": "adminUserId",
+      "value": ""
+    }
+  ]
+}
