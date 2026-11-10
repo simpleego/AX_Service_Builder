@@ -20,6 +20,9 @@ AX(AI Transformation) 서비스 풀스택 빌더 과정의 학습 자료 및 소
 * 🧠 **[07-llm-service-engineering-rag](07-llm-service-engineering-rag)** - LLM 서비스 엔지니어링 및 RAG 구축
 
 ---
+### 4. 풀스택과정 복습용 웹용 자판기 참고 사이트
+- [FullStack복습](https://github.com/simpleego/VMFullStack)
+
 
 ## 🛠️ 서브 프로젝트 및 참고 자료
 
