@@ -2,6 +2,9 @@
 
 **청킹(Chunking)은 문서를 검색에 사용할 단위로 나누는 작업**입니다. 일반적인 벡터 검색 RAG에서는 각 청크를 임베딩하고, 질문과 유사한 청크를 찾아 LLM에 전달합니다. 따라서 청크를 설계할 때는 **질문과 관련된 부분이 잘 검색되는지**, 그리고 **찾아낸 부분만으로 답변에 필요한 근거를 이해할 수 있는지**를 함께 봐야 합니다.
 
+
+[rag_ani](https://storage.ghost.io/c/3f/df/3fdf6ed2-17ac-4b12-a693-8078bd13e748/content/images/2026/01/https-3a-2f-2fsubstack-post-media-s3-amazonaws-com-2fpublic-2fimages-2f6878b8fa-5e74-45a1-9a89-5aab92889126_2366x990-2.gif)
+
 ---
 
 <img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/54c4dad3-471e-4547-a8f0-e20e1ba3a15d" />
