@@ -23,6 +23,7 @@
 ---
 <img width="870" height="1116" alt="image" src="https://github.com/user-attachments/assets/6c1f14fa-bb77-486a-b8a7-4ae3491bc6e9" />
 
+<img src="https://storage.ghost.io/c/3f/df/3fdf6ed2-17ac-4b12-a693-8078bd13e748/content/images/2026/01/https-3a-2f-2fsubstack-post-media-s3-amazonaws-com-2fpublic-2fimages-2f6878b8fa-5e74-45a1-9a89-5aab92889126_2366x990-2.gif" >
 ---
 
 ```mermaid
