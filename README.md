@@ -22,6 +22,8 @@ AX(AI Transformation) 서비스 풀스택 빌더 과정의 학습 자료 및 소
 ---
 ### 4. 풀스택과정 복습용 웹용 자판기 참고 사이트
 - [FullStack복습](https://github.com/simpleego/VMFullStack)
+- [자가학습용_miniShop](https://github.com/simpleego/miniShop_ver1.0)
+- 배포된 주소 : [simpleminshop](https://simpleminishop.duckdns.org/)
 
 
 ## 🛠️ 서브 프로젝트 및 참고 자료
