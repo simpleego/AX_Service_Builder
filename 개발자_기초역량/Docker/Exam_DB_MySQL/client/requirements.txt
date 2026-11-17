@@ -1,0 +1,2 @@
+pymysql>=1.1
+cryptography>=42   # MySQL 8 기본 인증(caching_sha2_password) 처리에 필요
