@@ -1,0 +1,247 @@
+﻿=== Run at 11/17/2026 08:17:21 / Admin: False
+
+=== Optional features ===
+Get-WindowsOptionalFeature : 요청한 작업을 수행하려면 권한 상승이 필요합니다.
+
+위치 E:\AX_WORK\Docker\docker-diag-admin.ps1:8 문자:10
++     $f = Get-WindowsOptionalFeature -Online -FeatureName $_ -ErrorAct ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-WindowsOptionalFeature], COMException
+    + FullyQualifiedErrorId : Microsoft.Dism.Commands.GetWindowsOptionalFeatureCommand
+ 
+VirtualMachinePlatform                   N/A
+Get-WindowsOptionalFeature : 요청한 작업을 수행하려면 권한 상승이 필요합니다.
+
+위치 E:\AX_WORK\Docker\docker-diag-admin.ps1:8 문자:10
++     $f = Get-WindowsOptionalFeature -Online -FeatureName $_ -ErrorAct ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-WindowsOptionalFeature], COMException
+    + FullyQualifiedErrorId : Microsoft.Dism.Commands.GetWindowsOptionalFeatureCommand
+ 
+Microsoft-Windows-Subsystem-Linux        N/A
+Get-WindowsOptionalFeature : 요청한 작업을 수행하려면 권한 상승이 필요합니다.
+
+위치 E:\AX_WORK\Docker\docker-diag-admin.ps1:8 문자:10
++     $f = Get-WindowsOptionalFeature -Online -FeatureName $_ -ErrorAct ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-WindowsOptionalFeature], COMException
+    + FullyQualifiedErrorId : Microsoft.Dism.Commands.GetWindowsOptionalFeatureCommand
+ 
+Microsoft-Hyper-V-All                    N/A
+Get-WindowsOptionalFeature : 요청한 작업을 수행하려면 권한 상승이 필요합니다.
+
+위치 E:\AX_WORK\Docker\docker-diag-admin.ps1:8 문자:10
++     $f = Get-WindowsOptionalFeature -Online -FeatureName $_ -ErrorAct ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-WindowsOptionalFeature], COMException
+    + FullyQualifiedErrorId : Microsoft.Dism.Commands.GetWindowsOptionalFeatureCommand
+ 
+Microsoft-Hyper-V-Hypervisor             N/A
+Get-WindowsOptionalFeature : 요청한 작업을 수행하려면 권한 상승이 필요합니다.
+
+위치 E:\AX_WORK\Docker\docker-diag-admin.ps1:8 문자:10
++     $f = Get-WindowsOptionalFeature -Online -FeatureName $_ -ErrorAct ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-WindowsOptionalFeature], COMException
+    + FullyQualifiedErrorId : Microsoft.Dism.Commands.GetWindowsOptionalFeatureCommand
+ 
+HypervisorPlatform                       N/A
+Get-WindowsOptionalFeature : 요청한 작업을 수행하려면 권한 상승이 필요합니다.
+
+위치 E:\AX_WORK\Docker\docker-diag-admin.ps1:8 문자:10
++     $f = Get-WindowsOptionalFeature -Online -FeatureName $_ -ErrorAct ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-WindowsOptionalFeature], COMException
+    + FullyQualifiedErrorId : Microsoft.Dism.Commands.GetWindowsOptionalFeatureCommand
+ 
+Containers                               N/A
+
+=== bcdedit /enum {current} ===
+지정된 항목 유형이 잘못되었습니다.
+명령줄 도움말을 보려면 "bcdedit /?"를 실행하십시오.
+매개 변수가 틀립니다.
+
+=== Device Guard / VBS ===
+
+
+VirtualizationBasedSecurityStatus : 0
+SecurityServicesConfigured        : {0}
+SecurityServicesRunning           : {0}
+RequiredSecurityProperties        : {0}
+
+
+
+
+=== Memory integrity (HVCI) registry ===
+
+=== DISM log (feature related, last 60) ===
+2026-11-11 07:06:44, Info                  DISM   DISM Package Manager: PID=20560 TID=8680 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~ko-KR~10.0.26100.1 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 07:06:44, Info                  DISM   DISM Package Manager: PID=20560 TID=8680 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1742 with CBS state 4(CbsInstallStateStaged) being mapped to dism state 3(DISM_INSTALL_STATE_STAGED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 07:06:44, Info                  DISM   DISM Package Manager: PID=20560 TID=8680 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9457 with CBS state -17(CbsInstallStateSuperseded) being mapped to dism state 7(DISM_INSTALL_STATE_SUPERSEDED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 07:06:44, Info                  DISM   DISM Package Manager: PID=20560 TID=8680 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9711 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 08:04:59, Info                  DISM   API: PID=16004 TID=28088 Lookup in table by path failed for: DummyPath-2BA51B78-C7F7-4910-B99D-BB7345357CDC - CTransactionalImageTable::LookupImagePath
+2026-11-11 08:04:59, Info                  DISM   API: PID=16004 TID=28088 Lookup in table by path failed for: DRIVE_C - CTransactionalImageTable::LookupImagePath
+2026-11-11 08:05:10, Info                  DISM   DISM Package Manager: PID=4608 TID=17580 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~ko-KR~10.0.26100.1 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 08:05:10, Info                  DISM   DISM Package Manager: PID=4608 TID=17580 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1742 with CBS state 4(CbsInstallStateStaged) being mapped to dism state 3(DISM_INSTALL_STATE_STAGED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 08:05:10, Info                  DISM   DISM Package Manager: PID=4608 TID=17580 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9457 with CBS state -17(CbsInstallStateSuperseded) being mapped to dism state 7(DISM_INSTALL_STATE_SUPERSEDED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 08:05:10, Info                  DISM   DISM Package Manager: PID=4608 TID=17580 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9711 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 17:54:20, Info                  DISM   API: PID=15836 TID=13972 Lookup in table by path failed for: DummyPath-2BA51B78-C7F7-4910-B99D-BB7345357CDC - CTransactionalImageTable::LookupImagePath
+2026-11-11 17:54:20, Info                  DISM   API: PID=15836 TID=13972 Lookup in table by path failed for: DRIVE_C - CTransactionalImageTable::LookupImagePath
+2026-11-11 17:54:27, Info                  DISM   DISM Package Manager: PID=1744 TID=32480 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~ko-KR~10.0.26100.1 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 17:54:27, Info                  DISM   DISM Package Manager: PID=1744 TID=32480 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1742 with CBS state 4(CbsInstallStateStaged) being mapped to dism state 3(DISM_INSTALL_STATE_STAGED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 17:54:27, Info                  DISM   DISM Package Manager: PID=1744 TID=32480 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9457 with CBS state -17(CbsInstallStateSuperseded) being mapped to dism state 7(DISM_INSTALL_STATE_SUPERSEDED) - CDISMPackage::LogInstallStateMapping
+2026-11-11 17:54:27, Info                  DISM   DISM Package Manager: PID=1744 TID=32480 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9711 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-12 17:34:34, Info                  DISM   API: PID=31192 TID=31384 Lookup in table by path failed for: DummyPath-2BA51B78-C7F7-4910-B99D-BB7345357CDC - CTransactionalImageTable::LookupImagePath
+2026-11-12 17:34:35, Info                  DISM   API: PID=31192 TID=31384 Lookup in table by path failed for: DRIVE_C - CTransactionalImageTable::LookupImagePath
+2026-11-12 17:45:30, Info                  DISM   API: PID=24072 TID=19440 Lookup in table by path failed for: DummyPath-2BA51B78-C7F7-4910-B99D-BB7345357CDC - CTransactionalImageTable::LookupImagePath
+2026-11-12 17:45:30, Info                  DISM   API: PID=24072 TID=19440 Lookup in table by path failed for: DRIVE_C - CTransactionalImageTable::LookupImagePath
+2026-11-12 17:45:45, Info                  DISM   DISM Package Manager: PID=10336 TID=30076 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~ko-KR~10.0.26100.1 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-12 17:45:45, Info                  DISM   DISM Package Manager: PID=10336 TID=13240 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1742 with CBS state 4(CbsInstallStateStaged) being mapped to dism state 3(DISM_INSTALL_STATE_STAGED) - CDISMPackage::LogInstallStateMapping
+2026-11-12 17:45:45, Info                  DISM   DISM Package Manager: PID=10336 TID=13240 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9457 with CBS state -17(CbsInstallStateSuperseded) being mapped to dism state 7(DISM_INSTALL_STATE_SUPERSEDED) - CDISMPackage::LogInstallStateMapping
+2026-11-12 17:45:45, Info                  DISM   DISM Package Manager: PID=10336 TID=13240 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9711 with CBS state 5(CbsInstallStateUninstallRequested) being mapped to dism state 2(DISM_INSTALL_STATE_UNINSTALLREQUESTED) - CDISMPackage::LogInstallStateMapping
+2026-11-12 17:45:45, Info                  DISM   DISM Package Manager: PID=10336 TID=13240 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974 with CBS state 6(CbsInstallStateInstallRequested) being mapped to dism state 6(DISM_INSTALL_STATE_INSTALLREQUESTED) - CDISMPackage::LogInstallStateMapping
+2026-11-13 16:41:05, Info                  DISM   API: PID=29008 TID=27416 Lookup in table by path failed for: DummyPath-2BA51B78-C7F7-4910-B99D-BB7345357CDC - CTransactionalImageTable::LookupImagePath
+2026-11-13 16:41:05, Info                  DISM   API: PID=29008 TID=27416 Lookup in table by path failed for: DRIVE_C - CTransactionalImageTable::LookupImagePath
+2026-11-13 16:41:22, Info                  DISM   DISM Package Manager: PID=27000 TID=18884 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~ko-KR~10.0.26100.1 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-13 16:41:22, Info                  DISM   DISM Package Manager: PID=27000 TID=4728 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1742 with CBS state 4(CbsInstallStateStaged) being mapped to dism state 3(DISM_INSTALL_STATE_STAGED) - CDISMPackage::LogInstallStateMapping
+2026-11-13 16:41:22, Info                  DISM   DISM Package Manager: PID=27000 TID=4728 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9457 with CBS state -17(CbsInstallStateSuperseded) being mapped to dism state 7(DISM_INSTALL_STATE_SUPERSEDED) - CDISMPackage::LogInstallStateMapping
+2026-11-13 16:41:22, Info                  DISM   DISM Package Manager: PID=27000 TID=4728 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9711 with CBS state 5(CbsInstallStateUninstallRequested) being mapped to dism state 2(DISM_INSTALL_STATE_UNINSTALLREQUESTED) - CDISMPackage::LogInstallStateMapping
+2026-11-13 16:41:22, Info                  DISM   DISM Package Manager: PID=27000 TID=4728 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974 with CBS state 6(CbsInstallStateInstallRequested) being mapped to dism state 6(DISM_INSTALL_STATE_INSTALLREQUESTED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 08:10:45, Info                  DISM   API: PID=14384 TID=5968 Lookup in table by path failed for: DummyPath-2BA51B78-C7F7-4910-B99D-BB7345357CDC - CTransactionalImageTable::LookupImagePath
+2026-11-16 08:10:46, Info                  DISM   API: PID=14384 TID=5968 Lookup in table by path failed for: DRIVE_C - CTransactionalImageTable::LookupImagePath
+2026-11-16 08:12:08, Info                  DISM   DISM Package Manager: PID=15488 TID=20068 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~ko-KR~10.0.26100.1 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 08:12:08, Info                  DISM   DISM Package Manager: PID=15488 TID=776 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1742 with CBS state 4(CbsInstallStateStaged) being mapped to dism state 3(DISM_INSTALL_STATE_STAGED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 08:12:08, Info                  DISM   DISM Package Manager: PID=15488 TID=776 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9457 with CBS state -17(CbsInstallStateSuperseded) being mapped to dism state 7(DISM_INSTALL_STATE_SUPERSEDED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 08:12:08, Info                  DISM   DISM Package Manager: PID=15488 TID=776 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9711 with CBS state -17(CbsInstallStateSuperseded) being mapped to dism state 7(DISM_INSTALL_STATE_SUPERSEDED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 08:12:08, Info                  DISM   DISM Package Manager: PID=15488 TID=776 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 08:53:35, Info                  DISM   API: PID=18212 TID=22420 Lookup in table by path failed for: DummyPath-2BA51B78-C7F7-4910-B99D-BB7345357CDC - CTransactionalImageTable::LookupImagePath
+2026-11-16 08:53:35, Info                  DISM   API: PID=18212 TID=22420 Lookup in table by path failed for: DRIVE_C - CTransactionalImageTable::LookupImagePath
+2026-11-16 08:53:50, Info                  DISM   DISM Package Manager: PID=19484 TID=25696 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~ko-KR~10.0.26100.1 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 08:53:50, Info                  DISM   DISM Package Manager: PID=19484 TID=25420 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1742 with CBS state 4(CbsInstallStateStaged) being mapped to dism state 3(DISM_INSTALL_STATE_STAGED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 08:53:50, Info                  DISM   DISM Package Manager: PID=19484 TID=25420 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9457 with CBS state -17(CbsInstallStateSuperseded) being mapped to dism state 7(DISM_INSTALL_STATE_SUPERSEDED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 08:53:50, Info                  DISM   DISM Package Manager: PID=19484 TID=25420 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9711 with CBS state -17(CbsInstallStateSuperseded) being mapped to dism state 7(DISM_INSTALL_STATE_SUPERSEDED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 08:53:50, Info                  DISM   DISM Package Manager: PID=19484 TID=25420 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 16:11:53, Info                  DISM   DISM.EXE: Executing command line: C:\WINDOWS\system32\dism.exe /Online /NoRestart /enable-feature /featurename:VirtualMachinePlatform
+2026-11-16 16:11:53, Info                  DISM   DISM Package Manager: PID=2888 TID=25172 Encountered the option "featurename" with value "VirtualMachinePlatform" - CPackageManagerCLIHandler::Private_GetPackagesFromCommandLine
+2026-11-16 16:11:53, Info                  DISM   DISM Package Manager: PID=2888 TID=25172 Encountered an unknown option "featurename" with value "VirtualMachinePlatform" - CPackageManagerCLIHandler::Private_GetPackagesFromCommandLine
+2026-11-16 16:12:13, Info                  DISM   DISM Package Manager: PID=2888 TID=25172 Encountered the option "featurename" with value "VirtualMachinePlatform" - CPackageManagerCLIHandler::Private_GetPackagesFromCommandLine
+2026-11-16 16:12:13, Info                  DISM   DISM Package Manager: PID=2888 TID=25172 Encountered an unknown option "featurename" with value "VirtualMachinePlatform" - CPackageManagerCLIHandler::Private_GetPackagesFromCommandLine
+2026-11-16 16:12:14, Info                  DISM   DISM Package Manager: PID=2888 TID=25172 Feature VirtualMachinePlatform with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 7(DISM_INSTALL_STATE_INSTALLED) - CDISMPackageFeature::LogInstallStateMapping
+2026-11-16 17:57:58, Info                  DISM   API: PID=4832 TID=9888 Lookup in table by path failed for: DummyPath-2BA51B78-C7F7-4910-B99D-BB7345357CDC - CTransactionalImageTable::LookupImagePath
+2026-11-16 17:57:58, Info                  DISM   API: PID=4832 TID=9888 Lookup in table by path failed for: DRIVE_C - CTransactionalImageTable::LookupImagePath
+2026-11-16 17:58:00, Info                  DISM   API: PID=18264 TID=9676 Lookup in table by path failed for: DummyPath-2BA51B78-C7F7-4910-B99D-BB7345357CDC - CTransactionalImageTable::LookupImagePath
+2026-11-16 17:58:00, Info                  DISM   API: PID=18264 TID=9676 Lookup in table by path failed for: DRIVE_C - CTransactionalImageTable::LookupImagePath
+2026-11-16 17:58:11, Info                  DISM   DISM Package Manager: PID=16652 TID=1324 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~ko-KR~10.0.26100.1 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 17:58:11, Info                  DISM   DISM Package Manager: PID=16652 TID=8100 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1742 with CBS state 4(CbsInstallStateStaged) being mapped to dism state 3(DISM_INSTALL_STATE_STAGED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 17:58:11, Info                  DISM   DISM Package Manager: PID=16652 TID=8100 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9711 with CBS state -17(CbsInstallStateSuperseded) being mapped to dism state 7(DISM_INSTALL_STATE_SUPERSEDED) - CDISMPackage::LogInstallStateMapping
+2026-11-16 17:58:11, Info                  DISM   DISM Package Manager: PID=16652 TID=8100 Package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974 with CBS state 7(CbsInstallStateInstalled) being mapped to dism state 5(DISM_INSTALL_STATE_INSTALLED) - CDISMPackage::LogInstallStateMapping
+
+=== CBS log (rollback / failure, last 80) ===
+2026-11-16 19:46:14, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:14, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:15, Info                         CBS: Package Keyform: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~ko-KR~10.0.26100.1
+2026-11-16 19:46:15, Info                         CBS: Package Keyform: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974
+2026-11-16 19:46:15, Info                  CBS    Skip FODs not currently installed: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9711, state: Superseded
+2026-11-16 19:46:15, Info                  CBS    Skip FODs not currently installed: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1742, state: Staged
+2026-11-16 19:46:16, Info                         Device: has Group: Microsoft, Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~
+2026-11-16 19:46:16, Info                  CBS    Appl: detect Parent, Package: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, Parent: Microsoft-Windows-HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-Package~31bf3856ad364e35~amd64~~, Disposition = Detect, VersionComp: GE, BuildComp: GE, RevisionComp: GE, Exist: present
+2026-11-16 19:46:16, Info                  CBS    Appl: detectParent: parent found: Microsoft-Windows-HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-Package~31bf3856ad364e35~amd64~~10.0.26100.1, state: Installed
+2026-11-16 19:46:16, Info                  CBS    Appl: Higher version found for package: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, superseded. (Version on system:HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974)
+2026-11-16 19:46:16, Info                  CBS    Appl: Evaluating package applicability for package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, applicable state: Superseded
+2026-11-16 19:46:16, Info                  CBS    Appl: detect Parent, Package: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, Parent: Microsoft-Windows-HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-Package~31bf3856ad364e35~amd64~~, Disposition = Detect, VersionComp: GE, BuildComp: GE, RevisionComp: GE, Exist: present
+2026-11-16 19:46:16, Info                  CBS    Appl: detectParent: parent found: Microsoft-Windows-HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-Package~31bf3856ad364e35~amd64~~10.0.26100.1, state: Installed
+2026-11-16 19:46:16, Info                  CBS    Appl: Higher version found for package: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, superseded. (Version on system:HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974)
+2026-11-16 19:46:16, Info                  CBS    Appl: Evaluating package applicability for package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, applicable state: Superseded
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:17, Info                         Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~ found. Adding packages to it
+2026-11-16 19:46:18, Info                         CBS: Package Keyform: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~ko-KR~10.0.26100.1
+2026-11-16 19:46:18, Info                         CBS: Package Keyform: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974
+2026-11-16 19:46:19, Info                  CBS    Skip FODs not currently installed: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9711, state: Superseded
+2026-11-16 19:46:19, Info                  CBS    Skip FODs not currently installed: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1742, state: Staged
+2026-11-16 19:46:19, Info                         Device: has Group: Microsoft, Feature: Windows.HyperV.OptionalFeature.VirtualMachinePlatform.Client.Disabled~
+2026-11-16 19:46:20, Info                  CBS    Appl: detect Parent, Package: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, Parent: Microsoft-Windows-HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-Package~31bf3856ad364e35~amd64~~, Disposition = Detect, VersionComp: GE, BuildComp: GE, RevisionComp: GE, Exist: present
+2026-11-16 19:46:20, Info                  CBS    Appl: detectParent: parent found: Microsoft-Windows-HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-Package~31bf3856ad364e35~amd64~~10.0.26100.1, state: Installed
+2026-11-16 19:46:20, Info                  CBS    Appl: Higher version found for package: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, superseded. (Version on system:HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974)
+2026-11-16 19:46:20, Info                  CBS    Appl: Evaluating package applicability for package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, applicable state: Superseded
+2026-11-16 19:46:20, Info                  CBS    Appl: detect Parent, Package: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, Parent: Microsoft-Windows-HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-Package~31bf3856ad364e35~amd64~~, Disposition = Detect, VersionComp: GE, BuildComp: GE, RevisionComp: GE, Exist: present
+2026-11-16 19:46:20, Info                  CBS    Appl: detectParent: parent found: Microsoft-Windows-HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-Package~31bf3856ad364e35~amd64~~10.0.26100.1, state: Installed
+2026-11-16 19:46:20, Info                  CBS    Appl: Higher version found for package: HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, superseded. (Version on system:HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.9974)
+2026-11-16 19:46:20, Info                  CBS    Appl: Evaluating package applicability for package HyperV-OptionalFeature-VirtualMachinePlatform-Client-Disabled-FOD-Package~31bf3856ad364e35~amd64~~10.0.26100.1, applicable state: Superseded
+2026-11-16 20:07:12, Info                  CBS    InternalOpenPackage failed for Package_for_KB3025096~31bf3856ad364e35~amd64~~6.4.1.0 [HRESULT = 0x800f0805 - CBS_E_INVALID_PACKAGE]
+2026-11-16 20:07:12, Info                  CBS    Failed to internally open package. [HRESULT = 0x800f0805 - CBS_E_INVALID_PACKAGE]
+2026-11-16 20:07:12, Info                  CBS    Failed to create open package. [HRESULT = 0x800f0805 - CBS_E_INVALID_PACKAGE]
+2026-11-16 20:07:12, Info                  CBS    Failed to OpenPackage using worker session [HRESULT = 0x800f0805]
+2026-11-16 20:07:13, Info                  CBS    InternalOpenPackage failed for Package_for_KB3025096~31bf3856ad364e35~x86~~6.4.1.0 [HRESULT = 0x800f0805 - CBS_E_INVALID_PACKAGE]
+2026-11-16 20:07:13, Info                  CBS    Failed to internally open package. [HRESULT = 0x800f0805 - CBS_E_INVALID_PACKAGE]
+2026-11-16 20:07:13, Info                  CBS    Failed to create open package. [HRESULT = 0x800f0805 - CBS_E_INVALID_PACKAGE]
+2026-11-16 20:07:13, Info                  CBS    Failed to OpenPackage using worker session [HRESULT = 0x800f0805]
+
+=== Hyper-V hypervisor operational log ===
+Get-WinEvent : 권한이 없는 작업을 수행하려고 했습니다.
+위치 E:\AX_WORK\Docker\docker-diag-admin.ps1:22 문자:3
++   Get-WinEvent -LogName 'Microsoft-Windows-Hyper-V-Hypervisor-Operati ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-WinEvent], UnauthorizedAccessException
+    + FullyQualifiedErrorId : System.UnauthorizedAccessException,Microsoft.PowerShell.Commands.GetWi 
+   nEventCommand
+ 
+
+=== Boot drivers from AhnLab ===
+
+Name                         State   StartMode PathName                                                    
+----                         -----   --------- --------                                                    
+AhnRghNt                     Running Manual    \??\C:\WINDOWS\system32\drivers\AhnRghNt.sys                
+AntiStealth_SafeTransaction  Running Manual    \??\C:\Program Files\AhnLab\Safe Transaction\AHAWKENT.sys   
+AntiStealth_SafeTransactionF Running Manual    \??\C:\Program Files\AhnLab\Safe Transaction\TfFRegNt.sys   
+asc_kbc_SafeTransaction      Running Manual    \??\C:\Program Files\AhnLab\Safe Transaction\asc\asc_kbc.sys
+ATamptNt_SafeTransaction     Running Manual    \??\C:\Program Files\AhnLab\Safe Transaction\ATamptNt.sys   
+MeDCoreD_SafeTransaction     Running Manual    \??\C:\Program Files\AhnLab\Safe Transaction\MeDCoreD.sys   
+MeDVpDrv_SafeTransaction     Running Manual    \??\C:\Program Files\AhnLab\Safe Transaction\MeDVpDrv.sys   
+TNFwNt_SafeTransaction       Stopped Manual    \??\C:\Program Files\AhnLab\Safe Transaction\TNFwNt.sys     
+TNNipsNt_SafeTransaction     Stopped Manual    \??\C:\Program Files\AhnLab\Safe Transaction\TNNipsNt.sys   
+TSFltDrv_SafeTransaction     Stopped Manual    \??\C:\Program Files\AhnLab\Safe Transaction\TSFltDrv.sys   
+
+
+
