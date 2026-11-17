@@ -2,6 +2,10 @@
 > 풀스택 웹 개발에서는 TCP와 UDP를 단순히 **“TCP는 느리고 안전, UDP는 빠르고 불안정”**으로 구분하기보다,
 > **웹 서비스의 어떤 통신에서 사용되는지**를 함께 이해하는 것이 중요.
 
+
+<img width="1024" height="572" alt="image" src="https://github.com/user-attachments/assets/fb3a79f2-8379-4e33-a05b-a3356474729d" />
+
+
 ## 1. TCP와 UDP의 위치
 > 웹 애플리케이션의 데이터는 애플리케이션 계층에서 만들어지고, TCP 또는 UDP를 통해 전달된다.
 
