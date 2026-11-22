@@ -9,7 +9,15 @@
 <img width="32" height="32" alt="image" src="https://github.com/user-attachments/assets/258d78fe-93ff-451c-8582-cd266bb62c5c" /> Kubernetes
 
 ## **1. 가장 쉬운 비유: 식당 하나와 프랜차이즈 본사**
-<img width="49%"  alt="image" src="https://github.com/user-attachments/assets/72e2aefd-2cc3-4696-b1e7-6eae3bf53595" /> | <img width="49%" alt="image" src="https://github.com/user-attachments/assets/b5748fdb-062f-45e2-946b-7d7f58bf2462" />
+
+## 소규모 식당
+<img width="100%"  alt="image" src="https://github.com/user-attachments/assets/72e2aefd-2cc3-4696-b1e7-6eae3bf53595" /> 
+
+---
+
+## 프랜차이즈 본사
+
+<img width="100%" alt="image" src="https://github.com/user-attachments/assets/b5748fdb-062f-45e2-946b-7d7f58bf2462" />
 
 
 
