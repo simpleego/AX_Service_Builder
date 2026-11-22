@@ -72,6 +72,48 @@ Exam_DB_MySQL/
     ├── query.py         # Windows에서 접속/조회하는 Python 예제
     └── requirements.txt
 ```
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryTextColor': '#263238', 'lineColor': '#607D8B', 'fontFamily': 'Noto Sans KR, sans-serif'}}}%%
+graph TD
+    subgraph Root ["Exam_DB_MySQL/"]
+        direction TB
+        DC["docker-compose.yml<br/>MySQL 서버 정의"]
+        ENV[".env<br/>계정/비밀번호 실습용 값"]
+
+        subgraph ConfDir ["conf/"]
+            MYCNF["my.cnf<br/>utf8mb4, 시간대, 외부 접속 허용"]
+        end
+
+        subgraph InitDir ["init/"]
+            INITSQL["01-schema.sql<br/>최초 1회: members, orders + 샘플 데이터"]
+        end
+
+        subgraph SqlDir ["sql/"]
+            PRACSQL["practice.sql<br/>조회 실습 SQL"]
+        end
+
+        subgraph ClientDir ["client/"]
+            QUERYPY["query.py<br/>Windows 접속/조회 Python 예제"]
+            REQTXT["requirements.txt<br/>Python 의존성 패키지"]
+        end
+    end
+
+    DC -- "환경변수 주입" --> ENV
+    DC -- "설정 파일 마운트" --> MYCNF
+    DC -- "초기화 스크립트 마운트" --> INITSQL
+
+    REQTXT -- "패키지 설치" --> QUERYPY
+    QUERYPY -- "DB 접속 및 쿼리 실행" --> DC
+    PRACSQL -. "실습 쿼리 참고" .-> QUERYPY
+
+    classDef infra fill:#E0F2F1,stroke:#00695C,stroke-width:2px;
+    classDef sql fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px;
+    classDef client fill:#E1F5FE,stroke:#0277BD,stroke-width:2px;
+
+    class DC,ENV,MYCNF infra;
+    class INITSQL,PRACSQL sql;
+    class QUERYPY,REQTXT client;
+```
 
 | 항목 | 값 |
 |---|---|
