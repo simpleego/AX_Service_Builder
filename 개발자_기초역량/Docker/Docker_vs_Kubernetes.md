@@ -1,6 +1,4 @@
-# Docker vs Kubernetes
-
-# **Docker vs Kubernetes — 입문 개발자를 위한 비교**
+# Docker vs Kubernetes 
 
 **Docker는 애플리케이션을 컨테이너로 만들고 실행하는 기술이고, Kubernetes(K8s)는 여러 서버에 분산된 컨테이너를 자동으로 배포·관리하는 플랫폼입니다.**
 
