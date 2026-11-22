@@ -73,30 +73,33 @@ Exam_DB_MySQL/
     └── requirements.txt
 ```
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryTextColor': '#263238', 'lineColor': '#607D8B', 'fontFamily': 'Noto Sans KR, sans-serif'}}}%%
-graph TD
-    subgraph Root ["Exam_DB_MySQL/"]
-        direction TB
-        DC["docker-compose.yml"]
-        ENV[".env"]
 
-        subgraph Conf ["conf/"]
-            MYCNF["my.cnf"]
-        end
+flowchart TB
+    ROOT["📁 Exam_DB_MySQL/"]
 
-        subgraph Init ["init/"]
-            INITSQL["01-schema.sql"]
-        end
+    ROOT --> COMPOSE["📄 docker-compose.yml<br/>MySQL 서버 정의"]
+    ROOT --> ENV["🔑 .env<br/>계정 및 비밀번호"]
+    ROOT --> CONF["📁 conf/"]
+    ROOT --> INIT["📁 init/"]
+    ROOT --> SQL["📁 sql/"]
+    ROOT --> CLIENT["📁 client/"]
 
-        subgraph Sql ["sql/"]
-            PRACSQL["practice.sql"]
-        end
+    CONF --> MYCNF["📄 my.cnf<br/>utf8mb4 · 시간대 · 외부 접속"]
+    INIT --> SCHEMA["📄 01-schema.sql<br/>최초 초기화 · 테이블 · 샘플 데이터"]
+    SQL --> PRACTICE["📄 practice.sql<br/>조회 SQL 실습"]
+    CLIENT --> QUERY["🐍 query.py<br/>Windows에서 접속 및 조회"]
+    CLIENT --> REQ["📄 requirements.txt<br/>Python 패키지 목록"]
 
-        subgraph Client ["client/"]
-            QUERYPY["query.py"]
-            REQTXT["requirements.txt"]
-        end
-    end
+    classDef root fill:#DBEAFE,stroke:#2563EB,stroke-width:3px,color:#1E3A8A
+    classDef folder fill:#FEF3C7,stroke:#D97706,color:#78350F
+    classDef file fill:#F1F5F9,stroke:#94A3B8,color:#334155
+    classDef secret fill:#FCE7F3,stroke:#DB2777,color:#831843
+
+    class ROOT root
+    class CONF,INIT,SQL,CLIENT folder
+    class COMPOSE,MYCNF,SCHEMA,PRACTICE,QUERY,REQ file
+    class ENV secret
+
 ```
 
 
