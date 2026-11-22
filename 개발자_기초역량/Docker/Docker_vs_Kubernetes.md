@@ -10,14 +10,15 @@
 
 **Docker — 식당의 주방**
 
-음식(애플리케이션)을 정해진 조리 환경(컨테이너)에서 일관되게 만들어 제공합니다.
+음식(애플리케이션)을 정해진 조리 환경(컨테이너)에서 일관되게 만들어 제공합니다.  
+
 <img width="100%"  alt="image" src="https://github.com/user-attachments/assets/72e2aefd-2cc3-4696-b1e7-6eae3bf53595" /> 
 
 ---
 
 **Kubernetes — 프랜차이즈 운영 본사**
 
-여러 지점(서버)에 업무를 배분하고, 장애가 발생하면 다른 지점에서 서비스를 유지하도록 조정합니다.
+여러 지점(서버)에 업무를 배분하고, 장애가 발생하면 다른 지점에서 서비스를 유지하도록 조정합니다.  
 
 <img width="100%" alt="image" src="https://github.com/user-attachments/assets/b5748fdb-062f-45e2-946b-7d7f58bf2462" />
 
