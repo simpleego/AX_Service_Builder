@@ -10,53 +10,42 @@
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryTextColor': '#263238', 'lineColor': '#607D8B', 'fontFamily': 'Noto Sans KR, sans-serif'}}}%%
 graph TD
-    %% --- 최상위 계층: Windows ---
-    subgraph Win [Windows (로컬 PC)]
+    subgraph Win ["Windows (로컬 PC)"]
         direction TB
-        subgraph Tools [클라이언트 도구]
-            Py[Python]
-            WB[MySQL Workbench]
-            DB[DBeaver]
+        subgraph Tools ["클라이언트 도구"]
+            Py["Python"]
+            WB["MySQL Workbench"]
+            DB["DBeaver"]
         end
     end
 
-    %% --- 중간 계층: VirtualBox VM ---
-    subgraph VBox [VirtualBox VM docker-lab]
+    subgraph VBox ["VirtualBox VM (docker-lab)"]
         direction TB
-        NAT[NAT 포트포워딩 13306 -> 3306]
-        subgraph Ub [Ubuntu 환경]
+        NAT["NAT 포트포워딩 (13306 -> 3306)"]
+        subgraph Ub ["Ubuntu 환경"]
             direction TB
-            DockerCmd[docker run -p 3306:3306]
+            DockerCmd["docker run -p 3306:3306"]
         end
     end
 
-    %% --- 최하위 계층: Docker 컨테이너 ---
-    subgraph DCont [컨테이너 lab-mysql]
-        MySQL[MySQL 8.4 서비스]
-        IntPort[:3306]
+    subgraph DCont ["컨테이너 lab-mysql"]
+        MySQL["MySQL 8.4 서비스"]
+        IntPort[":3306"]
     end
 
-    %% --- 외부 영구 저장소 ---
-    Volume[(Docker Volume)]
+    Volume[("Docker Volume (/var/lib/mysql)")]
 
-    %% --- 연결 정의 및 라벨링 ---
-
-    %% Windows 도구 -> NAT 연결
     Py -- "127.0.0.1:13306" --> NAT
     WB -- "127.0.0.1:13306" --> NAT
     DB -- "127.0.0.1:13306" --> NAT
 
-    %% NAT -> Ubuntu -> 컨테이너 연결
     NAT -- "내부 네트워크" --> Ub
     Ub -- "포트 매핑" --> DCont
 
-    %% 컨테이너 내부 구성
     MySQL -- "서비스 실행" --> IntPort
+    MySQL -- "영구 데이터 저장" --> Volume
+    Volume -- "데이터 마운트" --> MySQL
 
-    %% 볼륨 마운트 연결
-    MySQL <== "영구 데이터 저장" ==> Volume
-
-    %% 스타일 적용 (시각적 구분)
     classDef client fill:#E1F5FE,stroke:#0277BD,stroke-width:2px;
     classDef vm fill:#E0F2F1,stroke:#00695C,stroke-width:2px;
     classDef container fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px;
