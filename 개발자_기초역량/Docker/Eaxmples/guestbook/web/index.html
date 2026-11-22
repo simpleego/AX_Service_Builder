@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docker 방명록</title>
+  <style>
+    body { font-family: sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; }
+    form { display: grid; gap: 8px; margin-bottom: 24px; }
+    input, textarea, button { font-size: 16px; padding: 8px; }
+    .msg { border-bottom: 1px solid #ddd; padding: 12px 0; }
+    .meta { color: #888; font-size: 13px; }
+    .del { float: right; }
+    #status { font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>🐳 Docker 방명록</h1>
+  <p id="status">서버 상태 확인 중...</p>
+
+  <form id="form">
+    <input id="name" placeholder="이름" maxlength="50" required>
+    <textarea id="content" placeholder="남길 말" maxlength="500" rows="3" required></textarea>
+    <button>등록</button>
+  </form>
+
+  <div id="list"></div>
+
+  <script>
+    const list = document.getElementById("list");
+
+    async function checkHealth() {
+      const res = await fetch("/api/health");
+      document.getElementById("status").textContent =
+        res.ok ? "🟢 API·DB 정상" : "🔴 서버 오류 (" + res.status + ")";
+    }
+
+    async function load() {
+      const res = await fetch("/api/messages");
+      const messages = await res.json();
+      list.innerHTML = "";
+      for (const m of messages) {
+        const div = document.createElement("div");
+        div.className = "msg";
+
+        const del = document.createElement("button");
+        del.className = "del";
+        del.textContent = "삭제";
+        del.onclick = () => remove(m.id);
+
+        const body = document.createElement("div");
+        body.textContent = m.content;          // textContent: HTML로 해석하지 않음 (XSS 방지)
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        // DB 시간은 UTC이므로 'Z'를 붙여 브라우저의 현지 시간으로 표시
+        meta.textContent = m.name + " · " + new Date(m.created_at + "Z").toLocaleString();
+
+        div.append(del, body, meta);
+        list.append(div);
+      }
+    }
+
+    async function remove(id) {
+      await fetch("/api/messages/" + id, { method: "DELETE" });
+      load();
+    }
+
+    document.getElementById("form").onsubmit = async (e) => {
+      e.preventDefault();
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          content: document.getElementById("content").value,
+        }),
+      });
+      if (!res.ok) { alert("등록 실패: " + res.status); return; }
+      document.getElementById("content").value = "";
+      load();
+    };
+
+    checkHealth();
+    load();
+  </script>
+</body>
+</html>

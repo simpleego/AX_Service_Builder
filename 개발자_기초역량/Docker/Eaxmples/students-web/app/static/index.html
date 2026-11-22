@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>학생 목록</title>
+  <style>
+    body { font-family: "Malgun Gothic", sans-serif; max-width: 760px; margin: 40px auto; padding: 0 16px; color: #222; }
+    h1 { font-size: 1.6rem; margin-bottom: 4px; }
+    .sub { color: #666; margin-top: 0; }
+    .toolbar { display: flex; gap: 8px; margin: 20px 0 12px; }
+    input { flex: 1; padding: 8px 10px; font-size: 1rem; border: 1px solid #bbb; border-radius: 6px; }
+    button { padding: 8px 14px; font-size: 1rem; border: 0; border-radius: 6px; background: #2563eb; color: #fff; cursor: pointer; }
+    button.gray { background: #6b7280; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+    th { background: #f3f4f6; }
+    #status { margin: 8px 0; color: #555; }
+    #status.error { color: #dc2626; }
+  </style>
+</head>
+<body>
+  <h1>학생 목록</h1>
+  <p class="sub">브라우저 → FastAPI(WAS) → MySQL 컨테이너</p>
+
+  <div class="toolbar">
+    <input id="major" placeholder="전공으로 검색 (예: AI)">
+    <button id="searchBtn">검색</button>
+    <button id="resetBtn" class="gray">전체 보기</button>
+  </div>
+
+  <p id="status">불러오는 중…</p>
+
+  <table>
+    <thead>
+      <tr><th>번호</th><th>이름</th><th>전공</th><th>등록일</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <script src="app.js"></script>
+</body>
+</html>
