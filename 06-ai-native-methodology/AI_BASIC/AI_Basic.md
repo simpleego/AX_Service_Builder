@@ -17,3 +17,7 @@
 # Encoder 상세하게 알아보기
 
 <img width="1122" height="1402" alt="image" src="https://github.com/user-attachments/assets/8e8ee94a-fd75-4db2-b105-df7468c2e5c4" />
+
+# Decoder 상세하게 알아보기
+<img width="1122" height="1402" alt="image" src="https://github.com/user-attachments/assets/819e8069-6895-4841-a00c-c6bb5aa8d787" />
+
