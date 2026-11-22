@@ -10,24 +10,21 @@
 
 ## **1. 가장 쉬운 비유: 식당 하나와 프랜차이즈 본사**
 
-## 소규모 식당
+**Docker — 식당의 주방**
+
+음식(애플리케이션)을 정해진 조리 환경(컨테이너)에서 일관되게 만들어 제공합니다.
 <img width="100%"  alt="image" src="https://github.com/user-attachments/assets/72e2aefd-2cc3-4696-b1e7-6eae3bf53595" /> 
 
 ---
 
-## 프랜차이즈 본사
-
-<img width="100%" alt="image" src="https://github.com/user-attachments/assets/b5748fdb-062f-45e2-946b-7d7f58bf2462" />
-
-**Docker — 식당의 주방**
-
-음식(애플리케이션)을 정해진 조리 환경(컨테이너)에서 일관되게 만들어 제공합니다.
-
-[Patron Mobil | Restoran POS, QR Menü ve Operasyon Yönetim Sistemi](https://images.openai.com/static-rsc-4/3MzzqcqS-LUYMRjX-ct8DCAuBSqXkO-1U9Mvu_8TVnMioCPG4v3n1Yu9WpBkSOK7CSNvLhFC831VQx1pbzIp7RAo3Q-vQ5I5r20B3zU_X9GSbLmGVDjmsO-w0mgClbeUdSH7hDWaTlFcWhdVB64Ja6gwTAFJwAiExVy6CycBolQ?purpose=inline)
-
 **Kubernetes — 프랜차이즈 운영 본사**
 
 여러 지점(서버)에 업무를 배분하고, 장애가 발생하면 다른 지점에서 서비스를 유지하도록 조정합니다.
+
+<img width="100%" alt="image" src="https://github.com/user-attachments/assets/b5748fdb-062f-45e2-946b-7d7f58bf2462" />
+
+
+---
 
 예를 들어 식당이 한 개라면 주방만 관리해도 충분할 수 있습니다. 그러나 수백 개의 지점을 운영해야 한다면 지점마다 주문량, 인력, 재고를 조정하는 중앙 관리 체계가 필요합니다.
 
