@@ -19,10 +19,6 @@
 
 <img width="100%" alt="image" src="https://github.com/user-attachments/assets/b5748fdb-062f-45e2-946b-7d7f58bf2462" />
 
-
-
-[Isometric flat 3D vector interior of professional restourant kitchen](https://images.openai.com/static-rsc-4/Uc83sKOO_2OCEwGwLFehmjsrTw4LAiuuPrMuScKhp2JyPdWq_X3qhyjpawma3FJ1aq3ycUBlNlrV8L02enMVAwn2pHA6JjxWxBdjjnk-4xeEFiOI3gjNu_rnDcfG0CFgFFaoiOCiIsck2SG42FQeIC-E2y9sh08Ip-VuLS2LqzHfHRoW2U9c4s4iCRdnJ3at?purpose=inline)
-
 **Docker — 식당의 주방**
 
 음식(애플리케이션)을 정해진 조리 환경(컨테이너)에서 일관되게 만들어 제공합니다.
