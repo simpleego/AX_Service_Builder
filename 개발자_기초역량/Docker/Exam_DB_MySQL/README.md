@@ -7,20 +7,65 @@
 
 ## 구성도
 
-```
-┌──────────── Windows (로컬 PC) ────────────┐
-│  Python / MySQL Workbench / DBeaver        │
-│        │  127.0.0.1:13306                  │
-│        ▼                                   │
-│  VirtualBox NAT 포트포워딩 (13306 → 3306)  │
-│  ┌──────── Ubuntu VM (docker-lab) ───────┐ │
-│  │  docker -p 3306:3306                  │ │
-│  │  ┌──── 컨테이너 lab-mysql ─────┐      │ │
-│  │  │ MySQL 8.4  :3306            │      │ │
-│  │  │ /var/lib/mysql ─▶ Volume    │      │ │
-│  │  └─────────────────────────────┘      │ │
-│  └───────────────────────────────────────┘ │
-└────────────────────────────────────────────┘
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryTextColor': '#263238', 'lineColor': '#607D8B', 'fontFamily': 'Noto Sans KR, sans-serif'}}}%%
+graph TD
+    %% --- 최상위 계층: Windows ---
+    subgraph Win [Windows (로컬 PC)]
+        direction TB
+        subgraph Tools [클라이언트 도구]
+            Py[Python]
+            WB[MySQL Workbench]
+            DB[DBeaver]
+        end
+    end
+
+    %% --- 중간 계층: VirtualBox VM ---
+    subgraph VBox [VirtualBox VM docker-lab]
+        direction TB
+        NAT[NAT 포트포워딩 13306 -> 3306]
+        subgraph Ub [Ubuntu 환경]
+            direction TB
+            DockerCmd[docker run -p 3306:3306]
+        end
+    end
+
+    %% --- 최하위 계층: Docker 컨테이너 ---
+    subgraph DCont [컨테이너 lab-mysql]
+        MySQL[MySQL 8.4 서비스]
+        IntPort[:3306]
+    end
+
+    %% --- 외부 영구 저장소 ---
+    Volume[(Docker Volume)]
+
+    %% --- 연결 정의 및 라벨링 ---
+
+    %% Windows 도구 -> NAT 연결
+    Py -- "127.0.0.1:13306" --> NAT
+    WB -- "127.0.0.1:13306" --> NAT
+    DB -- "127.0.0.1:13306" --> NAT
+
+    %% NAT -> Ubuntu -> 컨테이너 연결
+    NAT -- "내부 네트워크" --> Ub
+    Ub -- "포트 매핑" --> DCont
+
+    %% 컨테이너 내부 구성
+    MySQL -- "서비스 실행" --> IntPort
+
+    %% 볼륨 마운트 연결
+    MySQL <== "영구 데이터 저장" ==> Volume
+
+    %% 스타일 적용 (시각적 구분)
+    classDef client fill:#E1F5FE,stroke:#0277BD,stroke-width:2px;
+    classDef vm fill:#E0F2F1,stroke:#00695C,stroke-width:2px;
+    classDef container fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px;
+    classDef storage fill:#FCE4EC,stroke:#C2185B,stroke-width:2px,stroke-dasharray: 5 5;
+
+    class Py,WB,DB client;
+    class NAT,Ub,DockerCmd vm;
+    class MySQL,IntPort container;
+    class Volume storage;
 ```
 
 > Windows의 3306 포트는 이 PC에 설치된 **MariaDB**가 이미 쓰고 있습니다. 그래서 Docker MySQL에는 **13306**으로 접속합니다. 같은 포트를 두 프로그램이 동시에 쓸 수 없다는 것도 이번 실습에서 확인할 포인트입니다.
