@@ -60,18 +60,6 @@ graph TD
 > Windows의 3306 포트는 이 PC에 설치된 **MariaDB**가 이미 쓰고 있습니다. 그래서 Docker MySQL에는 **13306**으로 접속합니다. 같은 포트를 두 프로그램이 동시에 쓸 수 없다는 것도 이번 실습에서 확인할 포인트입니다.
 
 ## 파일 구성
-
-```
-Exam_DB_MySQL/
-├── docker-compose.yml   # MySQL 서버 정의
-├── .env                 # 계정/비밀번호 (실습용 값)
-├── conf/my.cnf          # 문자셋(utf8mb4), 시간대, 외부 접속 허용
-├── init/01-schema.sql   # 최초 1회 실행: members, orders 테이블 + 샘플 데이터
-├── sql/practice.sql     # 조회 실습 SQL
-└── client/
-    ├── query.py         # Windows에서 접속/조회하는 Python 예제
-    └── requirements.txt
-```
 ```mermaid
 
 flowchart TB
@@ -99,9 +87,7 @@ flowchart TB
     class CONF,INIT,SQL,CLIENT folder
     class COMPOSE,MYCNF,SCHEMA,PRACTICE,QUERY,REQ file
     class ENV secret
-
 ```
-
 
 | 항목 | 값 |
 |---|---|
