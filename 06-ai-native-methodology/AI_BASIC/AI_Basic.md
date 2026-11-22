@@ -14,3 +14,6 @@
 
 <img width="1222" height="1502" alt="image" src="https://github.com/user-attachments/assets/bde0e633-76f5-423e-be99-d859f14b4825" />
 
+# Encoder 상세하게 알아보기
+
+<img width="1122" height="1402" alt="image" src="https://github.com/user-attachments/assets/8e8ee94a-fd75-4db2-b105-df7468c2e5c4" />
