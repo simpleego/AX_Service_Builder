@@ -6,11 +6,7 @@
 
 두 기술은 경쟁 관계가 아니라 서로 다른 역할을 수행하는 상호 보완적인 기술입니다.&#x20;
 
-[image](https://www.google.com/s2/favicons?domain=https://kubernetes.io\&sz=32)
-
-Kubernetes+1
-
-
+Kubernetes+1 <img width="32" height="32" alt="image" src="https://github.com/user-attachments/assets/258d78fe-93ff-451c-8582-cd266bb62c5c" />
 
 ## **1. 가장 쉬운 비유: 식당 하나와 프랜차이즈 본사**
 
