@@ -105,6 +105,9 @@ VirtualBox 관리자 → VM 선택 → **설정 → 네트워크 → 어댑터 1
 
 > **호스트 IP를 비우면** 내부망의 다른 PC에서도 접속할 수 있습니다. 강사 PC에서만 쓰려면 `127.0.0.1`을 넣습니다.
 > 기존 실습용 `mysql-lab` 컨테이너가 3306을 쓰고 있으므로 이 서비스의 DB는 **3307**로 엽니다.
+ 
+## port Forwarding을 설정하는 이유
+<img width="1055" height="1491" alt="image" src="https://github.com/user-attachments/assets/063e5775-1c96-46d2-a919-4f4e67c23219" />
 
 ### 2-4. Docker 설치 확인
 
