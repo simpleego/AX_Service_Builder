@@ -115,6 +115,11 @@ VirtualBox 관리자 → VM 선택 → **설정 → 네트워크 → 어댑터 1
 ## 사설IP와 공인IP란?
 <img width="80%"  alt="image" src="https://github.com/user-attachments/assets/a7a7a1d3-4f2c-4f57-9578-efc75ae75828" />
 
+## VPN과 VPC
+<img width="80%" height="1402" alt="image" src="https://github.com/user-attachments/assets/e46578f9-f498-45c7-836f-5a5b105db1d0" />
+
+---
+
 
 ### 2-4. Docker 설치 확인
 
