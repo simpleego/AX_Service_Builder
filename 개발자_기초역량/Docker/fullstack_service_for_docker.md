@@ -107,7 +107,14 @@ VirtualBox 관리자 → VM 선택 → **설정 → 네트워크 → 어댑터 1
 > 기존 실습용 `mysql-lab` 컨테이너가 3306을 쓰고 있으므로 이 서비스의 DB는 **3307**로 엽니다.
  
 ## port Forwarding을 설정하는 이유
-<img width="1055" height="1491" alt="image" src="https://github.com/user-attachments/assets/eb21f1a5-2d5f-4760-89c4-8fdbca701628" />
+<img width="80%"  alt="image" src="https://github.com/user-attachments/assets/eb21f1a5-2d5f-4760-89c4-8fdbca701628" />
+
+## NAT란?
+<img width="80%"  alt="image" src="https://github.com/user-attachments/assets/681bf343-42bc-4981-8000-daf3aef4765e" />
+
+## 사설IP와 공인IP란?
+<img width="80%"  alt="image" src="https://github.com/user-attachments/assets/a7a7a1d3-4f2c-4f57-9578-efc75ae75828" />
+
 
 ### 2-4. Docker 설치 확인
 
