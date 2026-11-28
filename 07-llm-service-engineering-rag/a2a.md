@@ -17,37 +17,46 @@
 | 인증 요구사항 | 지원하는 보안 방식 | `"type": "oauth2", "type": "apiKey"` |
 | 지원 모달리티 | 처리 가능한 데이터 타입 | `"inputModes": ["text", "file"]`,<br>`"outputModes": ["text", "file"]` |
 
-# Agent Card Json format
+# Agent Card JSON format
 ```json
 {
   "name": "Travel Booking Agent",
-  "description": "항공권 및 호텔 예약 전문 에이전트",
+  "description": "항공권 검색, 호텔 예약, 여행 일정 관리를 수행하는 전문 에이전트입니다.",
   "version": "1.0.0",
+  "protocolVersion": "0.3",
   "url": "https://api.travel-agent.com/a2a",
   "capabilities": {
     "streaming": true,
     "pushNotifications": true
   },
-  "defaultInputModes": ["text", "file"],
-  "defaultOutputModes": ["text", "file"],
-  "authentication": {
-    "schemes": ["oauth2", "apiKey"]
-  },
   "skills": [
     {
       "id": "flight-search",
       "name": "항공권 검색",
-      "description": "출발지, 도착지, 일정에 맞는 항공편을 조회합니다.",
-      "inputModes": ["text", "file"],
-      "outputModes": ["text", "file"]
+      "description": "출발지, 목적지, 날짜를 기반으로 최적의 항공권을 검색합니다."
     },
     {
       "id": "hotel-booking",
       "name": "호텔 예약",
-      "description": "조건에 맞는 숙소를 검색하고 예약을 진행합니다.",
-      "inputModes": ["text", "file"],
-      "outputModes": ["text", "file"]
+      "description": "목적지와 일정에 맞는 호텔을 검색하고 예약합니다."
+    },
+    {
+      "id": "itinerary-planning",
+      "name": "여행 일정 생성",
+      "description": "여행지의 관광명소, 맛집 등을 포함한 일정을 생성합니다."
     }
-  ]
+  ],
+  "inputModes": ["text", "file"],
+  "outputModes": ["text", "file"],
+  "authentication": {
+    "schemes": [
+      {
+        "type": "oauth2",
+        "authorizationUrl": "https://auth.travel-agent.com/authorize",
+        "tokenUrl": "https://auth.travel-agent.com/token",
+        "scopes": ["read", "write", "booking"]
+      }
+    ]
+  }
 }
 ```
