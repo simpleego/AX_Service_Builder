@@ -17,3 +17,37 @@
 | 인증 요구사항 | 지원하는 보안 방식 | `"type": "oauth2", "type": "apiKey"` |
 | 지원 모달리티 | 처리 가능한 데이터 타입 | `"inputModes": ["text", "file"]`,<br>`"outputModes": ["text", "file"]` |
 
+# Agent Card Json format
+```json
+{
+  "name": "Travel Booking Agent",
+  "description": "항공권 및 호텔 예약 전문 에이전트",
+  "version": "1.0.0",
+  "url": "https://api.travel-agent.com/a2a",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true
+  },
+  "defaultInputModes": ["text", "file"],
+  "defaultOutputModes": ["text", "file"],
+  "authentication": {
+    "schemes": ["oauth2", "apiKey"]
+  },
+  "skills": [
+    {
+      "id": "flight-search",
+      "name": "항공권 검색",
+      "description": "출발지, 도착지, 일정에 맞는 항공편을 조회합니다.",
+      "inputModes": ["text", "file"],
+      "outputModes": ["text", "file"]
+    },
+    {
+      "id": "hotel-booking",
+      "name": "호텔 예약",
+      "description": "조건에 맞는 숙소를 검색하고 예약을 진행합니다.",
+      "inputModes": ["text", "file"],
+      "outputModes": ["text", "file"]
+    }
+  ]
+}
+```
