@@ -14,4 +14,6 @@
 | 서비스 엔드포인트 | 에이전트와 통신할 수 있는 URL | `"url": "https://api.travel-agent.com/a2a"` |
 | 능력(Capabilities) | 스트리밍, 푸시 알림 지원 여부 등 | `"streaming": true, "pushNotifications": true` |
 | 스킬(Skills) | 수행 가능한 구체적인 작업 목록 | `"id": "flight-search", "id": "hotel-booking"` |
-```[cite: 2]
+| 인증 요구사항 | 지원하는 보안 방식 | `"type": "oauth2", "type": "apiKey"` |
+| 지원 모달리티 | 처리 가능한 데이터 타입 | `"inputModes": ["text", "file"]`,<br>`"outputModes": ["text", "file"]` |
+
