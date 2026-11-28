@@ -7,6 +7,7 @@
 # Agent Card  
 <img width="1408" height="768" alt="image" src="https://github.com/user-attachments/assets/970baaf9-27cf-4ddd-897a-81de32b4576d" />
 
+# Agent Card 구성요소
 | 항목 | 설명 | 예시 |
 | :--- | :--- | :--- |
 | 에이전트 정체성 | 이름, 설명, 버전 정보 | `"name": "Travel Booking Agent"`,<br>`"description": "항공권 및 호텔 예약 전문 에이전트"` |
