@@ -1,5 +1,5 @@
-# A2A
-A2A의 핵심 흐름인 **① Agent Card 조회(Discovery) → ② 작업 위임(Task 생성·실행) → ③ 상태 및 산출물(Artifact) 수신**을 로컬에서 바로 실행해 볼 수 있는 **FastAPI 기반 미니멀 예제**입니다. 외부 라이브러리 없이 `fastapi`와 `uvicorn`, `httpx`만 있으면 바로 테스트할 수 있습니다.
+# Agent2Agent(A2A)
+> A2A의 핵심 흐름인 **① Agent Card 조회(Discovery) → ② 작업 위임(Task 생성·실행) → ③ 상태 및 산출물(Artifact) 수신**을 로컬에서 바로 실행해 볼 수 있는 **FastAPI 기반 미니멀 예제**입니다. 외부 라이브러리 없이 `fastapi`와 `uvicorn`, `httpx`만 있으면 바로 테스트할 수 있습니다.
 
 ---
 
